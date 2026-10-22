@@ -1,8 +1,8 @@
 # Desk
 
-This is the code behind the desk on my profile. I wanted my README to feel like my actual table: passport open, folders everywhere, stickers peeling off the cutting mat, a cigarette pack I definitely shouldn't have, and a terminal in the corner about to start something new.
+Welcome to my desk! In this file, you can find the code behind everything. I wanted my README to feel like my actual table: passport open, folders everywhere, stickers peeling off the cutting mat, a cigarette pack I definitely shouldn't have, and a terminal at the bottom about to start something new.
 
-It's all pixel art, but there are no image files. Every pixel is drawn in code and written out as one SVG with the fonts and animations baked in, so GitHub shows it like any other image.
+It's all pixel art, with ZERO image files. Every pixel is drawn in code and written out as one SVG with the fonts and animations baked in, so GitHub shows it like any other image.
 
 ## Run it
 
