@@ -1,21 +1,33 @@
 # Desk
 
-Draws `../assets/desk.svg`, the image on the profile README: a wooden table seen from above with an open passport, team folders, logo stickers on a cutting mat, a side projects newspaper, an envelope, desk clutter and a launch terminal. It's pixel art written as SVG, with embedded fonts and CSS animation, so GitHub shows it as one image.
+This is the code behind the desk on my profile. I wanted my README to feel like my actual table: passport open, folders everywhere, stickers peeling off the cutting mat, a cigarette pack I definitely shouldn't have, and a terminal in the corner about to start something new.
+
+It's all pixel art, but there are no image files. Every pixel is drawn in code and written out as one SVG with the fonts and animations baked in, so GitHub shows it like any other image.
+
+## Run it
 
 ```bash
 npm install
 npm run build    # writes ../assets/desk.svg
 ```
 
-Node 22 or later.
+You'll need Node 22 or later.
 
-| File | What it is |
+## What's in here
+
+| File | What it does |
 |---|---|
-| `build.mjs` | Draws the desk. Each section (`about`, `teams`, `stack`, `projects`, `contact`) is a function; the text lives in `TEAMS`, `TOOLS`, `PROJECTS` and `STAMPS` |
-| `hero.mjs` | The terminal at the end: types `whoami` and `./startproject`, then the cat pops up |
-| `pixel-logos.mjs` | Turns the logos in `data/logos/` into 18×18 pixel grids in `data/pixel-logos.json` |
-| `data/` | The cat as pixels and as characters, the logos, and their pixel grids |
+| `build.mjs` | Draws the whole desk. Each section (`about`, `teams`, `stack`, `projects`, `contact`) is its own function, and the words live in `TEAMS`, `TOOLS`, `PROJECTS` and `STAMPS` |
+| `hero.mjs` | The terminal at the end. It types `whoami` and `./startproject`, then a cat shows up |
+| `pixel-logos.mjs` | Shrinks the logos in `data/logos/` down to 18×18 pixel grids |
+| `data/` | The cat (as pixels and as text), the logos, and their pixel versions |
 
-## Changing the stack stickers
+## Adding a sticker
 
-Add the logo as `data/logos/<name>.svg` and its name to `names` in `pixel-logos.mjs`, run `npm run logos`, then add it to `TOOLS` in `build.mjs` and run `npm run build`. `npm run logos` needs a Chromium; set `CHROMIUM_PATH` if Playwright doesn't find one.
+When I pick up a new tool, here's how it gets a sticker:
+
+1. Drop the logo in `data/logos/<name>.svg` and add the name to `names` in `pixel-logos.mjs`
+2. Run `npm run logos`
+3. Add it to `TOOLS` in `build.mjs` and run `npm run build`
+
+`npm run logos` needs Chromium. If Playwright can't find it, set `CHROMIUM_PATH`.
