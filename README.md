@@ -1,6 +1,6 @@
 <p align="center"><b>Hi, I'm Maarib</b>, a product designer who builds.<br>12+ years designing for fintech, DeFi, commerce and media. Based in Toronto.</p>
 
-<img src="assets/desk.svg" alt="Maarib's desk, a busy oak table seen from above: an open passport crowded with country stamps, Metallica tickets, a boarding pass, keyboard and coffee; three team folders with a stapler, cigarettes, highlighters and stickers; pixel logo stickers of the tool stack on a cutting mat; a Side Projects newspaper over a receipt, a todo note and a board game; an envelope addressed to maaribs.com among a gamepad, mouse, tape player, headphones and a watch; and a terminal that runs ./startproject and a cat pops up." width="100%">
+<picture><img src="assets/desk.svg" alt="Maarib's desk, a busy oak table seen from above: an open passport crowded with country stamps, Metallica tickets, a boarding pass, keyboard and coffee; three team folders with a stapler, cigarettes, highlighters and stickers; pixel logo stickers of the tool stack on a cutting mat; a Side Projects newspaper over a receipt, a todo note and a board game; an envelope addressed to maaribs.com among a gamepad, mouse, tape player, headphones and a watch; and a terminal that runs ./startproject and a cat pops up." width="100%"></picture>
 
 <p align="center">
 <b>Side projects</b><br>
