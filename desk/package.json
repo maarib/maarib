@@ -1,0 +1,20 @@
+{
+  "name": "maarib-desk",
+  "private": true,
+  "type": "module",
+  "description": "Draws the profile README image, assets/desk.svg",
+  "scripts": {
+    "build": "node build.mjs",
+    "logos": "node pixel-logos.mjs"
+  },
+  "dependencies": {
+    "@fontsource/jetbrains-mono": "5.2.8",
+    "@fontsource/mrs-saint-delafield": "5.3.0",
+    "@fontsource/pixelify-sans": "5.2.6",
+    "@fontsource/press-start-2p": "5.2.7",
+    "@fontsource/vt323": "5.2.6"
+  },
+  "devDependencies": {
+    "playwright-core": "1.48.2"
+  }
+}
