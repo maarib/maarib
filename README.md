@@ -1,13 +1,11 @@
-<p align="center"><b>Hi, I'm Maarib</b>, a product designer who builds.<br>12+ years designing for fintech, DeFi, commerce and media. Based in Toronto.</p>
+<picture><img src="assets/intro.svg" alt="Hi, I'm Maarib. Product designer at large, where product keeps flipping to founding, fun-doing, web, digital, lead, full-stack, principal and cat-approved." width="100%"></picture>
 
-<picture><img src="assets/desk.svg" alt="Maarib's desk, a busy oak table seen from above: an open passport crowded with country stamps, Metallica tickets, a boarding pass, keyboard and coffee; three team folders with a stapler, cigarettes, highlighters and stickers; pixel logo stickers of the tool stack on a cutting mat; a Side Projects newspaper over a receipt, a todo note and a board game; an envelope addressed to maaribs.com among a gamepad, mouse, tape player, headphones and a watch; and a terminal that runs ./startproject and a cat pops up." width="100%"></picture>
+<picture><img src="assets/desk.svg" alt="Maarib's desk, a busy oak table seen from above: an open Canadian passport, its visa page covered in stamps and its data page under a pixel Canada wordmark, with Metallica tickets, a house key, a boarding pass, keyboard and coffee; three folders (Fintech, Web3, Commerce) with a stapler, cigarettes, highlighters, an ashtray and stickers; pixel logo stickers of the tool stack on a cutting mat; a Side Projects newspaper; an envelope addressed to iammaarib@gmail.com among a gamepad, a tape player, black headphones and a watch; and a terminal that runs ./startproject and a cat pops up." width="100%"></picture>
 
-<p align="center">
-<b>Side projects</b><br>
-<a href="https://maarib.github.io/canopy/">Canopy</a> · <a href="https://maarib.github.io/leaf-icons/">Leaf icons</a> · <a href="https://maarib.github.io/fpl-dashboard/">FPL Dashboard</a> · <a href="https://github.com/maarib/card-compare">CardCompare</a> · <a href="https://github.com/maarib/alert.engine">alert.engine</a> · <a href="https://github.com/maarib/page-comments">page-comments</a>
-</p>
+<picture><img src="assets/projects/masthead.svg" alt="Side projects" width="100%"></picture>
 
-<p align="center">
-<b>Say hi</b><br>
-<a href="https://maaribs.com">maaribs.com</a>
-</p>
+<p align="center"><a href="https://maarib.github.io/canopy/"><img src="assets/projects/canopy.svg" alt="Canopy: fall colors across Canada, and what to explore in Ontario" width="33%"></a><a href="https://maarib.github.io/leaf-icons/"><img src="assets/projects/leaf-icons.svg" alt="Leaf icons: tree leaf icons, and a small SVG editor for their stems and layers" width="33%"></a><a href="https://maarib.github.io/fpl-dashboard/"><img src="assets/projects/fpl-dashboard.svg" alt="FPL Dashboard: Fantasy Premier League players, sortable and side by side" width="33%"></a><br><a href="https://github.com/maarib/card-compare"><img src="assets/projects/card-compare.svg" alt="CardCompare: Canadian credit cards compared on fees, earn rates, insurance and perks" width="33%"></a><a href="https://github.com/maarib/alert.engine"><img src="assets/projects/alert-engine.svg" alt="alert.engine: a stock and ETF watchlist with alerts, market briefs and sector exposure" width="33%"></a><a href="https://github.com/maarib/page-comments"><img src="assets/projects/page-comments.svg" alt="page-comments: a Claude Code skill for leaving notes on any web page" width="33%"></a></p>
+
+<picture><img src="assets/sayhi/header.svg" alt="Say hi" width="100%"></picture>
+
+<p align="center"><a href="https://maaribs.com"><img src="assets/sayhi/website.svg" alt="Website: maaribs.com" width="33%"></a><a href="LINKEDIN_URL"><img src="assets/sayhi/linkedin.svg" alt="LinkedIn" width="33%"></a><a href="DRIBBBLE_URL"><img src="assets/sayhi/dribbble.svg" alt="Dribbble" width="33%"></a></p>

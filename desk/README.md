@@ -8,7 +8,7 @@ It's all pixel art, with ZERO image files. Every pixel is drawn in code and writ
 
 ```bash
 npm install
-npm run build    # writes ../assets/desk.svg
+npm run build    # writes the images in ../assets
 ```
 
 You'll need Node 22 or later.
@@ -19,8 +19,13 @@ You'll need Node 22 or later.
 |---|---|
 | `build.mjs` | Draws the whole desk. Each section (`about`, `teams`, `stack`, `projects`, `contact`) is its own function, and the words live in `TEAMS`, `TOOLS`, `PROJECTS` and `STAMPS` |
 | `hero.mjs` | The terminal at the end. It types `whoami` and `./startproject`, then a cat shows up |
+| `intro.mjs` | The intro on top: "Hi, I'm Maarib" and the designer line whose first word keeps flipping (`WORDS`) |
+| `projects.mjs` | The side projects newspaper under the desk, one clickable clipping per project (`PROJECTS`) |
+| `sayhi.mjs` | The Say hi keys, one clickable key per link (`CONTACTS`) |
+| `pixel.mjs` | Drawing helpers shared by the three above |
 | `pixel-logos.mjs` | Shrinks the logos in `data/logos/` down to 18×18 pixel grids |
-| `data/` | The cat (as pixels and as text), the logos, and their pixel versions |
+| `pixel-wordmark.mjs` | Turns "Canada" into the pixel wordmark on the passport |
+| `data/` | The cat (as pixels and as text), the logos and their pixel versions, and the Canada wordmark |
 
 ## Adding a sticker
 

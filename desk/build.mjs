@@ -1,4 +1,4 @@
-// Desk v2: the profile as a busy wooden table seen from above. Each README section is an object on
+// The profile as a busy wooden table seen from above. Each README section is an object on
 // it (an open passport, team folders, logo stickers on a cutting mat, a newspaper, an envelope),
 // surrounded by clutter, with the launch terminal at the end. Pixel art at 4 screen px per art px.
 // Run: npm install && npm run build  (writes ../assets/desk.svg)
@@ -179,6 +179,38 @@ function ticket(x, y, seat) {
   return o
 }
 const cigarette = (x, y) => R(x + 1, y + 3, 26, 1, 'rgba(0,0,0,.35)') + R(x, y, 7, 3, '#e3a75a') + R(x + 1, y + 1, 1, 1, '#c98a3a') + R(x + 4, y, 1, 1, '#c98a3a') + R(x + 7, y, 18, 3, C.white) + R(x + 25, y, 2, 3, '#9a9a9a') + `<rect class="ember" x="${(x + 27) * P}" y="${y * P}" width="${P}" height="${3 * P}" fill="#e2552c"/>`
+// A round glass ashtray from above: a thick rim with three rests, ash, and a stubbed-out butt.
+function ashtray(cx, cy) {
+  let o = disc(cx + 1.5, cy + 2, 13, 'rgba(0,0,0,.35)') + disc(cx, cy, 13, C.line) + disc(cx, cy, 12, '#8fa3b3') + disc(cx - 1, cy - 1, 11, '#b9cad6') + disc(cx, cy, 10, '#a3b5c3')
+  o += disc(cx, cy, 8, '#3c4650') + disc(cx, cy + 1, 7, '#56626d')
+  for (const [dx, dy, w, h] of [[-13, -1, 4, 3], [9, -1, 4, 3], [-1, 9, 3, 4]]) o += R(cx + dx, cy + dy, w, h, '#56626d') + R(cx + dx, cy + dy + h - 1, w, 1, '#3c4650')
+  for (let k = 0; k < 16; k++) { const a = k * 2.3, r = (k * 7) % 6; o += R(cx + Math.round(Math.cos(a) * r), cy + 1 + Math.round(Math.sin(a) * r), 1, 1, k % 3 ? '#9a958d' : '#c9c4ba') }
+  o += R(cx + 1, cy + 3, 5, 2, C.white) + R(cx + 6, cy + 3, 3, 2, '#e3a75a') + R(cx, cy + 3, 1, 2, '#6a6a6a') + R(cx + 7, cy + 3, 1, 1, '#c98a3a')
+  return o + R(cx - 8, cy - 8, 3, 1, 'rgba(255,255,255,.7)') + R(cx - 9, cy - 7, 1, 2, 'rgba(255,255,255,.7)')
+}
+// A pixel ring between radii r0 and r1, with a real hole.
+function annulus(cx, cy, r0, r1, c) {
+  let o = ''
+  for (let j = -Math.ceil(r1); j < r1; j++) {
+    const yy = j + 0.5, a = Math.round(Math.sqrt(Math.max(0, r1 * r1 - yy * yy))), b = Math.abs(yy) < r0 ? Math.round(Math.sqrt(r0 * r0 - yy * yy)) : 0
+    if (a <= 0) continue
+    if (b > 0) { if (a > b) o += R(cx - a, cy + j, a - b, 1, c) + R(cx + b, cy + j, a - b, 1, c) }
+    else o += R(cx - a, cy + j, 2 * a, 1, c)
+  }
+  return o
+}
+// A house key on a split ring: a brass bow with a hole, a grooved blade and cut teeth.
+function houseKey(x, y) {
+  const br = ['#d9b44a', '#f0d77a', '#a8862c']
+  let o = annulus(x + 1, y + 1.5, 4, 7, 'rgba(0,0,0,.3)') + annulus(x, y, 4, 7, C.line) + annulus(x, y, 5, 6, C.metal) + R(x - 5, y - 4, 2, 1, C.metalL)
+  const bx = x + 11, by = y + 2
+  o += annulus(bx + 1, by + 1.5, 2, 7, 'rgba(0,0,0,.3)') + R(bx + 6, by - 1, 24, 6, 'rgba(0,0,0,.3)')
+  o += R(bx + 5, by - 3, 24, 6, C.line) + R(bx + 29, by - 2, 1, 4, C.line)
+  o += R(bx + 5, by - 2, 24, 4, br[0]) + R(bx + 5, by - 2, 24, 1, br[1]) + R(bx + 8, by, 19, 1, br[2])
+  ;[2, 1, 2, 3, 1, 2, 2, 1, 3, 2, 1, 2, 1].forEach((h, i) => { o += R(bx + 10 + i * 1.5, by + 3, 1.5, h, C.line); if (h > 1) o += R(bx + 10 + i * 1.5, by + 3, 1.5, h - 1, br[0]) })
+  o += annulus(bx, by, 2, 7, C.line) + annulus(bx, by, 3, 6, br[0]) + R(bx - 4, by - 4, 3, 1, br[1]) + R(bx - 5, by - 3, 1, 2, br[1]) + R(bx + 2, by + 4, 3, 1, br[2])
+  return o + R(bx + 4, by - 2, 2, 4, br[2])
+}
 function receipt(x, y, h = 66) {
   let o = box(x, y, 42, h, C.white, '#ffffff', '#e6e2da')
   for (let i = 0; i < 21; i++) o += R(x + i * 2, y + h, 1, 1, C.white)
@@ -253,8 +285,7 @@ function floppy(x, y, color, label) {
 function cd(cx, cy) {
   let o = disc(cx + 1, cy + 1.5, 15, 'rgba(0,0,0,.3)') + disc(cx, cy, 15, '#9aa3b3') + disc(cx, cy, 14, '#dfe4ec')
   o += `<g opacity=".55">${ell(cx - 5, cy - 4, 6, 3, '#f7b3e0')}${ell(cx + 4, cy + 5, 7, 3, '#a8f0e8')}${ell(cx + 6, cy - 6, 4, 2, '#fbe58a')}</g>`
-  o += disc(cx, cy, 5, '#b9c0cc') + disc(cx, cy, 3, '#9aa3b3') + disc(cx, cy, 2, 'rgba(0,0,0,0)')
-  return o + t(cx * P, (cy + 11) * P, 'PORTFOLIO 2014', { font: 'Pixel', size: 5, fill: '#4a4e5a', anchor: 'middle' })
+  return o + disc(cx, cy, 5, '#b9c0cc') + disc(cx, cy, 3, '#9aa3b3') + disc(cx, cy, 2, 'rgba(0,0,0,0)')
 }
 function stapler(x, y) {
   return box(x, y + 2, 40, 9, '#2f8f8a', '#4fb3ad', '#1f6b67') + box(x + 2, y, 34, 7, '#3aa39d', '#62c2bb', '#2a7f7a', { shadow: false }) + R(x + 30, y + 2, 4, 3, C.metal)
@@ -311,43 +342,52 @@ function mouse(cx, cy) {
   o += keycap(cx - 8, cy - 11, 8, 12, 'key') + keycap(cx, cy - 11, 8, 12, 'key') + keycap(cx - 1.5, cy - 8, 3, 6, 'mod')
   return o + R(cx - 3, cy + 8, 6, 1, CASE[2])
 }
-// Over-ear headphones lying flat: a padded band arcing over two ear cups.
+// Over-ear headphones lying flat, in black and grey: a padded band arching over two oval cups,
+// shells up, with the cushions peeking out on the inside and metal sliders into the band.
 function headphones(cx, cy) {
-  const arc = (r0, r1, c, below = 2, dx = 0, dy = 0) => {
+  const K = { shell: '#2f3238', shellL: '#4a4e57', shellD: '#1d1f23', pad: '#141518', grey: '#6b707a' }
+  const r0 = 25, r1 = 32
+  const band = (a, b, c, dx = 0, dy = 0) => {
     let o = ''
-    for (let j = -r1; j < below; j++) {
-      const yy = j + 0.5, ho = Math.sqrt(Math.max(0, r1 * r1 - yy * yy)), hi = Math.abs(yy) < r0 ? Math.sqrt(r0 * r0 - yy * yy) : 0
-      const a = Math.round(ho), b = Math.round(hi)
-      if (a <= 0) continue
-      if (b > 0) o += R(cx - a + dx, cy + j + dy, a - b, 1, c) + R(cx + b + dx, cy + j + dy, a - b, 1, c)
-      else o += R(cx - a + dx, cy + j + dy, 2 * a, 1, c)
+    for (let j = -b; j < 0; j++) {
+      const yy = j + 0.5, ho = Math.round(Math.sqrt(b * b - yy * yy)), hi = Math.abs(yy) < a ? Math.round(Math.sqrt(a * a - yy * yy)) : 0
+      if (ho <= 0) continue
+      o += hi > 0 ? R(cx - ho + dx, cy + j + dy, ho - hi, 1, c) + R(cx + hi + dx, cy + j + dy, ho - hi, 1, c) : R(cx - ho + dx, cy + j + dy, 2 * ho, 1, c)
     }
     return o
   }
-  let o = arc(16, 24, 'rgba(0,0,0,.35)', 2, 1, 1.5) + arc(16, 24, C.line) + arc(17, 23, CASE[0]) + arc(18, 20, '#4a4e5a', -6) + arc(22, 23, CASE[1], -2)
+  let o = band(r0, r1, 'rgba(0,0,0,.35)', 1, 1.5) + band(r0, r1, C.line) + band(r0 + 1, r1 - 1, K.shell) + band(r0 + 1, r0 + 3, K.grey) + band(r1 - 2, r1 - 1, K.shellL)
+  for (let k = 1; k < 12; k++) { const a = Math.PI * (1 + k / 12); o += R(cx + Math.round(Math.cos(a) * (r0 + 2)), cy + Math.round(Math.sin(a) * (r0 + 2)), 1, 1, '#8a8f99') }
   for (const sx of [-1, 1]) {
-    const x0 = cx + sx * 20 - 8
-    o += box(x0, cy - 2, 16, 22, ...CASE) + ell(x0 + 8, cy + 9, 6, 9, C.line) + ell(x0 + 8, cy + 9, 5, 8, '#4a4e5a') + ell(x0 + 7, cy + 8, 3, 5, '#5a5f6c')
+    const ccx = cx + sx * (r0 + 3.5), ccy = cy + 15
+    o += R(ccx - 1.5, cy - 1, 3, 3, C.metal) + R(ccx - 1.5, cy - 1, 1, 3, C.metalL)
+    o += ell(ccx - sx * 3 + 1, ccy + 1.5, 12, 15, 'rgba(0,0,0,.35)') + ell(ccx - sx * 3, ccy, 12, 15, C.line) + ell(ccx - sx * 3, ccy, 11, 14, K.pad)
+    o += ell(ccx + 1, ccy + 1.5, 12, 15, 'rgba(0,0,0,.3)') + ell(ccx, ccy, 12, 15, C.line) + ell(ccx, ccy, 11, 14, K.shellD) + ell(ccx - 1, ccy - 1, 10, 13, K.shell)
+    o += ell(ccx, ccy, 7, 10, C.line) + ell(ccx, ccy, 6, 9, K.shellL) + ell(ccx + 1, ccy + 1, 5, 8, K.shell) + disc(ccx, ccy, 2, K.grey)
+    o += R(ccx - 7, ccy - 9, 1, 4, 'rgba(255,255,255,.3)') + R(ccx - 6, ccy - 10, 2, 1, 'rgba(255,255,255,.3)')
   }
-  o += keycap(cx + 25, cy + 1, 5, 4, 'esc') + keycap(cx + 25, cy + 14, 5, 3, 'mod')
-  return o + `<g class="blink" style="animation-duration:2.4s">${R(cx - 26, cy + 1, 2, 1, C.green)}</g>`
+  const rx = cx + r0 + 3.5
+  o += keycap(rx + 9, cy + 18, 4, 6, 'mod') + R(cx - r0 - 4.5, cy + 29, 3, 3, C.line)
+  return o + `<g class="blink" style="animation-duration:2.4s">${R(rx + 10, cy + 10, 2, 1, C.green)}</g>`
 }
+// A small tactical watch: olive straps on lugs, a ridged bezel with five pushers, a reflective face.
 function garmin(cx, cy) {
-  const olive = '#4b513f', oliveD = '#383d2f', oliveL = '#5d6450'
-  // Straps: a tapered tip on the top strap, a buckle and keeper on the bottom one
-  let o = R(cx - 8, cy - 41, 16, 27, C.line) + R(cx - 6, cy - 43, 12, 2, C.line) + R(cx - 4, cy - 44, 8, 1, C.line)
-  o += R(cx - 7, cy - 41, 14, 27, olive) + R(cx - 5, cy - 43, 10, 2, olive) + R(cx - 3, cy - 44, 6, 1, olive) + R(cx - 7, cy - 41, 1, 27, oliveL) + R(cx + 6, cy - 41, 1, 27, oliveD)
-  for (let i = 0; i < 5; i++) o += R(cx - 1, cy - 38 + i * 4, 2, 2, oliveD)
-  o += R(cx - 8, cy + 14, 16, 22, C.line) + R(cx - 7, cy + 14, 14, 22, olive) + R(cx - 7, cy + 14, 1, 22, oliveL) + R(cx + 6, cy + 14, 1, 22, oliveD)
-  o += R(cx - 8, cy + 26, 16, 3, oliveD) + R(cx - 8, cy + 26, 16, 1, oliveL)
-  o += frame(cx - 9, cy + 35, 18, 8, C.line) + frame(cx - 8, cy + 36, 16, 6, C.metal) + R(cx - 0.5, cy + 36, 1, 5, C.metalL)
-  o += keycap(cx - 20, cy - 8, 5, 4, 'mod') + keycap(cx - 20, cy + 1, 5, 4, 'mod') + keycap(cx - 20, cy + 9, 5, 4, 'mod') + keycap(cx + 15, cy - 9, 5, 4, 'esc') + keycap(cx + 15, cy + 6, 5, 4, 'mod')
-  o += disc(cx + 1, cy + 1.5, 17, 'rgba(0,0,0,.35)') + disc(cx, cy, 17, C.line) + disc(cx, cy, 16, '#3f4346') + disc(cx, cy, 13, C.line) + disc(cx, cy, 12, '#c9d2b8')
-  for (const [dx, dy] of [[-11, -11], [10, -11], [-11, 10], [10, 10]]) o += R(cx + dx, cy + dy, 2, 2, C.metal)
-  for (const [dx, dy] of [[-1, -16], [-1, 14], [-16, -1], [14, -1]]) o += R(cx + dx, cy + dy, 2, 2, '#d6dbe3')
-  o += t(cx * P, (cy + 2) * P, '09:41', { font: 'Pixel', size: 11, fill: '#1e2418', anchor: 'middle' })
-  o += t(cx * P, (cy - 5) * P, 'TUE 22', { font: 'Pixel', size: 5, fill: '#4a5340', anchor: 'middle' }) + t(cx * P, (cy + 8) * P, '8,412 STEPS', { size: 13, fill: '#4a5340', anchor: 'middle' })
-  return o + R(cx - 6, cy - 10, 12, 1, C.red)
+  const olive = '#4b513f', oliveD = '#383d2f', oliveL = '#5d6450', r = 13
+  let o = R(cx - 6, cy - 33, 12, 22, C.line) + R(cx - 4, cy - 35, 8, 2, C.line) + R(cx - 5, cy - 33, 10, 22, olive) + R(cx - 3, cy - 34, 6, 1, olive) + R(cx - 5, cy - 33, 1, 22, oliveL) + R(cx + 4, cy - 33, 1, 22, oliveD)
+  for (let i = 0; i < 4; i++) o += R(cx - 1, cy - 30 + i * 4, 2, 2, oliveD)
+  o += R(cx - 6, cy + 11, 12, 20, C.line) + R(cx - 5, cy + 11, 10, 20, olive) + R(cx - 5, cy + 11, 1, 20, oliveL) + R(cx + 4, cy + 11, 1, 20, oliveD)
+  o += R(cx - 6, cy + 20, 12, 3, oliveD) + R(cx - 6, cy + 20, 12, 1, oliveL)
+  o += frame(cx - 7, cy + 30, 14, 6, C.line) + frame(cx - 6, cy + 31, 12, 4, C.metal) + R(cx - 0.5, cy + 31, 1, 3, C.metalL)
+  o += R(cx - 7, cy - 14, 14, 4, C.line) + R(cx - 6, cy - 13, 12, 2, '#3f4346') + R(cx - 7, cy + 10, 14, 4, C.line) + R(cx - 6, cy + 11, 12, 2, '#3f4346')
+  for (const [deg, red] of [[150, 0], [180, 0], [210, 0], [325, 1], [35, 0]]) {
+    const a = deg * Math.PI / 180, px = cx + Math.cos(a) * (r + 1.5), py = cy + Math.sin(a) * (r + 1.5)
+    o += R(px - 2.5, py - 2, 5, 4, C.line) + R(px - 1.5, py - 1, 3, 2, red ? C.red : C.metalD) + R(px - 1.5, py - 1, 3, 1, red ? C.redL : C.metal)
+  }
+  o += disc(cx + 1, cy + 1.5, r, 'rgba(0,0,0,.35)') + disc(cx, cy, r, C.line) + disc(cx, cy, r - 1, '#3f4346')
+  for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6; o += R(cx + Math.round(Math.cos(a) * (r - 2)) - 0.5, cy + Math.round(Math.sin(a) * (r - 2)) - 0.5, 1, 1, k % 3 ? '#5a5f66' : '#d6dbe3') }
+  o += disc(cx, cy, r - 3, C.line) + disc(cx, cy, r - 4, '#c9d2b8') + R(cx - 6, cy - 6, 3, 1, 'rgba(255,255,255,.5)')
+  o += t(cx * P, (cy + 1.6) * P, '09:41', { font: 'Pixel', size: 8, fill: '#1e2418', anchor: 'middle' })
+  return o + t(cx * P, (cy + 6) * P, '8,412', { size: 12, fill: '#4a5340', anchor: 'middle' }) + R(cx - 4, cy - 6, 8, 1, C.red)
 }
 function plant(cx, cy) {
   let o = disc(cx + 1.5, cy + 2, 16, 'rgba(0,0,0,.35)') + disc(cx, cy, 16, C.line) + disc(cx, cy, 15, '#d98450') + disc(cx, cy, 13, '#b5612f') + disc(cx, cy, 12, '#4a2f1c')
@@ -358,11 +398,18 @@ function plant(cx, cy) {
   return o + disc(cx, cy, 2, '#7fd17f')
 }
 function cigarettes(x, y) {
-  // Flip-top lid folded back, then the open top: foil, a row of filters, the inner collar
-  let o = box(x, y - 11, 30, 12, '#efebe2', '#ffffff', '#d8d4cc') + R(x + 2, y - 9, 26, 7, '#e2ded3') + R(x + 1, y - 10, 28, 1, C.red)
+  // Lying face up with the flip-top lid folded back flat: the lid's inside shows above the pack, and
+  // the tops of the cigarettes show in the opening, one pulled further out over the lid.
+  let o = box(x, y - 12, 30, 13, '#efebe2', '#ffffff', '#d8d4cc') + R(x + 2, y - 10, 26, 8, '#e4dfd2') + R(x + 1, y - 11, 28, 1, C.red)
   o += box(x, y, 30, 44, C.white, '#ffffff', '#d8d4cc')
-  o += R(x + 2, y + 1, 26, 9, '#c9ccd2') + R(x + 2, y + 1, 26, 1, '#e6eaf0')
-  for (let i = 0; i < 6; i++) { const fx = x + 2.5 + i * 4.2; o += R(fx, y + 3, 4, 5, '#9a5a24') + R(fx + 0.5, y + 3.5, 3, 4, '#e3a75a') + R(fx + 1, y + 4.5, 1, 1, '#c98a3a') + R(fx + 2, y + 6, 1, 1, '#c98a3a') }
+  o += R(x + 1, y + 1, 28, 10, '#bfc3ca') + R(x + 1, y + 1, 28, 1, '#dfe3e9')
+  for (let i = 0; i < 7; i++) {
+    const fx = x + 1.6 + i * 3.85, top = i === 2 ? y - 9 : y + 2 + (i % 2) * 0.5, tip = top + 7
+    if (i === 2) o += R(fx + 1, top + 1.5, 3.6, y + 2 - top, 'rgba(0,0,0,.2)')
+    o += R(fx, top, 3.6, Math.min(tip, y + 10) - top, '#e3a75a') + (tip < y + 10 ? R(fx, tip, 3.6, y + 10 - tip, C.white) : '')
+    o += R(fx, top, 0.8, y + 10 - top, 'rgba(255,255,255,.35)') + R(fx + 2.8, top, 0.8, y + 10 - top, 'rgba(120,70,20,.3)') + R(fx, top, 3.6, 0.8, '#f2c98f')
+    o += R(fx + 1.2, top + 2, 0.8, 0.8, '#b4772e') + R(fx + 2, top + 4.2, 0.8, 0.8, '#b4772e')
+  }
   o += R(x + 1, y + 10, 28, 2, '#efebe2') + R(x + 11, y + 10, 8, 1, '#ffffff') + R(x + 1, y + 12, 28, 1, C.red) + R(x + 1, y + 13, 28, 0.5, '#d9b44a')
   o += t((x + 15) * P, (y + 24) * P, 'KINGS', { font: 'Pixelify', size: 26, fill: C.redD, anchor: 'middle' })
   o += R(x + 1, y + 30, 28, 12, C.ink) + t((x + 15) * P, (y + 35) * P, 'SMOKING', { font: 'Pixel', size: 7, fill: '#fff', anchor: 'middle' }) + t((x + 15) * P, (y + 38.7) * P, 'THRILLS', { font: 'Pixel', size: 7, fill: '#fff', anchor: 'middle' })
@@ -436,8 +483,7 @@ function viceSticker(cx, cy) {
   let o = disc(cx + 1, cy + 1.5, 15, 'rgba(0,0,0,.38)') + disc(cx, cy, 15, C.line) + disc(cx, cy, 14, '#ffffff')
   const bands = ['#ffd166', '#ffb36b', '#ff8a7a', '#ff6b8b', '#d45bc4', '#8a4fff']
   for (let j = -12; j < 12; j++) { const half = Math.round(Math.sqrt(144 - (j + 0.5) ** 2)); o += R(cx - half, cy + j, 2 * half, 1, j > 3 && j % 3 === 0 ? '#2b1840' : bands[Math.min(5, Math.floor((j + 12) / 4))]) }
-  o += bitmap(PALM, cx - 3, cy - 7, { X: '#1b1028' })
-  return o + t(cx * P, (cy + 10) * P, 'VICE CITY', { font: 'Pixel', size: 6, fill: '#fff', anchor: 'middle' })
+  return o + bitmap(PALM, cx - 3, cy - 5, { X: '#1b1028' })
 }
 function toggleSticker(x, y) {
   let o = box(x, y, 30, 16, '#ffffff', '#ffffff', '#dddddd')
@@ -449,12 +495,10 @@ const DOG = ['..BB............BB..', '.BBBB..bbbbbb..BBBB.', 'BBBBBbbbbbbbbbbBBB
 const ARROW = ['X...........', 'XX..........', 'XyX.........', 'XyyX........', 'XyyyX.......', 'XyyyyX......', 'XyyyyyX.....', 'XyyyyyyX....', 'XyyyyyyyX...', 'XyyyyyyyyX..', 'XyyyyyXXXXX.', 'XyyXyyX.....', 'XyX.XyyX....', 'XX..XyyX....', 'X....XyyX...', '.....XyyX...', '......XX....']
 const pixelSticker = (rows, colors, x, y, s, d = 2) => dieCut(rows, x, y, d, s) + bitmap(rows, x, y, colors, s)
 
-// ── About: an open passport on its info page ─────────────────────────────────
+// ── About: an open passport on its data page ─────────────────────────────────
 const LEAF = ['....#....', '...###...', '#.#####.#', '#########', '.#######.', '..#####..', '.###.###.', '....#....', '....#....']
 let stampId = 0
-// A rubber passport stamp at (cx, cy) in screen px: ring, box, double box, oval or octagon, with
-// condensed text, a date and an airport code, inked unevenly and multiplied over what's beneath.
-function realStamp(cx, cy, deg, color, s, delay) {
+function realStamp(cx, cy, deg, color, s, op = 0.85) {
   const id = 'sp' + stampId++, sw = `fill="none" stroke="${color}"`
   let o = ''
   if (s.shape === 'circle') {
@@ -462,7 +506,7 @@ function realStamp(cx, cy, deg, color, s, delay) {
     o += `<circle cx="${cx}" cy="${cy}" r="${r}" ${sw} stroke-width="3"/><circle cx="${cx}" cy="${cy}" r="${r - 17}" ${sw} stroke-width="1.5"/>`
     o += `<path id="${id}t" d="M${cx - rt} ${cy}A${rt} ${rt} 0 0 1 ${cx + rt} ${cy}" fill="none"/><path id="${id}b" d="M${cx - rb} ${cy}A${rb} ${rb} 0 0 0 ${cx + rb} ${cy}" fill="none"/>`
     for (const [k, txt] of [['t', s.top], ['b', s.bottom]]) o += `<text font-family="VT" font-size="13" fill="${color}"><textPath href="#${id}${k}" startOffset="50%" text-anchor="middle">${esc(txt)}</textPath></text>`
-    o += t(cx, cy - 8, s.date, { size: 12, fill: color, anchor: 'middle' }) + t(cx, cy + 13, s.code, { size: 28, fill: color, anchor: 'middle' })
+    o += t(cx, cy - 8, s.date, { size: 12, fill: color, anchor: 'middle' }) + t(cx, cy + 13, s.code, { size: s.codeSize ?? 28, fill: color, anchor: 'middle' })
   } else {
     const lines = s.lines
     const w = Math.max(...lines.map(([q, n]) => q.length * n * 0.44)) + 24, lh = lines.map(([, n]) => n * 0.9 + 3), h = lh.reduce((a, b) => a + b, 0) + 14
@@ -476,8 +520,13 @@ function realStamp(cx, cy, deg, color, s, delay) {
     let ty = y0 + 7
     lines.forEach(([q, n], i) => { ty += lh[i]; o += t(cx, ty - 2, q, { size: n, fill: color, anchor: 'middle' }) })
   }
-  return `<g transform="rotate(${deg} ${cx} ${cy})"><g filter="url(#ink)" opacity=".85" style="mix-blend-mode:multiply" shape-rendering="auto">${o}</g></g>`
+  return `<g transform="rotate(${deg} ${cx} ${cy})"><g filter="url(#ink)" opacity="${op}" style="mix-blend-mode:multiply" shape-rendering="auto">${o}</g></g>`
 }
+// Older, fainter repeats of some stamps (by index into STAMPS), under the rest, so the page is full
+const RESTAMPS = [[9, 7, 16, 0], [38, 6, -18, 2], [83, 66, -24, 3], [10, 98, -8, 6], [27, 67, 32, 5], [86, 12, 21, 1], [56, 37, -30, 7], [61, 99, 15, 9], [4, 38, -27, 4], [86, 84, 9, 10], [40, 84, -35, 11]]
+// "Canada" in Baskerville, drawn at half-pixel scale, with the flag over its last "a"
+const WORDMARK = JSON.parse(readFileSync(`${HERE}data/canada-wordmark.json`, 'utf8'))
+const FLAG = ['RRWWWWWRR', 'RRWWRWWRR', 'RRWRRRWRR', 'RRWWRWWRR']
 const STAMPS = [
   [20, 24, -12, '#2f7a3e', { shape: 'circle', top: 'PAKISTAN', bottom: 'KARACHI · ARRIVAL', code: 'KHI', date: '14 AUG 19' }],
   [44, 31, -24, '#2b2b33', { shape: 'rect', lines: [['PAKISTAN', 12], ['LHE  →', 22], ['DEPARTED 27 DEC 18', 11]] }],
@@ -501,28 +550,33 @@ function passport(x, y) {
   LEAF.forEach((r, j) => [...r].forEach((v, i) => { if (v === '#') b += R(x + 24 + i * 4, y + 30 + j * 4, 4, 4, 'rgba(214,69,61,.06)') }))
   b += t((x + 6) * P, (y + 8) * P, 'VISAS', { font: 'Pixel', size: 8, fill: C.soft, extra: ' letter-spacing="2"' }) + t((rx - 6) * P, (y + 8) * P, '07', { font: 'Pixel', size: 8, fill: C.soft, anchor: 'end' })
   b += `<clipPath id="visa"><rect x="${(x + 1) * P}" y="${(y + 1) * P}" width="${(pw - 3) * P}" height="${(ph - 2) * P}"/></clipPath><g clip-path="url(#visa)">`
-  STAMPS.forEach(([ax, ay, deg, color, s], i) => { b += realStamp((x + ax) * P, (y + ay) * P, deg, color, s, 0.4 + i * 0.12) })
+  RESTAMPS.forEach(([ax, ay, deg, k]) => { const [, , , color, s] = STAMPS[k]; b += realStamp((x + ax) * P, (y + ay) * P, deg, color, s, 0.5) })
+  STAMPS.forEach(([ax, ay, deg, color, s]) => { b += realStamp((x + ax) * P, (y + ay) * P, deg, color, s) })
   b += `</g>`
-  // Info page
+  // Data page, laid out like a Canadian passport's: guilloche, a faint maple leaf, photo on the left,
+  // bilingual fields, the bearer's signature, a vertical number, and the machine-readable zone
   let g = ''
   for (let k = 0; k < 7; k++) {
     let d = ''
     for (let i = 0; i <= 40; i++) { const px = (rx + 3 + i * 2) * P, py = (y + 14 + k * 9 + Math.sin(i / 3 + k) * 2.2) * P; d += (i ? 'L' : 'M') + px.toFixed(1) + ' ' + py.toFixed(1) }
     g += `<path d="${d}" fill="none" stroke="#c7d8f0" stroke-width="1.5"/>`
   }
-  b += `<g shape-rendering="auto" opacity=".8">${g}</g>`
-  b += t((rx + 6) * P, (y + 8) * P, 'PASSPORT', { font: 'Pixel', size: 10, extra: ' letter-spacing="1"' }) + t((rx + pw - 6) * P, (y + 8) * P, 'CANADA', { font: 'Pixel', size: 8, fill: C.red, anchor: 'end', extra: ' letter-spacing="1"' })
-  b += t((rx + 6) * P, (y + 14) * P, 'TYPE P · CODE CAN · NO. MS2026', { size: 16, fill: C.soft })
-  const phx = rx + 6, phy = y + 18
-  b += box(phx, phy, 34, 30, '#cfe0f5', '#e6f0fb', '#b4c9e6', { shadow: false }) + bitmap(CAT, phx + 2, phy + 7, { '#': C.ink })
-  const field = (fx, fy, k, v) => t(fx * P, fy * P, k, { font: 'Pixel', size: 6, fill: C.soft, extra: ' letter-spacing="1"' }) + t(fx * P, fy * P + 21, v, { size: 22 })
-  b += field(rx + 44, y + 21, 'NAME', 'Maarib') + field(rx + 44, y + 31, 'BASE', 'Toronto, Canada') + field(rx + 44, y + 41, 'LEVEL', '12+ years')
-  b += field(rx + 6, y + 53, 'OCCUPATION', 'Product designer who builds') + field(rx + 6, y + 63, 'WORLDS', 'Fintech • DeFi')
-  // Signature, written on left to right
-  b += R(rx + 6, y + 81, 46, 1, C.rule)
-  b += t((rx + 8) * P, (y + 80) * P, 'Maarib', { font: 'Sig', size: 52, fill: '#1f3f8f', extra: ' shape-rendering="auto"' })
-  b += `<rect x="${(rx + 62) * P}" y="${(y + 69) * P}" width="${17 * P}" height="${13 * P}" fill="#bfe3ff"/>` + frame(rx + 62, y + 69, 17, 13, '#9fb8d8')
-  b += bitmap(LEAF, rx + 66, y + 71, { '#': 'rgba(255,255,255,.75)' })
+  b += `<g shape-rendering="auto" opacity=".8">${g}</g>` + bitmap(LEAF, rx + 42, y + 30, { '#': 'rgba(214,69,61,.07)' }, 4)
+  b += t((rx + 5) * P, (y + 7) * P, 'PASSPORT', { font: 'Pixel', size: 7, extra: ' letter-spacing="1"' }) + t((rx + 5) * P, (y + 11) * P, 'PASSEPORT', { font: 'Pixel', size: 6, fill: C.soft, extra: ' letter-spacing="1"' })
+  const ww = WORDMARK[0].length / 2, wx = rx + pw - 5 - ww, wy = y + 4
+  b += bitmap(WORDMARK, wx, wy, { '#': C.ink }, 0.5) + bitmap(FLAG, wx + (WORDMARK[0].length - 8) / 2, wy, { R: C.red, W: C.paperL }, 0.5)
+  const phx = rx + 4, phy = y + 16
+  b += box(phx, phy, 33, 36, '#cfe0f5', '#e6f0fb', '#b4c9e6', { shadow: false }) + bitmap(CAT, phx + 1.5, phy + 13, { '#': C.ink })
+  const fld = (fx, fy, l, v, size = 19) => t(fx * P, fy * P, l, { size: 12, fill: C.soft }) + t(fx * P, (fy + 4.8) * P, v, { size })
+  const fx = rx + 40
+  b += fld(fx, y + 18, 'Type', 'P') + fld(fx + 9, y + 18, 'Code/Code', 'CAN') + fld(fx + 24, y + 18, 'No./N°', 'MS2026', 17)
+  b += fld(fx, y + 27, 'Surname/Nom', 'MAARIB') + fld(fx, y + 36, 'Nationality/Nationalité', 'CANADIAN/CANADIENNE', 16)
+  b += fld(fx, y + 45, 'Level/Niveau', '12+ YEARS') + fld(fx + 21, y + 45, 'Base/Base', 'TORONTO')
+  b += fld(rx + 4, y + 58, 'Worlds/Mondes', 'FINTECH • DEFI') + fld(fx, y + 58, 'Issued/Délivré', '14 JAN/JAN 13')
+  b += fld(rx + 4, y + 66, 'Occupation/Profession', 'PRODUCT DESIGNER WHO BUILDS')
+  b += t((fx + 2) * P, (y + 74.5) * P, 'Signature/Signature', { size: 11, fill: C.soft })
+  b += t((fx + 3) * P, (y + 83) * P, 'Maarib', { font: 'Sig', size: 44, fill: '#1f3f8f', extra: ' shape-rendering="auto"' })
+  b += `<text transform="translate(${(rx + pw - 2) * P} ${(y + 20) * P}) rotate(90)" font-family="VT" font-size="13" fill="${C.soft}" letter-spacing="2">MS2026</text>`
   b += R(rx + 1, y + 85, pw - 2, ph - 87, '#efe3c6')
   const mrz = (s) => (s + '<'.repeat(42)).slice(0, 42)
   b += t((rx + 4) * P, (y + 89.6) * P, mrz('P<CANMAARIB<<PRODUCT<DESIGNER<WHO<BUILDS'), { size: 16 })
@@ -533,20 +587,20 @@ function about() {
   let o = tilt(-14, 10, 112, clipping(-8, 98, 44, 30, 'DESIGNER SHIPS AGAIN')) + tilt(6, 140, 10, clipping(116, -2, 54, 24, 'MARKETS RALLY'))
   o += tilt(14, 196, 16, keyboard(150, -8))
   o += tilt(-9, 52, 145, ticket(12, 128, 'SEAT 7')) + tilt(5, 70, 150, ticket(30, 136, 'SEAT 8'))
+  o += tilt(-12, 50, 176, houseKey(30, 176))
   o += tilt(7, 160, 146, boardingPass(122, 130))
-  o += passport(12, 26)
   o += tilt(-8, 6, 20, tape(-2, 22, 20, 6, 'rgba(236,220,170,.85)'))
+  o += passport(12, 26)
   o += mug(204, 82)
   o += tilt(72, 206, 136, pencil(184, 134, 44))
   o += sticky(5, 9, 'ABOUT', -6)
-  return { H: 172 * P, body: o, label: 'About, as an open Canadian passport. The visa page is crowded with entry and exit stamps: Pakistan (Karachi, Lahore), Canada (Toronto, Vancouver), the Dominican Republic, the United States (New York, Los Angeles), the United Kingdom, France, Mexico, Turkey and Dubai. The info page: photo of a black cat. Name: Maarib. Base: Toronto, Canada. Level: 12+ years. Occupation: product designer who builds. Worlds: Fintech, DeFi. Signed Maarib. Around it: part of a keyboard, a mug of coffee, two Metallica tickets, a boarding pass from YYZ to anywhere, and a pencil.' }
+  return { H: 172 * P, body: o, label: 'About, as an open Canadian passport. The visa page is covered edge to edge in entry and exit stamps: Pakistan (Karachi, Lahore), Canada (Toronto, Vancouver), the Dominican Republic, the United States (New York, Los Angeles), the United Kingdom, France, Mexico, Turkey and Dubai. The data page, under a Canada wordmark: photo of a black cat. Surname: Maarib. Nationality: Canadian. Level: 12+ years. Base: Toronto. Worlds: Fintech, DeFi. Occupation: product designer who builds. Signed Maarib. Around it: part of a keyboard, a mug of coffee, two Metallica tickets with a house key below them, a boarding pass from YYZ to anywhere, and a pencil.' }
 }
 
-// ── Teams: manila folders ────────────────────────────────────────────────────
 const TEAMS = [
-  ['WEB3', ['Glow Finance', 'Blueprint Finance', 'Coinbase', 'Credit Coop', 'Polymarket', 'XMTP', 'Suntory', 'Goldfinch', 'Megprime']],
-  ['COMMERCE', ['Shop Bonsai', 'Shopify']],
-  ['MEDIA', ['The Wall Street Journal', 'Decentralized Pictures', 'Complex Networks', 'Agnitus']],
+  ['FINTECH', ['Glow Finance', 'Megprime Pay', 'Concrete Finance', 'Credit Coop', 'Polymarket']],
+  ['WEB3', ['XMTP', 'Koop', 'The Wall Street Journal', 'DC Pictures']],
+  ['COMMERCE', ['Shop Bonsai', 'Suntory', 'Zala Hair', 'Complex']],
 ]
 function teams() {
   const fw = 64, fh = 92, top = 24
@@ -561,24 +615,23 @@ function teams() {
     const lh = 7 + list.length * 6
     f += box(x + 4, y + 24, fw - 8, lh, C.paperL, '#ffffff', C.paperD, { shadow: false })
     list.forEach((n, k) => { f += t((x + 7) * P, (y + 30 + k * 6) * P + 1, n, { size: n.length > 19 ? 17 : 20 }) })
-    f += t((x + fw - 4) * P, (y + fh - 4) * P, String(list.length).padStart(2, '0'), { font: 'Pixel', size: 16, fill: C.orangeD, anchor: 'end' })
     if (i === 0) f += paperclip(x + fw - 12, y + 14)
     if (i === 1) f += ring(x + 22, y + 82, 9)
     if (i === 2) f += binderClip(x + 40, y + 8)
     o += tilt([-3, 1.5, -2][i], x + fw / 2, y + fh / 2, `<g class="in" style="animation-delay:${i * 0.15}s">${f}</g>`)
   })
-  // On top of the folders: a stapler, a pack of cigarettes; below them, highlighters and a dog sticker
-  o += tilt(18, 104, 82, stapler(84, 76))
-  o += tilt(-20, 186, 122, cigarettes(172, 104)) + tilt(8, 112, 152, cigarette(98, 150))
+  // On top of the folders: a stapler, a pack of cigarettes; below them, highlighters, an ashtray and a dog sticker
+  o += tilt(18, 104, 92, stapler(84, 88))
+  o += tilt(-20, 186, 122, cigarettes(172, 104))
   o += tilt(-6, 40, 126, highlighter(10, 122, 56, '#f2ee4a', '#fbf78a', '#c9c42a'))
-  o += tilt(4, 100, 134, highlighter(70, 130, 56, '#ff6fa8', '#ff9cc4', '#d14a82'))
+  o += tilt(4, 96, 131, highlighter(66, 127, 56, '#ff6fa8', '#ff9cc4', '#d14a82'))
+  o += ashtray(112, 151) + tilt(-8, 101, 150, cigarette(89, 148))
   o += tilt(-10, 146, 140, pixelSticker(CAT, { '#': C.ink }, 131, 130, 1))
   o += paperBall(16, 146) + paperBall(28, 150)
   o += tilt(10, 200, 16, pixelSticker(DOG, { B: '#6b3f1f', b: '#c58a4a', w: '#fbf3e6', k: C.ink, p: '#f08a9a' }, 185, 3, 1.5))
-  o += sticky(146, 6, 'TEAMS', 5)
-  return { H: 160 * P, body: o, label: 'Teams, as three manila folders. Web3, 9: ' + TEAMS[0][1].join(', ') + '. Commerce, 2: ' + TEAMS[1][1].join(', ') + '. Media, 4: ' + TEAMS[2][1].join(', ') + '. On and around them, with a dog sticker by the label: a stapler, a pack of cigarettes, two highlighters, a cat sticker and balls of scrap paper.' }
+  o += sticky(146, 6, 'RANGE', 5)
+  return { H: 160 * P, body: o, label: 'Range, as three manila folders. Fintech: ' + TEAMS[0][1].join(', ') + '. Web3: ' + TEAMS[1][1].join(', ') + '. Commerce: ' + TEAMS[2][1].join(', ') + '. On and around them, with a dog sticker by the label: a stapler, a pack of cigarettes, two highlighters, a cigarette resting in a glass ashtray, a cat sticker and balls of scrap paper.' }
 }
-
 // ── Stack: pixel logo stickers on a cutting mat ──────────────────────────────
 function mat(x, y, w, h) {
   let o = box(x, y, w, h, '#2f7a4c', '#3d8e5c', '#24613c')
@@ -620,21 +673,20 @@ const PROJECTS = [
 ]
 const wrap = (s, n) => s.split(' ').reduce((ls, w) => { const l = ls.at(-1); if ((l + ' ' + w).trim().length > n) ls.push(w); else ls[ls.length - 1] = (l + ' ' + w).trim(); return ls }, [''])
 function projects() {
-  const x = 8, y = 22, w = 209, colW = 62, gap = 4, artH = 38, h = 44 + 2 * artH + 2
+  const x = 8, y = 22, w = 209, colW = 62, gap = 4, artH = 31, h = 44 + 2 * artH + 2
   let o = tilt(7, 186, 14, clipping(158, 2, 58, 24, 'TORONTO: SUNNY, 21°')) + tilt(9, 205, 120, receipt(186, 88)) + tilt(-10, 30, 150, note(4, 118, ['todo:', '- fewer meetings', '- more cats', '- ship it']))
   o += tilt(5, 104, 160, gameBox(72, 132))
   let n = box(x, y, w, h, C.paper, C.paperL, C.paperD)
   n += R(x + 6, y + 6, w - 12, 1, C.ink) + R(x + 6, y + 33, w - 12, 1, C.ink) + R(x + 6, y + 35, w - 12, 1, C.ink)
   n += t(W / 2, (y + 27) * P, 'SIDE PROJECTS', { font: 'Pixelify', size: 56, anchor: 'middle' })
-  n += t((x + 8) * P, (y + 11) * P, 'VOL. XII · TORONTO, CANADA', { font: 'Pixel', size: 8, fill: C.soft, extra: ' letter-spacing="1"' })
-  n += t((x + w - 8) * P, (y + 11) * P, 'THE MAARIB TIMES', { font: 'Pixel', size: 8, fill: C.soft, anchor: 'end', extra: ' letter-spacing="1"' })
-  PROJECTS.forEach(([name, desc, url], i) => {
+  n += t((x + 8) * P, (y + 11) * P, 'VOL. XII', { font: 'Pixel', size: 8, fill: C.soft, extra: ' letter-spacing="1"' })
+  n += t((x + w - 8) * P, (y + 11) * P, 'TORONTO, CANADA', { font: 'Pixel', size: 8, fill: C.soft, anchor: 'end', extra: ' letter-spacing="1"' })
+  PROJECTS.forEach(([name, desc], i) => {
     const cx = x + 7 + (i % 3) * (colW + gap + 1), cy = y + 42 + Math.floor(i / 3) * artH
     let a = R(cx, cy - 2, colW, 1, C.rule)
     if (i === 0) a += R(cx - 1, cy + 1, 27, 8, 'rgba(242,238,74,.7)')
     a += t(cx * P, (cy + 7) * P, name, { font: 'Pixelify', size: 30 })
     wrap(desc, 30).forEach((l, k) => { a += t(cx * P, (cy + 14 + k * 5) * P, l, { size: 19, fill: C.soft }) })
-    a += t(cx * P, (cy + 31) * P, '→ ' + url, { size: 17, fill: C.blueD }) + R(cx + 4, cy + 32, Math.min(colW - 4, url.length * 1.7), 0.5, C.blueD)
     if (i % 3 < 2) a += R(cx + colW + 2, cy - 2, 1, artH - 3, C.rule)
     n += a
   })
@@ -642,37 +694,64 @@ function projects() {
   n += tilt(-35, x + 4, y + 2, tape(x - 8, y - 1, 24, 6, 'rgba(236,220,170,.85)'))
   o += tilt(-1.2, x + w / 2, y + h / 2, `<g class="in">${n}</g>`)
   o += cd(172, 162) + tilt(-14, 46, 168, tapeDispenser(30, 160))
-  return { H: 182 * P, body: o, label: 'Side projects, as a newspaper front page headed Side Projects. ' + PROJECTS.map(([n, d, u]) => `${n}: ${d} ${u}`).join(' ') + ' A cat sticker is stuck on its corner; a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under it, next to a CD and a tape dispenser.' }
+  return { H: 182 * P, body: o, label: 'Side projects, as a newspaper front page headed Side Projects. ' + PROJECTS.map(([n, d]) => `${n}: ${d}`).join(' ') + ' A cat sticker is stuck on its corner; a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under it, next to a CD and a tape dispenser.' }
 }
 
 // ── Contact: envelope ────────────────────────────────────────────────────────
+// A maple leaf stamp: perforated edges, a red frame, a shaded leaf, CANADA and a P for the permanent rate
+const MAPLE = [
+  '.......D.......',
+  '......DRD......',
+  '..D..DRRRD..D..',
+  '..DD.DRLRD.DD..',
+  'D.DRDRRLRRDRD.D',
+  'DRRRRRRLRRRRRRD',
+  '.DRRLRRLRRLRRD.',
+  '..DRRLRLRLRRD..',
+  '.DRRRRLLLRRRRD.',
+  'DRRRRRRLRRRRRRD',
+  '..DDRRRLRRRDD..',
+  '....DDRLRDD....',
+  '......DLD......',
+  '.......D.......',
+  '.......D.......',
+]
+function mapleStamp(x, y) {
+  const w = 24, h = 28
+  let o = R(x + 1, y + 1.5, w, h, 'rgba(0,0,0,.3)') + R(x, y, w, h, '#fffaf0')
+  for (let i = 0; i < w; i += 2) o += R(x + i, y, 1, 1, C.orange) + R(x + i, y + h - 1, 1, 1, C.orange)
+  for (let j = 0; j < h; j += 2) o += R(x, y + j, 1, 1, C.orange) + R(x + w - 1, y + j, 1, 1, C.orange)
+  o += frame(x + 2, y + 2, w - 4, h - 4, C.red) + R(x + 3, y + 3, w - 6, h - 6, '#fbefe0')
+  o += bitmap(MAPLE, x + 4.5, y + 4, { D: C.redD, R: C.red, L: C.redL })
+  o += t((x + w / 2) * P, (y + 24) * P, 'CANADA', { font: 'Pixel', size: 5, fill: C.redD, anchor: 'middle' })
+  return o + disc(x + 18.5, y + 6.5, 2.5, C.redD) + t((x + 18.5) * P, (y + 7.6) * P, 'P', { font: 'Pixel', size: 5, fill: '#fff', anchor: 'middle' })
+}
+
 function contact() {
   const x = 54, y = 18, w = 120, h = 66
-  // Cables first, so they run under everything: the mouse's off the left edge and back,
-  // the tape player's under the terminal and back up to the headphones
+  // Cables first, so they run under everything: the tape player's off the left edge and back to the headphones
   let o = tilt(-6, 180, 80, clipping(146, 70, 52, 30, 'LETTERS TO THE EDITOR'))
-  o += cable([[22, 101], [22, 86], [-14, 104], [-12, 76]], '#e4e2dc') + cable([[-12, 76], [-10, 52], [14, 46], [30, 34]], '#e4e2dc')
-  o += cable([[52, 101], [48, 130], [36, 178], [90, 180]], '#2b2b33') + cable([[90, 180], [134, 182], [104, 150], [128, 136]], '#2b2b33')
+  o += cable([[18, 101], [14, 84], [-18, 96], [-12, 132]], '#2b2b33') + cable([[-12, 132], [-8, 176], [62, 178], [90, 150]], '#2b2b33')
   o += tilt(-8, 24, 40, `<g class="in" style="animation-delay:.2s">${polaroid(6, 16, 'the boss')}</g>`)
   o += tilt(10, 194, 50, `<g class="in" style="animation-delay:.3s">${gamepad(165, 36)}</g>`)
   let e = `<g class="in">` + box(x, y, w, h, C.orange, C.orangeL, C.orangeD)
   for (let i = 0; i < 30; i++) e += R(x + 1 + i * 2, y + 1 + i, 2, 1, C.orangeD) + R(x + w - 3 - i * 2, y + 1 + i, 2, 1, C.orangeD)
-  e += box(x + 24, y + 31, 72, 29, C.paperL, '#ffffff', C.paperD, { shadow: false })
-  e += t((x + 28) * P, (y + 39) * P, 'TO: whoever is reading', { size: 20, fill: C.soft })
-  e += t((x + 28) * P, (y + 47) * P, 'maaribs.com', { font: 'Pixelify', size: 30 })
-  e += t((x + 28) * P, (y + 54) * P, 'Toronto, Canada', { size: 18, fill: C.soft })
-  e += `</g>`
-  let st = box(x + w - 26, y + 4, 20, 22, '#fff', '#fff', C.paperD, { shadow: false }) + bitmap(LEAF, x + w - 20, y + 8, { '#': C.red })
-  e += `<g class="stamp" style="animation-delay:.7s">${st}</g>`
-  e += `<g opacity=".7" class="stamp" style="animation-delay:.95s"><circle cx="${(x + w - 36) * P}" cy="${(y + 18) * P}" r="${11 * P}" fill="none" stroke="${C.ink}" stroke-width="3"/>${t((x + w - 36) * P, (y + 17) * P, 'TORONTO', { font: 'Pixel', size: 7, anchor: 'middle' })}${t((x + w - 36) * P, (y + 21) * P, 'CA', { font: 'Pixel', size: 7, anchor: 'middle' })}</g>`
+  e += box(x + 18, y + 33, 84, 25, C.paperL, '#ffffff', C.paperD, { shadow: false })
+  e += t((x + 22) * P, (y + 40) * P, 'TO:', { size: 20, fill: C.soft })
+  e += t((x + 22) * P, (y + 51) * P, 'iammaarib@gmail.com', { font: 'Pixelify', size: 27 })
+  e += `</g>` + mapleStamp(x + w - 30, y + 4)
+  // Toronto postmark over the stamp's edge, with wavy cancellation lines running left
+  let wv = ''
+  for (let k = 0; k < 5; k++) { let d = ''; for (let i = 0; i <= 28; i++) d += (i ? 'L' : 'M') + ((x + w - 78 + i * 1.6) * P).toFixed(1) + ' ' + ((y + 9 + k * 3 + Math.sin(i / 2.2) * 0.8) * P).toFixed(1); wv += `<path d="${d}" fill="none" stroke="${C.ink}" stroke-width="2"/>` }
+  e += `<g filter="url(#ink)" opacity=".75" style="mix-blend-mode:multiply" shape-rendering="auto">${wv}</g>`
+  e += realStamp((x + w - 34) * P, (y + 15) * P, -8, C.ink, { shape: 'circle', r: 46, top: 'TORONTO ON', bottom: 'CANADA POST', code: 'M5V', date: '22 OCT 26', codeSize: 24 }, 0.8)
   o += tilt(4, x + w / 2, y + h / 2, e)
-  o += mouse(22, 118)
-  o += tilt(-5, 74, 120, walkman(46, 102))
-  o += tilt(-6, 148, 118, headphones(148, 116))
-  o += tilt(16, 202, 110, garmin(202, 110))
+  o += tilt(-5, 40, 120, walkman(12, 104))
+  o += tilt(-4, 122, 118, headphones(122, 116))
+  o += tilt(14, 200, 112, garmin(200, 112))
   o += tilt(-10, 196, 6, viceSticker(196, 8))
   o += sticky(98, 4, 'SAY HI', -4)
-  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to whoever is reading: maaribs.com, Toronto, Canada. Around it: a polaroid of the cat captioned the boss, a gamepad, a mouse, a tape player wired to a pair of headphones, a tactical watch and a Vice City sticker.' }
+  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to iammaarib@gmail.com. Around it: a polaroid of the cat captioned the boss, a gamepad, a tape player wired to a pair of black over-ear headphones, a tactical watch and a sunset palm sticker.' }
 }
 // Around the terminal at the end
 function terminalProps(top) {
