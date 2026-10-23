@@ -244,7 +244,9 @@ function barcodeLabel(x, y) {
   return o + t((x + 18) * P, (y + 14) * P, '0 42 MAARIB 7', { size: 14, anchor: 'middle' })
 }
 const CAT = JSON.parse(readFileSync(`${HERE}data/cat-pixels.json`, 'utf8'))
-const ME = JSON.parse(readFileSync(`${HERE}data/me-pixels.json`, 'utf8'))
+// The passport portrait: ink lines (me-pixels) coloured in by region (me-colour)
+const ME = JSON.parse(readFileSync(`${HERE}data/me-colour.json`, 'utf8'))
+const ME_PAL = { '#': '#1f1a1c', s: '#d9a07a', d: '#bd835f', h: '#e8b38a', n: '#7a4632', e: '#f4efe9', l: '#c47a6a', g: '#4a3a36' }
 function polaroid(x, y, caption) {
   let o = box(x, y, 36, 42, '#ffffff', '#ffffff', '#dcd8cf') + R(x + 3, y + 3, 30, 24, C.orangeL)
   o += bitmap(CAT, x + 3, y + 5, { '#': C.ink })
@@ -601,8 +603,8 @@ const STAMPS = [
   [44, 96, -6, '#2b2b33', { shape: 'circle', r: 40, top: 'CANADA', bottom: 'YVR · ARRIVAL', code: 'YVR', date: '30 SEP 21' }],
   [84, 99, 4, '#b8322c', { shape: 'rect', lines: [['UNITED STATES', 11], ['LAX', 22], ['DEPARTED', 11]] }],
 ]
-// A two-colour grid drawn as horizontal runs of ink, at s art px per cell
-const inkRuns = (rows, x, y, s) => rows.map((r, j) => [...r.matchAll(/#+/g)].map((m) => R(x + m.index * s, y + j * s, m[0].length * s, s, C.ink)).join('')).join('')
+// A lettered grid drawn as horizontal runs of each colour, at s art px per cell ('.' stays empty)
+const colourRuns = (rows, pal, x, y, s) => rows.map((r, j) => [...r.matchAll(/([^.])\1*/g)].map((m) => R(x + m.index * s, y + j * s, m[0].length * s, s, pal[m[1]])).join('')).join('')
 function passport(x, y) {
   const pw = 84, ph = 98, rx = x + pw
   let b = box(x - 3, y - 3, 2 * pw + 6, ph + 6, C.blueD, C.blue, '#1d3a7a')
@@ -628,7 +630,7 @@ function passport(x, y) {
   const ww = WORDMARK[0].length / 2, wx = rx + pw - 5 - ww, wy = y + 4
   b += bitmap(WORDMARK, wx, wy, { '#': C.ink }, 0.5) + bitmap(FLAG, wx + (WORDMARK[0].length - 8) / 2, wy, { R: C.red, W: C.paperL }, 0.5)
   const phx = rx + 4, phy = y + 16
-  b += box(phx, phy, 33, 36, '#cfe0f5', '#e6f0fb', '#b4c9e6', { shadow: false }) + inkRuns(ME, phx + 1, phy + 1, 0.5)
+  b += box(phx, phy, 33, 36, '#cfe0f5', '#e6f0fb', '#b4c9e6', { shadow: false }) + colourRuns(ME, ME_PAL, phx + 1, phy + 1, 0.5)
   const fld = (fx, fy, l, v, size = 19) => t(fx * P, fy * P, l, { size: 12, fill: C.soft }) + t(fx * P, (fy + 4.8) * P, v, { size })
   const fx = rx + 40
   b += fld(fx, y + 18, 'Type', 'P') + fld(fx + 9, y + 18, 'Code/Code', 'CAN') + fld(fx + 24, y + 18, 'No./N°', 'MS2026', 17)
@@ -654,7 +656,7 @@ function about() {
   o += tilt(-30, 198, 86, mug(198, 86)) + steam(198, 86)
   o += tilt(72, 206, 136, pencil(184, 134, 44))
   o += sticky(5, 9, 'ABOUT', -6)
-  return { H: 172 * P, body: o, label: 'About, as an open Canadian passport. The visa page is covered edge to edge in entry and exit stamps: Pakistan (Karachi, Lahore), Canada (Toronto, Vancouver), the Dominican Republic, the United States (New York, Los Angeles), the United Kingdom, France, Mexico, Turkey and Dubai. The data page, under a Canada wordmark: a pixel portrait of Maarib, dark swept-back hair and a full beard. Name: Maarib Shah. Occupation: product designer. Level: 12+ years. Base: Toronto. Worlds: Fintech, DeFi. Issued 17 Oct 2011. Signed Maarib Shah. Around it: part of a keyboard, a mug of coffee, two Metallica tickets with a house key below them, a boarding pass from YYZ to anywhere, and a pencil.' }
+  return { H: 172 * P, body: o, label: 'About, as an open Canadian passport. The visa page is covered edge to edge in entry and exit stamps: Pakistan (Karachi, Lahore), Canada (Toronto, Vancouver), the Dominican Republic, the United States (New York, Los Angeles), the United Kingdom, France, Mexico, Turkey and Dubai. The data page, under a Canada wordmark: a colour pixel portrait of Maarib, dark swept-back hair and a full beard. Name: Maarib Shah. Occupation: product designer. Level: 12+ years. Base: Toronto. Worlds: Fintech, DeFi. Issued 17 Oct 2011. Signed Maarib Shah. Around it: part of a keyboard, a mug of coffee, two Metallica tickets with a house key below them, a boarding pass from YYZ to anywhere, and a pencil.' }
 }
 
 const TEAMS = [

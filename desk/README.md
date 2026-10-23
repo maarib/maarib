@@ -25,7 +25,7 @@ You'll need Node 22 or later.
 | `pixel.mjs` | Drawing helpers shared by the three above |
 | `pixel-logos.mjs` | Shrinks the logos in `data/logos/` down to 18×18 pixel grids |
 | `pixel-wordmark.mjs` | Turns "Canada" into the pixel wordmark on the passport |
-| `data/` | The cat (as pixels and as text), my passport portrait (62×68, drawn at half-pixel size), the logos and their pixel versions, and the Canada wordmark |
+| `data/` | The cat (as pixels and as text), my passport portrait (62×68 at half-pixel size: ink lines in `me-pixels`, coloured in `me-colour`), the logos and their pixel versions, and the Canada wordmark |
 
 ## Adding a sticker
 
