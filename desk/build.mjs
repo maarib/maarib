@@ -76,6 +76,8 @@ const css = `${FONT_CSS}
   .ph-note { animation: phn 7s ease-out infinite; }
   @keyframes phn { 0%, 30% { opacity: 0; transform: translateY(-24px); } 38%, 100% { opacity: 1; transform: none; } }
   @keyframes ember { 50% { fill: #ffb347; } }
+  .eyes { opacity: 0; animation: eyes 4.6s steps(1) infinite; }
+  @keyframes eyes { 0%, 91% { opacity: 0; } 92%, 95% { opacity: 1; } 96%, 100% { opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }`
 const DEFS = `<filter id="aged"><feColorMatrix type="saturate" values="0.4"/><feComponentTransfer><feFuncR type="linear" slope=".85" intercept=".1"/><feFuncG type="linear" slope=".82" intercept=".08"/><feFuncB type="linear" slope=".75" intercept=".05"/></feComponentTransfer></filter>
 <filter id="ink" x="-15%" y="-15%" width="130%" height="130%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="5" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.6 2.15" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in"/></filter>
@@ -246,7 +248,9 @@ function barcodeLabel(x, y) {
 const CAT = JSON.parse(readFileSync(`${HERE}data/cat-pixels.json`, 'utf8'))
 // The passport portrait: ink lines (me-pixels) coloured in by region (me-colour)
 const ME = JSON.parse(readFileSync(`${HERE}data/me-colour.json`, 'utf8'))
-const ME_PAL = { '#': '#1f1a1c', s: '#e6b591', d: '#cc9a76', h: '#f2caa5', n: '#8c5a42', e: '#f4efe9', l: '#c47a6a', g: '#4a3a36' }
+const ME_PAL = { '#': '#1f1a1c', s: '#e6b591', d: '#cc9a76', h: '#f2caa5', n: '#8c5a42', e: '#f4efe9', l: '#c47a6a', g: '#4a3a36', B: '#3d302b', k: '#1a1416', M: '#5e4a3f', b: '#9a7058', f: '#7a6258' }
+// Closed eyes, laid over the open ones for a moment every few seconds
+const ME_BLINK = JSON.parse(readFileSync(`${HERE}data/me-blink.json`, 'utf8'))
 function polaroid(x, y, caption) {
   let o = box(x, y, 36, 42, '#ffffff', '#ffffff', '#dcd8cf') + R(x + 3, y + 3, 30, 24, C.orangeL)
   o += bitmap(CAT, x + 3, y + 5, { '#': C.ink })
@@ -630,7 +634,7 @@ function passport(x, y) {
   const ww = WORDMARK[0].length / 2, wx = rx + pw - 5 - ww, wy = y + 4
   b += bitmap(WORDMARK, wx, wy, { '#': C.ink }, 0.5) + bitmap(FLAG, wx + (WORDMARK[0].length - 8) / 2, wy, { R: C.red, W: C.paperL }, 0.5)
   const phx = rx + 4, phy = y + 16
-  b += box(phx, phy, 33, 36, '#cfe0f5', '#e6f0fb', '#b4c9e6', { shadow: false }) + colourRuns(ME, ME_PAL, phx + 1, phy + 1, 0.5)
+  b += box(phx, phy, 33, 36, '#cfe0f5', '#e6f0fb', '#b4c9e6', { shadow: false }) + colourRuns(ME, ME_PAL, phx + 1, phy + 1, 0.5) + `<g class="eyes">${colourRuns(ME_BLINK, ME_PAL, phx + 1, phy + 1, 0.5)}</g>`
   const fld = (fx, fy, l, v, size = 19) => t(fx * P, fy * P, l, { size: 12, fill: C.soft }) + t(fx * P, (fy + 4.8) * P, v, { size })
   const fx = rx + 40
   b += fld(fx, y + 18, 'Type', 'P') + fld(fx + 9, y + 18, 'Code/Code', 'CAN') + fld(fx + 24, y + 18, 'No./N°', 'MS2026', 17)
@@ -656,7 +660,7 @@ function about() {
   o += tilt(-30, 198, 86, mug(198, 86)) + steam(198, 86)
   o += tilt(72, 206, 136, pencil(184, 134, 44))
   o += sticky(5, 9, 'ABOUT', -6)
-  return { H: 172 * P, body: o, label: 'About, as an open Canadian passport. The visa page is covered edge to edge in entry and exit stamps: Pakistan (Karachi, Lahore), Canada (Toronto, Vancouver), the Dominican Republic, the United States (New York, Los Angeles), the United Kingdom, France, Mexico, Turkey and Dubai. The data page, under a Canada wordmark: a colour pixel portrait of Maarib, dark swept-back hair and a full beard. Name: Maarib Shah. Occupation: product designer. Level: 12+ years. Base: Toronto. Worlds: Fintech, DeFi. Issued 17 Oct 2011. Signed Maarib Shah. Around it: part of a keyboard, a mug of coffee, two Metallica tickets with a house key below them, a boarding pass from YYZ to anywhere, and a pencil.' }
+  return { H: 172 * P, body: o, label: 'About, as an open Canadian passport. The visa page is covered edge to edge in entry and exit stamps: Pakistan (Karachi, Lahore), Canada (Toronto, Vancouver), the Dominican Republic, the United States (New York, Los Angeles), the United Kingdom, France, Mexico, Turkey and Dubai. The data page, under a Canada wordmark: a colour pixel portrait of Maarib that blinks every few seconds: dark swept-back hair faded at the sides and a full textured beard. Name: Maarib Shah. Occupation: product designer. Level: 12+ years. Base: Toronto. Worlds: Fintech, DeFi. Issued 17 Oct 2011. Signed Maarib Shah. Around it: part of a keyboard, a mug of coffee, two Metallica tickets with a house key below them, a boarding pass from YYZ to anywhere, and a pencil.' }
 }
 
 const TEAMS = [
