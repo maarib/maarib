@@ -807,14 +807,14 @@ function contact() {
   o += tilt(4, x + w / 2, y + h / 2, e)
   o += tilt(-5, 40, 120, walkman(12, 104))
   o += tilt(-4, 124, 122, headphones(124, 120))
-  o += tilt(78, 202, 118, camera(178, 110)) + strap([[198, 92], [198, 82], [214, 78], [232, 86]]) + strap([[210, 145], [210, 154], [222, 158], [234, 150]])
+  o += tilt(-30, 206, 116, garmin(206, 116))
   o += tilt(8, 190, 18, `<g class="in" style="animation-delay:.3s">${gamepad(161, 6)}</g>`)
   o += sticky(98, 4, 'SAY HI', -4)
-  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a gamepad, a Magic 8 Ball, a tape player wired to a pair of black over-ear headphones and a retro camera with its strap.' }
+  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a gamepad, a Magic 8 Ball, a tape player wired to a pair of black over-ear headphones and a tactical watch with its straps open.' }
 }
 // Around the terminal at the end
 function terminalProps(top) {
-  let o = tilt(-10, 22, top + 28, viceSticker(22, top + 28)) + tilt(-30, 24, top + 82, garmin(24, top + 82)) + paperBall(36, top + 10)
+  let o = tilt(-10, 22, top + 28, viceSticker(22, top + 28)) + tilt(-78, 18, top + 82, camera(-7, top + 73)) + strap([[10, top + 108], [6, top + 114], [-2, top + 112], [-10, top + 118]]) + strap([[21, top + 55], [17, top + 48], [6, top + 50], [-10, top + 44]]) + paperBall(36, top + 10)
   o += plant(206, top + 30) + tilt(8, 205, top + 74, gtaSticker(190, top + 60))
   o += tilt(-12, 203, top + 104, pixelSticker(ARROW, { X: C.ink, y: '#f7e04a' }, 194, top + 90, 1.5))
   return o
@@ -832,7 +832,7 @@ const placed = pieces.map((p) => { const g = `<g transform="translate(0 ${y})">$
 const heroY = y
 const termProps = terminalProps(heroY / P)
 const H = y + HERO_H
-const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker, a tactical watch with its straps open, a plant, a cursor sticker and a GTA VI sticker, a terminal window types whoami, Product designer who builds, then ./startproject; a loading bar fills and a black cat pops up and blinks.'
+const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker, a retro camera with its strap, a plant, a cursor sticker and a GTA VI sticker, a terminal window types whoami, Product designer who builds, then ./startproject; a loading bar fills and a black cat pops up and blinks.'
 const page = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(label)}">
 <defs><style>${css}</style><clipPath id="desk"><rect width="${W}" height="${H}" rx="16"/></clipPath>${DEFS}</defs>
 <g clip-path="url(#desk)">
