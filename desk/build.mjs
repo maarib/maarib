@@ -245,10 +245,10 @@ function barcodeLabel(x, y) {
 const CAT = JSON.parse(readFileSync(`${HERE}data/cat-pixels.json`, 'utf8'))
 const ME = JSON.parse(readFileSync(`${HERE}data/me-pixels.json`, 'utf8'))
 function polaroid(x, y, caption) {
-  let o = box(x, y, 36, 48, '#ffffff', '#ffffff', '#dcd8cf') + R(x + 3, y + 3, 30, 29, C.orangeL)
-  o += bitmap(CAT, x + 3, y + 9, { '#': C.ink })
-  o += `<g class="blink" style="animation-duration:4s">${R(x + 10, y + 24, 1, 1, '#f2c230')}${R(x + 21, y + 24, 1, 1, '#f2c230')}</g>`
-  return o + t((x + 18) * P, (y + 42) * P, caption, { font: 'Pixelify', size: 18, fill: C.blueD, anchor: 'middle' })
+  let o = box(x, y, 36, 42, '#ffffff', '#ffffff', '#dcd8cf') + R(x + 3, y + 3, 30, 24, C.orangeL)
+  o += bitmap(CAT, x + 3, y + 5, { '#': C.ink })
+  o += `<g class="blink" style="animation-duration:4s">${R(x + 10, y + 20, 1, 1, '#f2c230')}${R(x + 21, y + 20, 1, 1, '#f2c230')}</g>`
+  return o + t((x + 18) * P, (y + 37) * P, caption, { font: 'Pixelify', size: 18, fill: C.blueD, anchor: 'middle' })
 }
 
 // ── Equipment, in the keyboard's style: light grey case, keycap buttons, dark mods, red accents ──
@@ -408,29 +408,25 @@ function headphones(cx, cy) {
   o += keycap(rcx + rx - 3, cy + ry + 2, 4, 7, 'mod') + R(cx - off - 1.5, cy + 2 * ry - 1, 3, 3, C.line)
   return o + `<g class="blink" style="animation-duration:2.4s">${R(rcx + rx - 4, cy + ry - 7, 2, 1, C.green)}</g>`
 }
-// A small tactical watch: olive straps on lugs, a ridged bezel with five pushers, a reflective face.
-// The tactical watch lying on its side with the strap buckled shut: from above, the strap is a closed
-// loop with its holes and buckle, and the watch head shows in profile at the top, pushers sticking out.
-function sideWatch(cx, cy) {
-  const olive = '#4b513f', oliveD = '#383d2f', oliveL = '#5d6450', rx = 16, ry = 10
-  const ring = (ax, ay, t, c, dx = 0, dy = 0) => {
-    let o = ''
-    for (let j = -ay; j < ay; j++) {
-      const yy = j + 0.5, a = Math.round(ax * Math.sqrt(Math.max(0, 1 - (yy / ay) ** 2))), bi = ay - t, b = Math.abs(yy) < bi ? Math.round((ax - t) * Math.sqrt(1 - (yy / bi) ** 2)) : 0
-      if (a <= 0) continue
-      o += b > 0 ? R(cx - a + dx, cy + j + dy, a - b, 1, c) + R(cx + b + dx, cy + j + dy, a - b, 1, c) : R(cx - a + dx, cy + j + dy, 2 * a, 1, c)
-    }
-    return o
+// A small tactical watch, face up: olive straps on lugs, a ridged bezel with five pushers, a reflective face.
+function garmin(cx, cy) {
+  const olive = '#4b513f', oliveD = '#383d2f', oliveL = '#5d6450', r = 13
+  let o = R(cx - 6, cy - 33, 12, 22, C.line) + R(cx - 4, cy - 35, 8, 2, C.line) + R(cx - 5, cy - 33, 10, 22, olive) + R(cx - 3, cy - 34, 6, 1, olive) + R(cx - 5, cy - 33, 1, 22, oliveL) + R(cx + 4, cy - 33, 1, 22, oliveD)
+  for (let i = 0; i < 4; i++) o += R(cx - 1, cy - 30 + i * 4, 2, 2, oliveD)
+  o += R(cx - 6, cy + 11, 12, 20, C.line) + R(cx - 5, cy + 11, 10, 20, olive) + R(cx - 5, cy + 11, 1, 20, oliveL) + R(cx + 4, cy + 11, 1, 20, oliveD)
+  o += R(cx - 6, cy + 20, 12, 3, oliveD) + R(cx - 6, cy + 20, 12, 1, oliveL)
+  o += frame(cx - 7, cy + 30, 14, 6, C.line) + frame(cx - 6, cy + 31, 12, 4, C.metal) + R(cx - 0.5, cy + 31, 1, 3, C.metalL)
+  o += R(cx - 7, cy - 14, 14, 4, C.line) + R(cx - 6, cy - 13, 12, 2, '#3f4346') + R(cx - 7, cy + 10, 14, 4, C.line) + R(cx - 6, cy + 11, 12, 2, '#3f4346')
+  // Pushers tucked under the case: only their ends poke out past the bezel
+  for (const [deg, red] of [[150, 0], [180, 0], [210, 0], [325, 1], [35, 0]]) {
+    const a = deg * Math.PI / 180, px = cx + Math.cos(a) * (r + 0.2), py = cy + Math.sin(a) * (r + 0.2)
+    o += R(px - 2, py - 1.5, 4, 3, C.line) + R(px - 1.2, py - 0.8, 2.4, 1.6, red ? C.red : C.metalD)
   }
-  let o = ring(rx + 1, ry + 1, 6, 'rgba(0,0,0,.35)', 1, 1.5) + ring(rx + 1, ry + 1, 6, C.line) + ring(rx, ry, 4, olive) + ring(rx, ry, 1, oliveL)
-  for (let i = -2; i <= 2; i++) o += R(cx + i * 4 - 0.5, cy + ry - 3, 1, 1, oliveD)
-  o += frame(cx - 4, cy + ry - 4, 8, 5, C.line) + frame(cx - 3, cy + ry - 3, 6, 3, C.metal) + R(cx - 6, cy + ry - 4, 2, 5, oliveD)
-  // Head in profile: lugs, the case side, a ridged bezel on top, crown and pushers on the sides
-  o += R(cx - 9, cy - ry - 1, 18, 4, '#2a2d30')
-  o += box(cx - 11, cy - ry - 6, 22, 7, '#3f4346', '#5a5f66', '#2a2d30') + R(cx - 10, cy - ry - 7, 20, 1, C.line)
-  for (let i = 0; i < 10; i++) o += R(cx - 9.5 + i * 2, cy - ry - 6.5, 1, 1, '#6d737e')
-  o += R(cx - 13, cy - ry - 4, 2, 2, C.metalD) + R(cx - 13, cy - ry - 1.5, 2, 1.5, C.metalD) + R(cx + 11, cy - ry - 4, 2, 2, C.red) + R(cx + 11, cy - ry - 1.5, 2, 1.5, C.metalD)
-  return o + R(cx - 7, cy - ry - 5, 14, 1, 'rgba(201,210,184,.6)')
+  o += disc(cx + 1, cy + 1.5, r, 'rgba(0,0,0,.35)') + disc(cx, cy, r, C.line) + disc(cx, cy, r - 1, '#3f4346')
+  for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6; o += R(cx + Math.round(Math.cos(a) * (r - 2)) - 0.5, cy + Math.round(Math.sin(a) * (r - 2)) - 0.5, 1, 1, k % 3 ? '#5a5f66' : '#d6dbe3') }
+  o += disc(cx, cy, r - 3, C.line) + disc(cx, cy, r - 4, '#c9d2b8') + R(cx - 6, cy - 6, 3, 1, 'rgba(255,255,255,.5)')
+  o += t(cx * P, (cy + 1.6) * P, '09:41', { font: 'Pixel', size: 8, fill: '#1e2418', anchor: 'middle' })
+  return o + t(cx * P, (cy + 6) * P, '8,412', { size: 12, fill: '#4a5340', anchor: 'middle' }) + R(cx - 4, cy - 6, 8, 1, C.red)
 }
 function plant(cx, cy) {
   let o = disc(cx + 1.5, cy + 2, 16, 'rgba(0,0,0,.35)') + disc(cx, cy, 16, C.line) + disc(cx, cy, 15, '#d98450') + disc(cx, cy, 13, '#b5612f') + disc(cx, cy, 12, '#4a2f1c')
@@ -524,7 +520,7 @@ function gtaSticker(x, y) {
 }
 // An iPhone lying face up. Its screen wakes, a "You got mail!" notification drops in, then it sleeps.
 function phone(x, y) {
-  const w = 28, h = 56
+  const w = 32, h = 56
   let o = R(x + 1.5, y + 2, w, h, 'rgba(0,0,0,.35)')
   // Rounded body: each row inset by the corner's curve
   const inset = (j, hh, r) => { const k = j < r ? j : j >= hh - r ? hh - 1 - j : -1; return k < 0 ? 0 : r - Math.round(Math.sqrt(r * r - (r - k - 0.5) ** 2)) }
@@ -658,7 +654,7 @@ function about() {
   o += tilt(7, 160, 146, boardingPass(122, 130))
   o += tilt(-8, 6, 20, tape(-2, 22, 20, 6, 'rgba(236,220,170,.85)'))
   o += passport(12, 26)
-  o += mug(198, 86)
+  o += tilt(-30, 198, 86, mug(198, 86))
   o += tilt(72, 206, 136, pencil(184, 134, 44))
   o += sticky(5, 9, 'ABOUT', -6)
   return { H: 172 * P, body: o, label: 'About, as an open Canadian passport. The visa page is covered edge to edge in entry and exit stamps: Pakistan (Karachi, Lahore), Canada (Toronto, Vancouver), the Dominican Republic, the United States (New York, Los Angeles), the United Kingdom, France, Mexico, Turkey and Dubai. The data page, under a Canada wordmark: a pixel portrait of Maarib, dark swept-back hair and a full beard. Name: Maarib Shah. Nationality: Pakistani/Canadian. Level: 12+ years. Base: Toronto. Worlds: Fintech, DeFi. Issued 17 Oct 2011. Occupation: product designer. Signed Maarib Shah. Around it: part of a keyboard, a mug of coffee, two Metallica tickets with a house key below them, a boarding pass from YYZ to anywhere, and a pencil.' }
@@ -709,7 +705,7 @@ function mat(x, y, w, h) {
 }
 const TOOLS = [
   ['figma'], ['sketch', { old: true, lift: true }], ['claude'], ['photoshop', { old: true, lift: true }], ['github', { round: true }], ['cursor'], ['framer'],
-  ['jira', { old: true }], ['react', { round: true }], ['illustrator', { old: true }], ['tailwind'], ['chatgpt', { round: true }], ['xd', { old: true, lift: true }], ['nextjs', { round: true }],
+  ['jira', { old: true }], ['react', { round: true }], ['illustrator', { old: true, lift: true }], ['tailwind'], ['chatgpt', { round: true }], ['xd', { old: true, lift: true }], ['nextjs', { round: true }],
   ['javascript'], ['confluence', { old: true, lift: true }], ['notion'], ['miro'], ['usertesting', { old: true }], ['vs-code'], ['maze'],
 ]
 function stack() {
@@ -741,7 +737,7 @@ const PROJECTS = [
 const wrap = (s, n) => s.split(' ').reduce((ls, w) => { const l = ls.at(-1); if ((l + ' ' + w).trim().length > n) ls.push(w); else ls[ls.length - 1] = (l + ' ' + w).trim(); return ls }, [''])
 function projects() {
   const x = 8, y = 22, w = 209, colW = 62, gap = 4, artH = 31, h = 44 + 2 * artH + 2
-  let o = tilt(7, 186, 14, clipping(152, 2, 68, 24, 'TORONTO: EXTREME COLD, -38°')) + tilt(9, 205, 120, receipt(186, 88)) + tilt(-10, 30, 150, note(4, 118, ['todo:', '- fewer meetings', '- more cats', '- ship it']))
+  let o = tilt(7, 186, 14, clipping(158, 2, 58, 24, 'EXTREME COLD, -38°')) + tilt(9, 205, 120, receipt(186, 88)) + tilt(-10, 30, 150, note(4, 118, ['todo:', '- fewer meetings', '- more cats', '- ship it']))
   o += tilt(5, 104, 160, gameBox(72, 132))
   let n = box(x, y, w, h, C.paper, C.paperL, C.paperD)
   n += R(x + 6, y + 6, w - 12, 1, C.ink) + R(x + 6, y + 33, w - 12, 1, C.ink) + R(x + 6, y + 35, w - 12, 1, C.ink)
@@ -799,7 +795,7 @@ function contact() {
   // Cables first, so they run under everything: the tape player's off the left edge and back to the headphones
   let o = tilt(-6, 180, 80, clipping(146, 70, 52, 30, 'LETTERS TO THE EDITOR'))
   o += cable([[18, 101], [14, 84], [-18, 96], [-12, 132]], '#2b2b33') + cable([[-12, 132], [-8, 180], [62, 182], [90, 164]], '#2b2b33')
-  o += tilt(-8, 26, 46, phone(12, 18))
+  o += tilt(-8, 26, 46, phone(8, 18))
   o += tilt(10, 194, 50, `<g class="in" style="animation-delay:.3s">${gamepad(165, 36)}</g>`)
   let e = `<g class="in">` + box(x, y, w, h, C.orange, C.orangeL, C.orangeD)
   for (let i = 0; i < 30; i++) e += R(x + 1 + i * 2, y + 1 + i, 2, 1, C.orangeD) + R(x + w - 3 - i * 2, y + 1 + i, 2, 1, C.orangeD)
@@ -816,13 +812,13 @@ function contact() {
   o += tilt(-5, 40, 120, walkman(12, 104))
   o += tilt(-4, 124, 122, headphones(124, 120))
   o += tilt(78, 202, 118, camera(178, 110)) + strap([[198, 92], [198, 82], [214, 78], [232, 86]]) + strap([[210, 145], [210, 154], [222, 158], [234, 150]])
-  o += tilt(-12, 200, 20, sideWatch(200, 20))
+  o += tilt(70, 204, 24, garmin(204, 24))
   o += sticky(98, 4, 'SAY HI', -4)
-  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a gamepad, a tape player wired to a pair of black over-ear headphones, a retro camera with its strap, and a tactical watch lying on its side, strap buckled.' }
+  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a gamepad, a tape player wired to a pair of black over-ear headphones, a retro camera with its strap, and a tactical watch with its straps open.' }
 }
 // Around the terminal at the end
 function terminalProps(top) {
-  let o = tilt(-10, 22, top + 104, viceSticker(22, top + 104)) + magicBall(22, top + 28) + paperBall(36, top + 10)
+  let o = tilt(-10, 22, top + 28, viceSticker(22, top + 28)) + magicBall(22, top + 104) + paperBall(36, top + 10)
   o += plant(206, top + 30) + tilt(8, 205, top + 74, gtaSticker(190, top + 60)) + tilt(-12, 203, top + 104, toggleSticker(188, top + 96))
   o += tilt(-6, 16, top + 60, pixelSticker(ARROW, { X: C.ink, y: '#f7e04a' }, 8, top + 46, 1.5))
   return o
