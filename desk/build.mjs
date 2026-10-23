@@ -814,7 +814,7 @@ function contact() {
 }
 // Around the terminal at the end
 function terminalProps(top) {
-  let o = tilt(-10, 22, top + 28, viceSticker(22, top + 28)) + tilt(-30, 24, top + 100, garmin(24, top + 100)) + paperBall(36, top + 10)
+  let o = tilt(-10, 22, top + 28, viceSticker(22, top + 28)) + tilt(-30, 24, top + 82, garmin(24, top + 82)) + paperBall(36, top + 10)
   o += plant(206, top + 30) + tilt(8, 205, top + 74, gtaSticker(190, top + 60))
   o += tilt(-12, 203, top + 104, pixelSticker(ARROW, { X: C.ink, y: '#f7e04a' }, 194, top + 90, 1.5))
   return o
