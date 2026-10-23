@@ -1,4 +1,4 @@
-// The intro above the desk: "Hi, I'm Maarib" in a serif, then "[product] designer at large" in
+// The intro above the desk: "Hi, I'm Maarib" in a serif, then "[product] designer at heart" in
 // mono word blocks, where the first word flips letter by letter through a list of others.
 // Transparent, so there's a light and a dark version for GitHub's two themes.
 // Run: npm run build  (writes ../assets/intro-light.svg and intro-dark.svg)
@@ -72,13 +72,13 @@ function draw(C) {
   frames.forEach((f) => { slide += `${pct(f.t0)}%{transform:translateX(${((f.word.length - WORDS[0].length) * CW).toFixed(1)}px)}` })
   slide += '}'
   const restX = X0 + chipW(WORDS[0].length) + GAP
-  const rest = chip(restX, 'designer', C.grey) + chip(restX + chipW(8) + GAP, 'at', C.dark) + chip(restX + chipW(8) + chipW(2) + 2 * GAP, 'large', C.grey)
+  const rest = chip(restX, 'designer', C.grey) + chip(restX + chipW(8) + GAP, 'at', C.dark) + chip(restX + chipW(8) + chipW(2) + 2 * GAP, 'heart', C.grey)
   const css = face('Instrument', `${FONTS}/instrument-serif/files/instrument-serif-latin-400-normal.woff2`) + face('Instrument', `${FONTS}/instrument-serif/files/instrument-serif-latin-400-italic.woff2`, 'italic') + face('Mono', `${FONTS}/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2`) +
     `.mono{font-family:Mono;font-size:${FS}px;fill:${C.ink};white-space:pre}.hi{font-family:Instrument;font-size:60px;fill:${C.hi}}` +
     `.rest{animation:rest ${T.toFixed(2)}s step-end infinite}${slide}${kf}` +
     `@media (prefers-reduced-motion: reduce){*{animation:none!important}.first{opacity:1!important}}`
   // The first frame also stands alone, for reduced motion
-  const label = `Hi, I'm Maarib. ${WORDS[0]} designer at large; the first word keeps flipping: ${WORDS.join(', ')}.`
+  const label = `Hi, I'm Maarib. ${WORDS[0]} designer at heart; the first word keeps flipping: ${WORDS.join(', ')}.`
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(label)}">
 <defs><style>${css}</style></defs>
 <text x="${X0}" y="52" class="hi">Hi, I'm <tspan font-style="italic">Maarib</tspan></text>

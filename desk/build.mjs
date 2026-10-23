@@ -141,12 +141,13 @@ function tape(x, y, w, h, c) {
   return o
 }
 // Coffee mug from above: white rim, coffee with a crema heart, handle off to the side.
+// Steam rising straight up from a cup, whichever way the cup is turned
+const steam = (cx, cy) => [0, 1, 2].map((i) => `<g class="steam" style="animation-delay:${i}s">${R(cx - 6 + i * 5, cy - 8 + i * 2, 1, 5, 'rgba(255,255,255,.45)')}${R(cx - 6 + i * 5, cy - 12 + i * 2, 1, 4, 'rgba(255,255,255,.35)')}</g>`).join('')
 function mug(cx, cy, r = 18) {
   let o = box(cx + r - 5, cy - 5, 13, 10, C.white, '#ffffff', '#d8d4cc') + R(cx + r - 2, cy - 3, 5, 6, '#d8d4cc')
   o += disc(cx + 1.5, cy + 2, r, 'rgba(0,0,0,.35)') + disc(cx, cy, r, C.line) + disc(cx, cy, r - 1, C.white) + disc(cx, cy, r - 3, '#d8d4cc') + disc(cx, cy, r - 4, '#4a2a14') + disc(cx - 1, cy - 1, r - 6, '#5c3519')
   o += bitmap(['.##.##.', '#######', '#######', '.#####.', '..###..', '...#...'], cx - 5.25, cy - 4, { '#': '#d9a877' }, 1.5)
   o += R(cx - r + 3, cy - 6, 1, 5, 'rgba(255,255,255,.8)')
-  o += [0, 1, 2].map((i) => `<g class="steam" style="animation-delay:${i}s">${R(cx - 6 + i * 5, cy - 8 + i * 2, 1, 5, 'rgba(255,255,255,.45)')}${R(cx - 5 + i * 5, cy - 12 + i * 2, 1, 4, 'rgba(255,255,255,.35)')}</g>`).join('')
   return o
 }
 function keyboard(x, y) {
@@ -452,7 +453,7 @@ function cigarettes(x, y) {
   }
   o += R(x + 1, y + 8, w - 2, 2, '#efebe2') + R(x + 8, y + 8, 8, 1, '#ffffff') + R(x + 1, y + 10, w - 2, 1, C.red) + R(x + 1, y + 11, w - 2, 0.5, '#d9b44a')
   o += t((x + w / 2) * P, (y + 20) * P, 'KINGS', { font: 'Pixelify', size: 21, fill: C.redD, anchor: 'middle' })
-  o += R(x + 1, y + 24, w - 2, 10, C.ink) + t((x + w / 2) * P, (y + 28.4) * P, 'SMOKING', { font: 'Pixel', size: 5.5, fill: '#fff', anchor: 'middle' }) + t((x + w / 2) * P, (y + 31.6) * P, 'KILLS?', { font: 'Pixel', size: 5.5, fill: '#fff', anchor: 'middle' })
+  ;[1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1].forEach((b, i) => { if (b) o += R(x + 2.5 + i, y + 25, i % 4 ? 0.75 : 1, 8, C.ink) })
   return o
 }
 // A scrap of newsprint, mostly tucked under something, with a headline and columns of grey type.
@@ -546,11 +547,6 @@ function viceSticker(cx, cy) {
   const bands = ['#ffd166', '#ffb36b', '#ff8a7a', '#ff6b8b', '#d45bc4', '#8a4fff']
   for (let j = -12; j < 12; j++) { const half = Math.round(Math.sqrt(144 - (j + 0.5) ** 2)); o += R(cx - half, cy + j, 2 * half, 1, j > 3 && j % 3 === 0 ? '#2b1840' : bands[Math.min(5, Math.floor((j + 12) / 4))]) }
   return o + bitmap(PALM, cx - 3, cy - 5, { X: '#1b1028' })
-}
-function toggleSticker(x, y) {
-  let o = box(x, y, 30, 16, '#ffffff', '#ffffff', '#dddddd')
-  o += ell(x + 15, y + 8, 11, 5, '#d6d6d2') + disc(x + 20, y + 8, 4, C.green) + disc(x + 10, y + 8, 5, C.line) + disc(x + 10, y + 8, 4, '#ffffff')
-  return o
 }
 
 const DOG = ['..BB............BB..', '.BBBB..bbbbbb..BBBB.', 'BBBBBbbbbbbbbbbBBBBB', 'BBBBbbbbbbbbbbbbBBBB', 'BBBbbbbbbbbbbbbbbBBB', 'BBBbbkkbbbbbbkkbbBBB', 'BBBbbkkbbbbbbkkbbBBB', 'BBbbbbbbbbbbbbbbbbBB', 'BBbbbbbwwwwwwbbbbbBB', '.Bbbbbwwwkkwwwbbbbb.', '.Bbbbwwwwkkwwwwbbbb.', '..bbbwwwwwwwwwwbbb..', '..bbbbwwwkkwwwbbbb..', '...bbbbwwppwwbbbb...', '....bbbbbppbbbbb....', '......bbbbbbbb......']
@@ -654,7 +650,7 @@ function about() {
   o += tilt(7, 160, 146, boardingPass(122, 130))
   o += tilt(-8, 6, 20, tape(-2, 22, 20, 6, 'rgba(236,220,170,.85)'))
   o += passport(12, 26)
-  o += tilt(-30, 198, 86, mug(198, 86))
+  o += tilt(-30, 198, 86, mug(198, 86)) + steam(198, 86)
   o += tilt(72, 206, 136, pencil(184, 134, 44))
   o += sticky(5, 9, 'ABOUT', -6)
   return { H: 172 * P, body: o, label: 'About, as an open Canadian passport. The visa page is covered edge to edge in entry and exit stamps: Pakistan (Karachi, Lahore), Canada (Toronto, Vancouver), the Dominican Republic, the United States (New York, Los Angeles), the United Kingdom, France, Mexico, Turkey and Dubai. The data page, under a Canada wordmark: a pixel portrait of Maarib, dark swept-back hair and a full beard. Name: Maarib Shah. Nationality: Pakistani/Canadian. Level: 12+ years. Base: Toronto. Worlds: Fintech, DeFi. Issued 17 Oct 2011. Occupation: product designer. Signed Maarib Shah. Around it: part of a keyboard, a mug of coffee, two Metallica tickets with a house key below them, a boarding pass from YYZ to anywhere, and a pencil.' }
@@ -738,7 +734,6 @@ const wrap = (s, n) => s.split(' ').reduce((ls, w) => { const l = ls.at(-1); if 
 function projects() {
   const x = 8, y = 22, w = 209, colW = 62, gap = 4, artH = 31, h = 44 + 2 * artH + 2
   let o = tilt(7, 186, 14, clipping(158, 2, 58, 24, 'EXTREME COLD, -38°')) + tilt(9, 205, 120, receipt(186, 88)) + tilt(-10, 30, 150, note(4, 118, ['todo:', '- fewer meetings', '- more cats', '- ship it']))
-  o += tilt(5, 104, 160, gameBox(72, 132))
   let n = box(x, y, w, h, C.paper, C.paperL, C.paperD)
   n += R(x + 6, y + 6, w - 12, 1, C.ink) + R(x + 6, y + 33, w - 12, 1, C.ink) + R(x + 6, y + 35, w - 12, 1, C.ink)
   n += t(W / 2, (y + 27) * P, 'SIDE PROJECTS', { font: 'Pixelify', size: 56, anchor: 'middle' })
@@ -756,7 +751,7 @@ function projects() {
   n += ring(x + w - 6, y + h - 3, 11)
   n += tilt(-35, x + 4, y + 2, tape(x - 8, y - 1, 24, 6, 'rgba(236,220,170,.85)'))
   o += tilt(-1.2, x + w / 2, y + h / 2, `<g class="in">${n}</g>`)
-  o += tilt(-7, 68, 12, polaroid(50, -11, 'the boss'))
+  o += tilt(-7, 68, 12, polaroid(50, -11, 'the boss')) + tilt(5, 104, 150, gameBox(72, 124))
   o += cd(168, 160) + tilt(-14, 46, 168, tapeDispenser(30, 160))
   return { H: 182 * P, body: o, label: 'Side projects, as a newspaper front page headed Side Projects. ' + PROJECTS.map(([n, d]) => `${n}: ${d}`).join(' ') + ' A polaroid of the cat, captioned the boss, lies on its top edge; a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under it, next to a CD and a tape dispenser.' }
 }
@@ -796,7 +791,7 @@ function contact() {
   let o = tilt(-6, 180, 80, clipping(146, 70, 52, 30, 'LETTERS TO THE EDITOR'))
   o += cable([[18, 101], [14, 84], [-18, 96], [-12, 132]], '#2b2b33') + cable([[-12, 132], [-8, 180], [62, 182], [90, 164]], '#2b2b33')
   o += tilt(-8, 26, 46, phone(8, 18))
-  o += tilt(10, 194, 50, `<g class="in" style="animation-delay:.3s">${gamepad(165, 36)}</g>`)
+  o += magicBall(194, 50)
   let e = `<g class="in">` + box(x, y, w, h, C.orange, C.orangeL, C.orangeD)
   for (let i = 0; i < 30; i++) e += R(x + 1 + i * 2, y + 1 + i, 2, 1, C.orangeD) + R(x + w - 3 - i * 2, y + 1 + i, 2, 1, C.orangeD)
   e += box(x + 18, y + 33, 84, 25, C.paperL, '#ffffff', C.paperD, { shadow: false })
@@ -812,15 +807,15 @@ function contact() {
   o += tilt(-5, 40, 120, walkman(12, 104))
   o += tilt(-4, 124, 122, headphones(124, 120))
   o += tilt(78, 202, 118, camera(178, 110)) + strap([[198, 92], [198, 82], [214, 78], [232, 86]]) + strap([[210, 145], [210, 154], [222, 158], [234, 150]])
-  o += tilt(70, 204, 24, garmin(204, 24))
+  o += tilt(8, 190, 18, `<g class="in" style="animation-delay:.3s">${gamepad(161, 6)}</g>`)
   o += sticky(98, 4, 'SAY HI', -4)
-  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a gamepad, a tape player wired to a pair of black over-ear headphones, a retro camera with its strap, and a tactical watch with its straps open.' }
+  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a gamepad, a Magic 8 Ball, a tape player wired to a pair of black over-ear headphones and a retro camera with its strap.' }
 }
 // Around the terminal at the end
 function terminalProps(top) {
-  let o = tilt(-10, 22, top + 28, viceSticker(22, top + 28)) + magicBall(22, top + 104) + paperBall(36, top + 10)
-  o += plant(206, top + 30) + tilt(8, 205, top + 74, gtaSticker(190, top + 60)) + tilt(-12, 203, top + 104, toggleSticker(188, top + 96))
-  o += tilt(-6, 16, top + 60, pixelSticker(ARROW, { X: C.ink, y: '#f7e04a' }, 8, top + 46, 1.5))
+  let o = tilt(-10, 22, top + 28, viceSticker(22, top + 28)) + tilt(70, 22, top + 104, garmin(22, top + 104)) + paperBall(36, top + 10)
+  o += plant(206, top + 30) + tilt(8, 205, top + 74, gtaSticker(190, top + 60))
+  o += tilt(-12, 203, top + 104, pixelSticker(ARROW, { X: C.ink, y: '#f7e04a' }, 194, top + 90, 1.5))
   return o
 }
 
@@ -836,7 +831,7 @@ const placed = pieces.map((p) => { const g = `<g transform="translate(0 ${y})">$
 const heroY = y
 const termProps = terminalProps(heroY / P)
 const H = y + HERO_H
-const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker, a Magic 8 Ball, a plant and a few stickers, a terminal window types whoami, Product designer who builds, then ./startproject; a loading bar fills and a black cat pops up and blinks.'
+const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker, a tactical watch with its straps open, a plant, a cursor sticker and a GTA VI sticker, a terminal window types whoami, Product designer who builds, then ./startproject; a loading bar fills and a black cat pops up and blinks.'
 const page = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(label)}">
 <defs><style>${css}</style><clipPath id="desk"><rect width="${W}" height="${H}" rx="16"/></clipPath>${DEFS}</defs>
 <g clip-path="url(#desk)">
