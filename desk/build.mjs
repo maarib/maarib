@@ -260,6 +260,8 @@ function keycap(x, y, w, h, kind = 'key', label = '', size = 6) {
   return box(x, y, w, h, f, l, d, { shadow: false }) + (label ? t((x + w / 2) * P, (y + h / 2 + size / 8 - 0.2) * P, label, { font: 'Pixel', size, fill: ink, anchor: 'middle' }) : '')
 }
 // Pixel cable along a cubic curve.
+// A headphone wire: two pixels thick.
+const wire = (pts, c = '#2b2b33') => cable(pts, c) + cable(pts.map(([px, py]) => [px + 1, py]), c) + cable(pts.map(([px, py]) => [px, py + 1]), c)
 // A thick strap along a cubic curve: three pixels wide, with a lighter centre line.
 function strap(pts, c = '#7a3a24', cl = '#9a5034') {
   let o = ''
@@ -630,10 +632,9 @@ function passport(x, y) {
   const fld = (fx, fy, l, v, size = 19) => t(fx * P, fy * P, l, { size: 12, fill: C.soft }) + t(fx * P, (fy + 4.8) * P, v, { size })
   const fx = rx + 40
   b += fld(fx, y + 18, 'Type', 'P') + fld(fx + 9, y + 18, 'Code/Code', 'CAN') + fld(fx + 24, y + 18, 'No./N°', 'MS2026', 17)
-  b += fld(fx, y + 27, 'Name/Nom', 'MAARIB SHAH') + fld(fx, y + 36, 'Nationality/Nationalité', 'PAKISTANI/CANADIAN', 16)
+  b += fld(fx, y + 27, 'Name/Nom', 'MAARIB SHAH') + fld(fx, y + 36, 'Occupation/Profession', 'PRODUCT DESIGNER', 17)
   b += fld(fx, y + 45, 'Level/Niveau', '12+ YEARS') + fld(fx + 21, y + 45, 'Base/Base', 'TORONTO')
   b += fld(rx + 4, y + 58, 'Worlds/Mondes', 'FINTECH • DEFI') + fld(fx, y + 58, 'Issued/Délivré', '17 OCT 2011')
-  b += fld(rx + 4, y + 66, 'Occupation/Profession', 'PRODUCT DESIGNER')
   b += t((rx + 4) * P, (y + 74.5) * P, 'Signature/Signature', { size: 11, fill: C.soft })
   b += t((rx + 5) * P, (y + 83) * P, 'Maarib Shah', { font: 'Sig', size: 44, fill: '#1f3f8f', extra: ' shape-rendering="auto"' })
   b += R(rx + 1, y + 85, pw - 2, ph - 87, '#efe3c6')
@@ -653,7 +654,7 @@ function about() {
   o += tilt(-30, 198, 86, mug(198, 86)) + steam(198, 86)
   o += tilt(72, 206, 136, pencil(184, 134, 44))
   o += sticky(5, 9, 'ABOUT', -6)
-  return { H: 172 * P, body: o, label: 'About, as an open Canadian passport. The visa page is covered edge to edge in entry and exit stamps: Pakistan (Karachi, Lahore), Canada (Toronto, Vancouver), the Dominican Republic, the United States (New York, Los Angeles), the United Kingdom, France, Mexico, Turkey and Dubai. The data page, under a Canada wordmark: a pixel portrait of Maarib, dark swept-back hair and a full beard. Name: Maarib Shah. Nationality: Pakistani/Canadian. Level: 12+ years. Base: Toronto. Worlds: Fintech, DeFi. Issued 17 Oct 2011. Occupation: product designer. Signed Maarib Shah. Around it: part of a keyboard, a mug of coffee, two Metallica tickets with a house key below them, a boarding pass from YYZ to anywhere, and a pencil.' }
+  return { H: 172 * P, body: o, label: 'About, as an open Canadian passport. The visa page is covered edge to edge in entry and exit stamps: Pakistan (Karachi, Lahore), Canada (Toronto, Vancouver), the Dominican Republic, the United States (New York, Los Angeles), the United Kingdom, France, Mexico, Turkey and Dubai. The data page, under a Canada wordmark: a pixel portrait of Maarib, dark swept-back hair and a full beard. Name: Maarib Shah. Occupation: product designer. Level: 12+ years. Base: Toronto. Worlds: Fintech, DeFi. Issued 17 Oct 2011. Signed Maarib Shah. Around it: part of a keyboard, a mug of coffee, two Metallica tickets with a house key below them, a boarding pass from YYZ to anywhere, and a pencil.' }
 }
 
 const TEAMS = [
@@ -789,7 +790,7 @@ function contact() {
   const x = 54, y = 18, w = 120, h = 66
   // Cables first, so they run under everything: the tape player's off the left edge and back to the headphones
   let o = tilt(-6, 180, 80, clipping(146, 70, 52, 30, 'LETTERS TO THE EDITOR'))
-  o += cable([[18, 101], [14, 84], [-18, 96], [-12, 132]], '#2b2b33') + cable([[-12, 132], [-8, 180], [62, 182], [90, 164]], '#2b2b33')
+  o += wire([[19, 104], [14, 84], [-18, 96], [-12, 132]]) + wire([[-12, 132], [-8, 180], [64, 182], [93, 161]])
   o += tilt(-8, 26, 46, phone(8, 18))
   o += magicBall(194, 50)
   let e = `<g class="in">` + box(x, y, w, h, C.orange, C.orangeL, C.orangeD)
@@ -813,7 +814,7 @@ function contact() {
 }
 // Around the terminal at the end
 function terminalProps(top) {
-  let o = tilt(-10, 22, top + 28, viceSticker(22, top + 28)) + tilt(70, 22, top + 104, garmin(22, top + 104)) + paperBall(36, top + 10)
+  let o = tilt(-10, 22, top + 28, viceSticker(22, top + 28)) + tilt(20, 22, top + 100, garmin(22, top + 100)) + paperBall(36, top + 10)
   o += plant(206, top + 30) + tilt(8, 205, top + 74, gtaSticker(190, top + 60))
   o += tilt(-12, 203, top + 104, pixelSticker(ARROW, { X: C.ink, y: '#f7e04a' }, 194, top + 90, 1.5))
   return o

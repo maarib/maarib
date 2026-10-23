@@ -26,21 +26,12 @@ const out = await p.evaluate(async ({ svgs, N }) => {
   return res
 }, { svgs, N })
 await b.close()
-// Miro's thin strokes blur into a blob at 18px, so it's drawn by hand: three slanted strokes on its yellow tile
-const HAND = { miro: { rows: miroRows(), colors: { Y: '#ffdd33', K: '#222222' } } }
-function miroRows() {
-  const rows = []
-  for (let y = 0; y < N; y++) {
-    let r = ''
-    for (let x = 0; x < N; x++) {
-      const corner = x + y < 2 || N - 1 - x + y < 2 || x + N - 1 - y < 2 || 2 * N - 2 - x - y < 2
-      const ink = y >= 4 && y <= 14 && [0, 1, 2].some((k) => { const cx = 3 + 4 * k + (14 - y) * 0.3; return x >= cx - 0.5 && x < cx + 1.5 })
-      r += corner ? '.' : ink ? 'K' : 'Y'
-    }
-    rows.push(r)
-  }
-  return rows
-}
-for (const [n, { rows, colors }] of Object.entries(HAND)) out[n] = rows.map((r) => [...r].map((c) => colors[c] ?? null))
+// Two-colour logos snap every pixel to the nearer of their two colours, so thin strokes stay crisp
+const TWO_TONE = { miro: ['#ffcf00', '#07003b', 0.35] }
+const rgb = (c) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16))
+const dist = (a, b) => a.reduce((s, v, i) => s + (v - b[i]) ** 2, 0)
+// The third value biases the snap: a pixel goes to the second colour only if it's that much closer to it
+for (const [n, [a, b, bias = 1]] of Object.entries(TWO_TONE)) out[n] = out[n].map((row) => row.map((c) => c && (dist(rgb(c), rgb(b)) < bias * dist(rgb(c), rgb(a)) ? b : a)))
+// pair.length
 writeFileSync(`${HERE}data/pixel-logos.json`, JSON.stringify(out))
 console.log('wrote', Object.keys(out).length, 'logos')
