@@ -594,6 +594,8 @@ const STAMPS = [
   [44, 96, -6, '#2b2b33', { shape: 'circle', r: 40, top: 'CANADA', bottom: 'YVR · ARRIVAL', code: 'YVR', date: '30 SEP 21' }],
   [84, 99, 4, '#b8322c', { shape: 'rect', lines: [['UNITED STATES', 11], ['LAX', 22], ['DEPARTED', 11]] }],
 ]
+// A two-colour grid drawn as horizontal runs of ink, at s art px per cell
+const inkRuns = (rows, x, y, s) => rows.map((r, j) => [...r.matchAll(/#+/g)].map((m) => R(x + m.index * s, y + j * s, m[0].length * s, s, C.ink)).join('')).join('')
 function passport(x, y) {
   const pw = 84, ph = 98, rx = x + pw
   let b = box(x - 3, y - 3, 2 * pw + 6, ph + 6, C.blueD, C.blue, '#1d3a7a')
@@ -619,7 +621,7 @@ function passport(x, y) {
   const ww = WORDMARK[0].length / 2, wx = rx + pw - 5 - ww, wy = y + 4
   b += bitmap(WORDMARK, wx, wy, { '#': C.ink }, 0.5) + bitmap(FLAG, wx + (WORDMARK[0].length - 8) / 2, wy, { R: C.red, W: C.paperL }, 0.5)
   const phx = rx + 4, phy = y + 16
-  b += box(phx, phy, 33, 36, '#cfe0f5', '#e6f0fb', '#b4c9e6', { shadow: false }) + bitmap(ME, phx + 1, phy + 1, { '#': C.ink })
+  b += box(phx, phy, 33, 36, '#cfe0f5', '#e6f0fb', '#b4c9e6', { shadow: false }) + inkRuns(ME, phx + 1, phy + 1, 0.5)
   const fld = (fx, fy, l, v, size = 19) => t(fx * P, fy * P, l, { size: 12, fill: C.soft }) + t(fx * P, (fy + 4.8) * P, v, { size })
   const fx = rx + 40
   b += fld(fx, y + 18, 'Type', 'P') + fld(fx + 9, y + 18, 'Code/Code', 'CAN') + fld(fx + 24, y + 18, 'No./N°', 'MS2026', 17)
