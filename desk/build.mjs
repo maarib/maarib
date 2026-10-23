@@ -246,7 +246,7 @@ function barcodeLabel(x, y) {
 const CAT = JSON.parse(readFileSync(`${HERE}data/cat-pixels.json`, 'utf8'))
 // The passport portrait: ink lines (me-pixels) coloured in by region (me-colour)
 const ME = JSON.parse(readFileSync(`${HERE}data/me-colour.json`, 'utf8'))
-const ME_PAL = { '#': '#1f1a1c', s: '#d9a07a', d: '#bd835f', h: '#e8b38a', n: '#7a4632', e: '#f4efe9', l: '#c47a6a', g: '#4a3a36' }
+const ME_PAL = { '#': '#1f1a1c', s: '#e6b591', d: '#cc9a76', h: '#f2caa5', n: '#8c5a42', e: '#f4efe9', l: '#c47a6a', g: '#4a3a36' }
 function polaroid(x, y, caption) {
   let o = box(x, y, 36, 42, '#ffffff', '#ffffff', '#dcd8cf') + R(x + 3, y + 3, 30, 24, C.orangeL)
   o += bitmap(CAT, x + 3, y + 5, { '#': C.ink })
