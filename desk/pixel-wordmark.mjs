@@ -22,8 +22,15 @@ const rows = await p.evaluate(async ({ font, SIZE, THRESH }) => {
   return t.map((r) => r.slice(x0, x1 + 1))
 }, { font, SIZE, THRESH })
 await b.close()
-// At that threshold the n's foot serif just touches the first a; one pixel apart keeps them separate
-const SPLIT = SIZE === 14 && THRESH === 62 ? [[11, 29]] : []
-for (const [y, x] of SPLIT) rows[y] = rows[y].slice(0, x) + '.' + rows[y].slice(x + 1)
+// Hand fixes for this size and threshold: the n's foot serif just touches the first a (one pixel apart
+// keeps them separate), the n's right leg comes out a pixel thicker than its left, and the first a is the
+// cleanest, so it stands in for the other two
+if (SIZE === 14 && THRESH === 62) {
+  const set = (y, x, c) => { rows[y] = rows[y].slice(0, x) + c + rows[y].slice(x + 1) }
+  set(11, 29, '.')
+  for (let y = 7; y <= 10; y++) set(y, 28, '.')
+  const A = rows.slice(4, 12).map((r) => r.slice(12, 19))
+  for (const x0 of [30, 48]) for (let j = 0; j < 8; j++) rows[4 + j] = rows[4 + j].slice(0, x0) + A[j] + '.' + rows[4 + j].slice(x0 + 8)
+}
 writeFileSync(`${HERE}data/canada-wordmark.json`, JSON.stringify(rows))
 console.log(rows.join('\n'))
