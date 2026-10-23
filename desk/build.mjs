@@ -168,7 +168,7 @@ function keyboard(x, y) {
 function boardingPass(x, y) {
   let o = box(x, y, 74, 30, C.paperL, '#ffffff', C.paperD) + R(x + 1, y + 1, 72, 6, C.blue)
   o += t((x + 4) * P, (y + 5.6) * P, 'BOARDING PASS', { font: 'Pixel', size: 7, fill: '#fff', extra: ' letter-spacing="1"' })
-  o += t((x + 4) * P, (y + 16) * P, 'YYZ → ANYWHERE', { font: 'Pixelify', size: 22 })
+  o += t((x + 4) * P, (y + 16) * P, 'YYZ', { font: 'Pixel', size: 12 }) + R(x + 14, y + 13.25, 5, 1, C.ink) + R(x + 18, y + 12.25, 1, 3, C.ink) + R(x + 19, y + 13, 1, 1.5, C.ink) + t((x + 21.5) * P, (y + 16) * P, 'ANYWHERE', { font: 'Pixel', size: 12 })
   o += t((x + 4) * P, (y + 24) * P, 'GATE UX · ON TIME', { size: 17, fill: C.soft })
   for (let i = 0; i < 10; i++) o += R(x + 52, y + 8 + i * 2, 1, 1, C.rule)
   o += t((x + 55) * P, (y + 13) * P, 'SEAT', { font: 'Pixel', size: 6, fill: C.soft }) + t((x + 55) * P, (y + 22) * P, '12A', { font: 'Pixelify', size: 26, fill: C.redD })
@@ -259,6 +259,12 @@ function keycap(x, y, w, h, kind = 'key', label = '', size = 6) {
   return box(x, y, w, h, f, l, d, { shadow: false }) + (label ? t((x + w / 2) * P, (y + h / 2 + size / 8 - 0.2) * P, label, { font: 'Pixel', size, fill: ink, anchor: 'middle' }) : '')
 }
 // Pixel cable along a cubic curve.
+// A thick strap along a cubic curve: three pixels wide, with a lighter centre line.
+function strap(pts, c = '#7a3a24', cl = '#9a5034') {
+  let o = ''
+  for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) o += cable(pts.map(([px, py]) => [px + dx, py + dy]), c)
+  return o + cable(pts, cl)
+}
 function cable(pts, c = '#f1f0ec') {
   const [a, b, c2, d] = pts, seen = new Set()
   let o = ''
@@ -334,7 +340,7 @@ function camera(x, y) {
   o += R(x + 36, y + 9, 10, 2, C.line) + R(x + 37, y + 9.5, 8, 1, s[0])
   // Strap lugs, with the strap trailing off the edge
   o += R(x - 2, y + 4, 3, 4, C.line) + R(x + 49, y + 4, 3, 4, C.line) + R(x - 1, y + 5, 2, 2, C.metal) + R(x + 50, y + 5, 2, 2, C.metal)
-  return o + cable([[x - 2, y + 6], [x - 12, y + 6], [x - 20, y + 12], [x - 34, y + 8]], '#7a3a24') + cable([[x + 52, y + 6], [x + 62, y + 6], [x + 70, y + 12], [x + 84, y + 8]], '#7a3a24')
+  return o
 }
 // A Magic 8 Ball from above: glossy black sphere, the white 8 on top.
 function magicBall(cx, cy, r = 14) {
@@ -360,7 +366,7 @@ function gamepad(x, y) {
   // A pad from above: rounded ends, shoulder buttons, D-pad, four face keys, select and start
   const body = (dx, dy, c, g) => disc(x + 13 + dx, y + 13 + dy, 13 + g, c) + disc(x + 45 + dx, y + 13 + dy, 13 + g, c) + R(x + 13 + dx, y - g + dy, 32, 26 + 2 * g, c)
   let o = cable([[x + 29, y], [x + 29, y - 14], [x + 52, y - 8], [x + 92, y - 40]], '#3a3d45')
-  o += keycap(x + 3, y - 3, 17, 6, 'mod') + keycap(x + 38, y - 3, 17, 6, 'mod')
+  o += keycap(x + 5, y - 1, 15, 6, 'mod') + keycap(x + 38, y - 1, 15, 6, 'mod')
   o += body(1, 1.5, 'rgba(0,0,0,.35)', 1) + body(0, 0, C.line, 1) + body(0, 0, CASE[0], 0) + R(x + 13, y + 1, 32, 1, CASE[1]) + R(x + 13, y + 24, 32, 1, CASE[2])
   o += disc(x + 13, y + 13, 9, '#bcc1c9') + disc(x + 45, y + 13, 10, '#bcc1c9')
   o += keycap(x + 6, y + 11, 15, 5, 'mod') + keycap(x + 11, y + 6, 5, 15, 'mod') + R(x + 12, y + 12, 3, 3, '#4a4e5a')
@@ -403,24 +409,28 @@ function headphones(cx, cy) {
   return o + `<g class="blink" style="animation-duration:2.4s">${R(rcx + rx - 4, cy + ry - 7, 2, 1, C.green)}</g>`
 }
 // A small tactical watch: olive straps on lugs, a ridged bezel with five pushers, a reflective face.
-function garmin(cx, cy) {
-  const olive = '#4b513f', oliveD = '#383d2f', oliveL = '#5d6450', r = 13
-  let o = R(cx - 6, cy - 33, 12, 22, C.line) + R(cx - 4, cy - 35, 8, 2, C.line) + R(cx - 5, cy - 33, 10, 22, olive) + R(cx - 3, cy - 34, 6, 1, olive) + R(cx - 5, cy - 33, 1, 22, oliveL) + R(cx + 4, cy - 33, 1, 22, oliveD)
-  for (let i = 0; i < 4; i++) o += R(cx - 1, cy - 30 + i * 4, 2, 2, oliveD)
-  o += R(cx - 6, cy + 11, 12, 20, C.line) + R(cx - 5, cy + 11, 10, 20, olive) + R(cx - 5, cy + 11, 1, 20, oliveL) + R(cx + 4, cy + 11, 1, 20, oliveD)
-  o += R(cx - 6, cy + 20, 12, 3, oliveD) + R(cx - 6, cy + 20, 12, 1, oliveL)
-  o += frame(cx - 7, cy + 30, 14, 6, C.line) + frame(cx - 6, cy + 31, 12, 4, C.metal) + R(cx - 0.5, cy + 31, 1, 3, C.metalL)
-  o += R(cx - 7, cy - 14, 14, 4, C.line) + R(cx - 6, cy - 13, 12, 2, '#3f4346') + R(cx - 7, cy + 10, 14, 4, C.line) + R(cx - 6, cy + 11, 12, 2, '#3f4346')
-  // Pushers tucked under the case: only their ends poke out past the bezel
-  for (const [deg, red] of [[150, 0], [180, 0], [210, 0], [325, 1], [35, 0]]) {
-    const a = deg * Math.PI / 180, px = cx + Math.cos(a) * (r + 0.2), py = cy + Math.sin(a) * (r + 0.2)
-    o += R(px - 2, py - 1.5, 4, 3, C.line) + R(px - 1.2, py - 0.8, 2.4, 1.6, red ? C.red : C.metalD)
+// The tactical watch lying on its side with the strap buckled shut: from above, the strap is a closed
+// loop with its holes and buckle, and the watch head shows in profile at the top, pushers sticking out.
+function sideWatch(cx, cy) {
+  const olive = '#4b513f', oliveD = '#383d2f', oliveL = '#5d6450', rx = 16, ry = 10
+  const ring = (ax, ay, t, c, dx = 0, dy = 0) => {
+    let o = ''
+    for (let j = -ay; j < ay; j++) {
+      const yy = j + 0.5, a = Math.round(ax * Math.sqrt(Math.max(0, 1 - (yy / ay) ** 2))), bi = ay - t, b = Math.abs(yy) < bi ? Math.round((ax - t) * Math.sqrt(1 - (yy / bi) ** 2)) : 0
+      if (a <= 0) continue
+      o += b > 0 ? R(cx - a + dx, cy + j + dy, a - b, 1, c) + R(cx + b + dx, cy + j + dy, a - b, 1, c) : R(cx - a + dx, cy + j + dy, 2 * a, 1, c)
+    }
+    return o
   }
-  o += disc(cx + 1, cy + 1.5, r, 'rgba(0,0,0,.35)') + disc(cx, cy, r, C.line) + disc(cx, cy, r - 1, '#3f4346')
-  for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6; o += R(cx + Math.round(Math.cos(a) * (r - 2)) - 0.5, cy + Math.round(Math.sin(a) * (r - 2)) - 0.5, 1, 1, k % 3 ? '#5a5f66' : '#d6dbe3') }
-  o += disc(cx, cy, r - 3, C.line) + disc(cx, cy, r - 4, '#c9d2b8') + R(cx - 6, cy - 6, 3, 1, 'rgba(255,255,255,.5)')
-  o += t(cx * P, (cy + 1.6) * P, '09:41', { font: 'Pixel', size: 8, fill: '#1e2418', anchor: 'middle' })
-  return o + t(cx * P, (cy + 6) * P, '8,412', { size: 12, fill: '#4a5340', anchor: 'middle' }) + R(cx - 4, cy - 6, 8, 1, C.red)
+  let o = ring(rx + 1, ry + 1, 6, 'rgba(0,0,0,.35)', 1, 1.5) + ring(rx + 1, ry + 1, 6, C.line) + ring(rx, ry, 4, olive) + ring(rx, ry, 1, oliveL)
+  for (let i = -2; i <= 2; i++) o += R(cx + i * 4 - 0.5, cy + ry - 3, 1, 1, oliveD)
+  o += frame(cx - 4, cy + ry - 4, 8, 5, C.line) + frame(cx - 3, cy + ry - 3, 6, 3, C.metal) + R(cx - 6, cy + ry - 4, 2, 5, oliveD)
+  // Head in profile: lugs, the case side, a ridged bezel on top, crown and pushers on the sides
+  o += R(cx - 9, cy - ry - 1, 18, 4, '#2a2d30')
+  o += box(cx - 11, cy - ry - 6, 22, 7, '#3f4346', '#5a5f66', '#2a2d30') + R(cx - 10, cy - ry - 7, 20, 1, C.line)
+  for (let i = 0; i < 10; i++) o += R(cx - 9.5 + i * 2, cy - ry - 6.5, 1, 1, '#6d737e')
+  o += R(cx - 13, cy - ry - 4, 2, 2, C.metalD) + R(cx - 13, cy - ry - 1.5, 2, 1.5, C.metalD) + R(cx + 11, cy - ry - 4, 2, 2, C.red) + R(cx + 11, cy - ry - 1.5, 2, 1.5, C.metalD)
+  return o + R(cx - 7, cy - ry - 5, 14, 1, 'rgba(201,210,184,.6)')
 }
 function plant(cx, cy) {
   let o = disc(cx + 1.5, cy + 2, 16, 'rgba(0,0,0,.35)') + disc(cx, cy, 16, C.line) + disc(cx, cy, 15, '#d98450') + disc(cx, cy, 13, '#b5612f') + disc(cx, cy, 12, '#4a2f1c')
@@ -446,7 +456,7 @@ function cigarettes(x, y) {
   }
   o += R(x + 1, y + 8, w - 2, 2, '#efebe2') + R(x + 8, y + 8, 8, 1, '#ffffff') + R(x + 1, y + 10, w - 2, 1, C.red) + R(x + 1, y + 11, w - 2, 0.5, '#d9b44a')
   o += t((x + w / 2) * P, (y + 20) * P, 'KINGS', { font: 'Pixelify', size: 21, fill: C.redD, anchor: 'middle' })
-  o += R(x + 1, y + 24, w - 2, 10, C.ink) + t((x + w / 2) * P, (y + 28.4) * P, 'SMOKING', { font: 'Pixel', size: 5.5, fill: '#fff', anchor: 'middle' }) + t((x + w / 2) * P, (y + 31.6) * P, 'THRILLS', { font: 'Pixel', size: 5.5, fill: '#fff', anchor: 'middle' })
+  o += R(x + 1, y + 24, w - 2, 10, C.ink) + t((x + w / 2) * P, (y + 28.4) * P, 'SMOKING', { font: 'Pixel', size: 5.5, fill: '#fff', anchor: 'middle' }) + t((x + w / 2) * P, (y + 31.6) * P, 'KILLS?', { font: 'Pixel', size: 5.5, fill: '#fff', anchor: 'middle' })
   return o
 }
 // A scrap of newsprint, mostly tucked under something, with a headline and columns of grey type.
@@ -516,8 +526,11 @@ function gtaSticker(x, y) {
 function phone(x, y) {
   const w = 28, h = 56
   let o = R(x + 1.5, y + 2, w, h, 'rgba(0,0,0,.35)')
-  o += R(x + 2, y, w - 4, h, C.line) + R(x + 1, y + 1, w - 2, h - 2, C.line) + R(x, y + 2, w, h - 4, C.line)
-  o += R(x + 2, y + 1, w - 4, h - 2, '#3a3d45') + R(x + 1, y + 2, w - 2, h - 4, '#3a3d45') + R(x + 2, y + 2, w - 4, h - 4, '#0b0b0e')
+  // Rounded body: each row inset by the corner's curve
+  const inset = (j, hh, r) => { const k = j < r ? j : j >= hh - r ? hh - 1 - j : -1; return k < 0 ? 0 : r - Math.round(Math.sqrt(r * r - (r - k - 0.5) ** 2)) }
+  for (let j = 0; j < h; j++) { const a = inset(j, h, 5); o += R(x + a, y + j, w - 2 * a, 1, C.line) }
+  for (let j = 0; j < h - 2; j++) { const a = inset(j, h - 2, 4); o += R(x + 1 + a, y + 1 + j, w - 2 - 2 * a, 1, '#3a3d45') }
+  for (let j = 0; j < h - 4; j++) { const a = inset(j, h - 4, 3); o += R(x + 2 + a, y + 2 + j, w - 4 - 2 * a, 1, '#0b0b0e') }
   const sx = x + 3, sy = y + 3, sw = w - 6, sh = h - 6
   let scr = ''
   const bands = ['#2a1f5c', '#3b2a7a', '#5a3594', '#7a3fa0', '#a64a9c', '#d0628f', '#ef8a7a']
@@ -728,8 +741,8 @@ const PROJECTS = [
 const wrap = (s, n) => s.split(' ').reduce((ls, w) => { const l = ls.at(-1); if ((l + ' ' + w).trim().length > n) ls.push(w); else ls[ls.length - 1] = (l + ' ' + w).trim(); return ls }, [''])
 function projects() {
   const x = 8, y = 22, w = 209, colW = 62, gap = 4, artH = 31, h = 44 + 2 * artH + 2
-  let o = tilt(7, 186, 14, clipping(158, 2, 58, 24, 'TORONTO: SUNNY, 21°')) + tilt(9, 205, 120, receipt(186, 88)) + tilt(-10, 30, 150, note(4, 118, ['todo:', '- fewer meetings', '- more cats', '- ship it']))
-  o += tilt(5, 104, 160, gameBox(72, 132)) + tilt(-7, 68, 4, polaroid(50, -20, 'the boss'))
+  let o = tilt(7, 186, 14, clipping(152, 2, 68, 24, 'TORONTO: EXTREME COLD, -38°')) + tilt(9, 205, 120, receipt(186, 88)) + tilt(-10, 30, 150, note(4, 118, ['todo:', '- fewer meetings', '- more cats', '- ship it']))
+  o += tilt(5, 104, 160, gameBox(72, 132))
   let n = box(x, y, w, h, C.paper, C.paperL, C.paperD)
   n += R(x + 6, y + 6, w - 12, 1, C.ink) + R(x + 6, y + 33, w - 12, 1, C.ink) + R(x + 6, y + 35, w - 12, 1, C.ink)
   n += t(W / 2, (y + 27) * P, 'SIDE PROJECTS', { font: 'Pixelify', size: 56, anchor: 'middle' })
@@ -747,8 +760,9 @@ function projects() {
   n += ring(x + w - 6, y + h - 3, 11)
   n += tilt(-35, x + 4, y + 2, tape(x - 8, y - 1, 24, 6, 'rgba(236,220,170,.85)'))
   o += tilt(-1.2, x + w / 2, y + h / 2, `<g class="in">${n}</g>`)
+  o += tilt(-7, 68, 12, polaroid(50, -11, 'the boss'))
   o += cd(168, 160) + tilt(-14, 46, 168, tapeDispenser(30, 160))
-  return { H: 182 * P, body: o, label: 'Side projects, as a newspaper front page headed Side Projects. ' + PROJECTS.map(([n, d]) => `${n}: ${d}`).join(' ') + ' A polaroid of the cat, captioned the boss, is tucked under its top edge; a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under it, next to a CD and a tape dispenser.' }
+  return { H: 182 * P, body: o, label: 'Side projects, as a newspaper front page headed Side Projects. ' + PROJECTS.map(([n, d]) => `${n}: ${d}`).join(' ') + ' A polaroid of the cat, captioned the boss, lies on its top edge; a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under it, next to a CD and a tape dispenser.' }
 }
 
 // ── Contact: envelope ────────────────────────────────────────────────────────
@@ -801,14 +815,14 @@ function contact() {
   o += tilt(4, x + w / 2, y + h / 2, e)
   o += tilt(-5, 40, 120, walkman(12, 104))
   o += tilt(-4, 124, 122, headphones(124, 120))
-  o += tilt(78, 202, 118, camera(178, 110))
-  o += tilt(-10, 196, 6, viceSticker(196, 8))
+  o += tilt(78, 202, 118, camera(178, 110)) + strap([[198, 92], [198, 82], [214, 78], [232, 86]]) + strap([[210, 145], [210, 154], [222, 158], [234, 150]])
+  o += tilt(-12, 200, 20, sideWatch(200, 20))
   o += sticky(98, 4, 'SAY HI', -4)
-  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a gamepad, a tape player wired to a pair of black over-ear headphones, a retro camera and a sunset palm sticker.' }
+  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a gamepad, a tape player wired to a pair of black over-ear headphones, a retro camera with its strap, and a tactical watch lying on its side, strap buckled.' }
 }
 // Around the terminal at the end
 function terminalProps(top) {
-  let o = tilt(70, 22, top + 104, garmin(22, top + 104)) + magicBall(22, top + 28) + paperBall(36, top + 10)
+  let o = tilt(-10, 22, top + 104, viceSticker(22, top + 104)) + magicBall(22, top + 28) + paperBall(36, top + 10)
   o += plant(206, top + 30) + tilt(8, 205, top + 74, gtaSticker(190, top + 60)) + tilt(-12, 203, top + 104, toggleSticker(188, top + 96))
   o += tilt(-6, 16, top + 60, pixelSticker(ARROW, { X: C.ink, y: '#f7e04a' }, 8, top + 46, 1.5))
   return o
@@ -826,7 +840,7 @@ const placed = pieces.map((p) => { const g = `<g transform="translate(0 ${y})">$
 const heroY = y
 const termProps = terminalProps(heroY / P)
 const H = y + HERO_H
-const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a tactical watch, a Magic 8 Ball, a plant and a few stickers, a terminal window types whoami, Product designer who builds, then ./startproject; a loading bar fills and a black cat pops up and blinks.'
+const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker, a Magic 8 Ball, a plant and a few stickers, a terminal window types whoami, Product designer who builds, then ./startproject; a loading bar fills and a black cat pops up and blinks.'
 const page = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(label)}">
 <defs><style>${css}</style><clipPath id="desk"><rect width="${W}" height="${H}" rx="16"/></clipPath>${DEFS}</defs>
 <g clip-path="url(#desk)">
