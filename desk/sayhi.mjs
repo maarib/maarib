@@ -8,9 +8,9 @@ const OUT = `${HERE}../assets/sayhi`
 mkdirSync(OUT, { recursive: true })
 
 export const CONTACTS = [
-  { slug: 'website', label: 'WEBSITE', sub: 'maaribs.com', face: ['#f7e08a', '#fdf0b8', '#d9bf55'] },
-  { slug: 'linkedin', label: 'LINKEDIN', sub: "let's connect", face: ['#f1f0ec', '#ffffff', '#cfcdc6'] },
-  { slug: 'dribbble', label: 'DRIBBBLE', sub: 'see my shots', face: ['#f1f0ec', '#ffffff', '#cfcdc6'] },
+  { slug: 'website', label: 'WEBSITE', sub: 'maaribs.com', url: 'https://www.maaribs.com', face: ['#f7e08a', '#fdf0b8', '#d9bf55'] },
+  { slug: 'linkedin', label: 'LINKEDIN', sub: "Let's connect", url: 'https://www.linkedin.com/in/marib/', face: ['#f1f0ec', '#ffffff', '#cfcdc6'] },
+  { slug: 'dribbble', label: 'DRIBBBLE', sub: 'Old work', url: 'https://dribbble.com/maaribou', face: ['#f1f0ec', '#ffffff', '#cfcdc6'] },
 ]
 
 // An 18×18 globe for the website key, in place of a brand logo
@@ -21,26 +21,36 @@ function globe(x, y) {
   return o + R(x + 4, y + 4, 2, 1, 'rgba(255,255,255,.6)')
 }
 
+// A box with rounded pixel corners: outline, fill, a light top row and a shaded bottom row
+function roundBox(x, y, w, h, r, fill, light, dark, outline = C.line) {
+  const inset = (j, hh, rr) => { const k = j < rr ? j : j >= hh - rr ? hh - 1 - j : -1; return k < 0 ? 0 : rr - Math.round(Math.sqrt(rr * rr - (rr - k - 0.5) ** 2)) }
+  let o = ''
+  for (let j = 0; j < h; j++) { const a = inset(j, h, r); o += R(x + a, y + j, w - 2 * a, 1, outline) }
+  for (let j = 0; j < h - 2; j++) { const a = inset(j, h - 2, r - 1); o += R(x + 1 + a, y + 1 + j, w - 2 - 2 * a, 1, j === 0 ? light : j === h - 3 ? dark : fill) }
+  return o
+}
+
 const KW = 300, KH = 152
 function key(c, i) {
   const [f, l, d] = c.face
   // The case under the key, then the cap: its sides show below, the face sits on top and presses down
-  let o = box(2, 9, 71, 28, '#cfd3da', '#e8ebf0', '#a4aab5')
-  o += R(5, 12, 65, 22, '#4a4e5a')
-  let cap = box(6, 5, 63, 27, d, f, d, { shadow: false }) + box(8, 5, 59, 23, f, l, d, { shadow: false })
-  cap += c.slug === 'website' ? globe(12, 7.5) : logo(c.slug, 12, 7.5)
-  cap += t(35 * P, 16 * P, c.label, { font: 'Pixel', size: 13, fill: C.ink })
-  cap += t(35 * P, 23.5 * P, c.sub, { size: 22, fill: C.soft })
+  let o = roundBox(2.5, 10.5, 71, 28, 4, 'rgba(0,0,0,.35)', 'rgba(0,0,0,.35)', 'rgba(0,0,0,.35)', 'rgba(0,0,0,0)')
+  o += roundBox(2, 9, 71, 28, 4, '#cfd3da', '#e8ebf0', '#a4aab5') + roundBox(5, 12, 65, 22, 3, '#4a4e5a', '#4a4e5a', '#4a4e5a', '#4a4e5a')
+  let cap = roundBox(5, 5, 65, 27, 4, d, d, d) + roundBox(5, 5, 65, 23, 4, f, l, d)
+  // Logo and the two lines of text, centred as one group on the face
+  const tw = Math.max(c.label.length * 3.25, c.sub.length * 2.1), gw = 18 + 4 + tw, gx = 37.5 - gw / 2, tx = gx + 22 + tw / 2
+  cap += c.slug === 'website' ? globe(gx, 7.5) : logo(c.slug, gx, 7.5)
+  cap += t(tx * P, 15.6 * P, c.label, { font: 'Pixel', size: 13, fill: C.ink, anchor: 'middle' })
+  cap += t(tx * P, 21.4 * P, c.sub, { size: 21, fill: C.soft, anchor: 'middle' })
   o += `<g class="press" style="animation-delay:${(i * 1.1).toFixed(1)}s">${cap}</g>`
   const css = '.press{animation:press 3.3s steps(1) infinite}@keyframes press{0%,64%,72%,100%{transform:none}66%{transform:translateY(8px)}}@media (prefers-reduced-motion: reduce){*{animation:none!important}}'
   return svg(KW, KH, `${c.label[0] + c.label.slice(1).toLowerCase()}: ${c.sub}`, o, css)
 }
 
 function header() {
-  const HW = 900, HH = 120, w = 46, x = (HW / P - w) / 2, y = 4
+  const HW = 900, HH = 92, w = 46, x = (HW / P - w) / 2, y = 4
   let o = `<g transform="rotate(-3 ${HW / 2} ${HH / 2})">${box(x, y, w, 16, '#f7e08a', '#fdf0b8', '#d9bf55')}${R(x + 1, y + 1, w - 2, 3, '#f0d36a')}${t(HW / 2, (y + 11.4) * P, 'SAY HI', { font: 'Pixel', size: 16, anchor: 'middle', extra: ' letter-spacing="2"' })}</g>`
-  o += t(HW / 2, 27 * P, 'PRESS A KEY', { font: 'Pixel', size: 7, fill: C.soft, anchor: 'middle', extra: ' letter-spacing="2"' })
-  return svg(HW, HH, 'Say hi. Press a key.', o)
+  return svg(HW, HH, 'Say hi', o)
 }
 
 writeFileSync(`${OUT}/header.svg`, header())

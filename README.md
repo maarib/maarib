@@ -1,6 +1,6 @@
-<picture><img src="assets/intro.svg" alt="Hi, I'm Maarib. Product designer at large, where product keeps flipping to founding, fun-doing, web, digital, lead, full-stack, principal and cat-approved." width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/intro-dark.svg"><img src="assets/intro-light.svg" alt="Hi, I'm Maarib. Product designer at large, where product keeps flipping to founding, fun-doing, web, digital, lead, full-stack, principal and cat-approved." width="100%"></picture>
 
-<picture><img src="assets/desk.svg" alt="Maarib's desk, a busy oak table seen from above: an open Canadian passport, its visa page covered in stamps and its data page under a pixel Canada wordmark, with Metallica tickets, a house key, a boarding pass, keyboard and coffee; three folders (Fintech, Web3, Commerce) with a stapler, cigarettes, highlighters, an ashtray and stickers; pixel logo stickers of the tool stack on a cutting mat; a Side Projects newspaper; an envelope addressed to iammaarib@gmail.com among a gamepad, a tape player, black headphones and a watch; and a terminal that runs ./startproject and a cat pops up." width="100%"></picture>
+<picture><img src="assets/desk.svg" alt="Maarib's desk, a busy oak table seen from above: an open Canadian passport, its visa page covered in stamps and its data page showing a pixel portrait of Maarib under a pixel Canada wordmark, with Metallica tickets, a house key, a boarding pass, keyboard and coffee; three folders (Fintech, Web3, Commerce) with a stapler, cigarettes, highlighters, an ashtray and stickers; pixel logo stickers of the tool stack on a cutting mat; a Side Projects newspaper with a polaroid of the cat, a board game and a CD; an envelope addressed to maarib@mail.com beside an iPhone that wakes to a You got mail! notification, a gamepad, a tape player, black headphones and a retro camera; and a terminal, with a Magic 8 Ball and a watch beside it, that runs ./startproject and a cat pops up." width="100%"></picture>
 
 <picture><img src="assets/projects/masthead.svg" alt="Side projects" width="100%"></picture>
 
@@ -8,4 +8,4 @@
 
 <picture><img src="assets/sayhi/header.svg" alt="Say hi" width="100%"></picture>
 
-<p align="center"><a href="https://maaribs.com"><img src="assets/sayhi/website.svg" alt="Website: maaribs.com" width="33%"></a><a href="LINKEDIN_URL"><img src="assets/sayhi/linkedin.svg" alt="LinkedIn" width="33%"></a><a href="DRIBBBLE_URL"><img src="assets/sayhi/dribbble.svg" alt="Dribbble" width="33%"></a></p>
+<p align="center"><a href="https://www.maaribs.com"><img src="assets/sayhi/website.svg" alt="Website: maaribs.com" width="33%"></a><a href="https://www.linkedin.com/in/marib/"><img src="assets/sayhi/linkedin.svg" alt="LinkedIn: let's connect" width="33%"></a><a href="https://dribbble.com/maaribou"><img src="assets/sayhi/dribbble.svg" alt="Dribbble: old work" width="33%"></a></p>
