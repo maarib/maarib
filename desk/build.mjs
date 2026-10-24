@@ -634,13 +634,13 @@ function passport(x, y) {
   const ww = WORDMARK[0].length / 2, wx = rx + pw - 5 - ww, wy = y + 4
   b += bitmap(WORDMARK, wx, wy, { '#': C.ink }, 0.5) + bitmap(FLAG, wx + (WORDMARK[0].length - 8) / 2, wy, { R: C.red, W: C.paperL }, 0.5)
   const phx = rx + 4, phy = y + 16
-  b += box(phx, phy, 33, 36, '#cfe0f5', '#e6f0fb', '#b4c9e6', { shadow: false }) + colourRuns(ME, ME_PAL, phx + 1, phy + 1, 0.5) + `<g class="eyes">${colourRuns(ME_BLINK, ME_PAL, phx + 1, phy + 1, 0.5)}</g>`
+  b += box(phx, phy, 33, 39, '#cfe0f5', '#e6f0fb', '#b4c9e6', { shadow: false }) + colourRuns(ME, ME_PAL, phx + 1, phy + 1, 0.5) + `<g class="eyes">${colourRuns(ME_BLINK, ME_PAL, phx + 1, phy + 1, 0.5)}</g>`
   const fld = (fx, fy, l, v, size = 19) => t(fx * P, fy * P, l, { size: 12, fill: C.soft }) + t(fx * P, (fy + 4.8) * P, v, { size })
   const fx = rx + 40
   b += fld(fx, y + 18, 'Type', 'P') + fld(fx + 9, y + 18, 'Code/Code', 'CAN') + fld(fx + 24, y + 18, 'No./N°', 'MS2026', 17)
   b += fld(fx, y + 27, 'Name/Nom', 'MAARIB SHAH') + fld(fx, y + 36, 'Occupation/Profession', 'PRODUCT DESIGNER', 17)
   b += fld(fx, y + 45, 'Level/Niveau', '12+ YEARS') + fld(fx + 21, y + 45, 'Base/Base', 'TORONTO')
-  b += fld(rx + 4, y + 58, 'Worlds/Mondes', 'FINTECH • DEFI') + fld(fx, y + 58, 'Issued/Délivré', '17 OCT 2011')
+  b += fld(rx + 4, y + 59, 'Worlds/Mondes', 'FINTECH • DEFI') + fld(fx, y + 59, 'Issued/Délivré', '17 OCT 2011')
   b += t((rx + 4) * P, (y + 74.5) * P, 'Signature/Signature', { size: 11, fill: C.soft })
   b += t((rx + 5) * P, (y + 83) * P, 'Maarib Shah', { font: 'Sig', size: 44, fill: '#1f3f8f', extra: ' shape-rendering="auto"' })
   b += R(rx + 1, y + 85, pw - 2, ph - 87, '#efe3c6')
