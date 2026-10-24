@@ -782,8 +782,7 @@ function classifieds() {
       wrap(text, 29).forEach((l, k) => { a += t((cx + 2) * P, (cy + 13.5 + k * 4.6) * P, l, { size: 18, fill: C.soft }) })
     } else {
       a += t((cx + 2) * P, (cy + 6) * P, 'WEATHER', { font: 'Pixel', size: 9, extra: ' letter-spacing="1"' }) + R(cx + 2, cy + 8, colW - 5, 0.5, C.rule)
-      a += bitmap(SNOW, cx + 3, cy + 11, { '#': C.blue }, 2) + t((cx + 16) * P, (cy + 19.5) * P, '-38°', { font: 'Pixelify', size: 44, fill: C.blueD })
-      a += t((cx + 2) * P, (cy + 25.5) * P, 'Toronto. Bring a toque.', { size: 18, fill: C.soft })
+      a += bitmap(SNOW, cx + 12, cy + 12, { '#': C.blue }, 2) + t((cx + 25) * P, (cy + 21) * P, '-38°', { font: 'Pixelify', size: 44, fill: C.blueD })
     }
     n += a
   }
@@ -795,7 +794,7 @@ function classifieds() {
   o += tilt(-1.2, x + w / 2, y + h / 2, `<g class="in">${n}</g>`)
   o += tilt(-7, 68, 12, polaroid(50, -11, 'the boss')) + tilt(5, 104, 150, gameBox(72, 124))
   o += cd(168, 160) + tilt(-14, 46, 168, tapeDispenser(30, 160))
-  return { H: 182 * P, body: o, label: 'A newspaper open at the classifieds. ' + ADS.map(([k, d]) => `${k[0] + k.slice(1).toLowerCase()}: ${d}`).join(' ') + ' The wanted ad is circled in red pen, and the weather box says -38° in Toronto, bring a toque. A polaroid of the cat, captioned the boss, lies on its top edge; a floppy disk lies on a clipping headlined Extreme cold, and a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under the paper, next to a CD and a tape dispenser.' }
+  return { H: 182 * P, body: o, label: 'A newspaper open at the classifieds. ' + ADS.map(([k, d]) => `${k[0] + k.slice(1).toLowerCase()}: ${d}`).join(' ') + ' The wanted ad is circled in red pen, and the weather box says -38°. A polaroid of the cat, captioned the boss, lies on its top edge; a floppy disk lies on a clipping headlined Extreme cold, and a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under the paper, next to a CD and a tape dispenser.' }
 }
 
 // ── Contact: envelope ────────────────────────────────────────────────────────
@@ -867,11 +866,13 @@ function ipad(top) {
 }
 // Around the terminal at the end
 function terminalProps(top) {
-  let o = tilt(-10, 18, top + 26, viceSticker(18, top + 26)) + tilt(-78, 18, top + 82, camera(-7, top + 73)) + strap([[10, top + 108], [6, top + 114], [-2, top + 112], [-10, top + 118]]) + strap([[21, top + 55], [17, top + 48], [6, top + 50], [-10, top + 44]]) + paperBall(36, top + 10)
+  let o = tilt(-10, 18, top + 26, viceSticker(18, top + 26)) + paperBall(34, top - 1)
   o += plant(206, top + 30) + tilt(8, 205, top + 74, gtaSticker(190, top + 60))
   o += tilt(-12, 203, top + 104, pixelSticker(ARROW, { X: C.ink, y: '#f7e04a' }, 194, top + 90, 1.5))
   return o
 }
+// The camera lies over the iPad's edge, its lens resting on the bezel
+const cameraOnTop = (top) => strap([[10, top + 108], [6, top + 114], [-2, top + 112], [-10, top + 118]]) + strap([[21, top + 55], [17, top + 48], [6, top + 50], [-10, top + 44]]) + tilt(-78, 18, top + 82, camera(-7, top + 73))
 
 // ── Compose ──────────────────────────────────────────────────────────────────
 const heroInner = heroSvg().replace(/\.win \{ animation:[^}]*\}/, '').replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '')
@@ -894,6 +895,7 @@ const page = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" wi
 <g shape-rendering="crispEdges">${termProps}</g>
 <g transform="rotate(-2 ${W / 2} ${heroY + 245})"><g shape-rendering="crispEdges">${ipad(heroY / P)}</g>
 <svg x="0" y="${heroY}" width="${W}" height="500" viewBox="0 0 900 500" class="term">${heroInner}</svg></g>
+<g shape-rendering="crispEdges">${cameraOnTop(heroY / P)}</g>
 </g>
 </svg>
 `
