@@ -900,9 +900,9 @@ const page = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" wi
 <g shape-rendering="crispEdges">${wood(H / P)}</g>
 <g shape-rendering="crispEdges">${placed.join('\n')}</g>
 <g shape-rendering="crispEdges">${termProps}</g>
-<g transform="rotate(-2 ${W / 2} ${heroY + 245})"><g shape-rendering="crispEdges">${ipad(heroY / P)}</g>
+<g transform="rotate(-2 ${W / 2} ${heroY + 245}) translate(450 ${heroY + 20}) scale(.9) translate(-450 ${-(heroY + 20)})"><g shape-rendering="crispEdges">${ipad(heroY / P)}</g>
 <g transform="translate(450 ${heroY + 252}) scale(.78) translate(-450 ${-(heroY + 245)})"><svg x="0" y="${heroY}" width="${W}" height="500" viewBox="0 0 900 500" class="term">${heroInner}</svg></g></g>
-<g shape-rendering="crispEdges">${cameraOnTop(heroY / P)}</g>
+<g shape-rendering="crispEdges" transform="translate(28 -12)">${cameraOnTop(heroY / P)}</g>
 </g>
 </svg>
 `
