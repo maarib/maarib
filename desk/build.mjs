@@ -830,9 +830,9 @@ function classifieds() {
   n += tilt(-35, x + 4, y + 2, tape(x - 8, y - 1, 24, 6, 'rgba(236,220,170,.85)'))
   o += tilt(-1.2, x + w / 2, y + h / 2, `<g class="in">${n}</g>`)
   o += tilt(-20, 70, 60, paperclip(68, 54)) + tilt(-6, 162, 134, pencil(144, 132, 34))
-  o += tilt(14, 196, 141, rubiks(182, 126))
+  o += tilt(12, 206, 69, rubiks(193, 56, 8))
   o += tilt(-7, 68, 12, polaroid(50, -11, 'the boss')) + tilt(5, 104, 156, gameBox(72, 130))
-  o += cd(168, 166) + tilt(-14, 46, 174, tapeDispenser(30, 166))
+  o += cd(160, 166) + tilt(-14, 46, 174, tapeDispenser(30, 166))
   return { H: 188 * P, body: o, label: 'A newspaper, The Big 6ix Times, open at its back page. ' + ADS.map(([k, d]) => `${k[0] + k.slice(1).toLowerCase()}: ${d}`).join(' ') + ' The wanted ad is circled in red pen. A tall weather box maps Ontario: ' + CITIES.map(([c, d]) => `${c} ${d}°`).join(', ') + '. Beside it, a crossword half filled in (Figma across, Font down) and a Clip & save coupon for one free design review, partly cut out. A paperclip, a pencil and a scrambled Rubik\'s cube lie on the paper. A polaroid of the cat, captioned the boss, lies on its top edge; a floppy disk lies on a clipping headlined Extreme cold, and a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under the paper, next to a CD and a tape dispenser.' }
 }
 
