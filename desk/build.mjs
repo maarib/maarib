@@ -793,10 +793,6 @@ function yellowAd(cx, cy, cw, ch) {
   return a + t((cx + 5) * P, (cy + ch - 4) * P, 'maaribs.com', { font: 'Pixelify', size: 20, fill: C.redD })
 }
 // Things left lying on the paper
-function glasses(x, y) {
-  const lens = (lx) => frame(lx, y, 10, 7, C.line) + R(lx + 1, y + 1, 8, 5, 'rgba(170,205,240,.35)') + R(lx + 2, y + 1.5, 3, 1, 'rgba(255,255,255,.6)')
-  return R(x + 1, y + 1.5, 23, 7, 'rgba(0,0,0,.2)') + lens(x) + lens(x + 13) + R(x + 10, y + 2, 3, 1, C.line) + R(x + 1, y - 9, 1, 9, C.line) + R(x + 21, y - 9, 1, 9, C.line)
-}
 // A scrambled Rubik's cube from above: nine stickers on the top face, and a strip of the front face
 function rubiks(x, y) {
   const cols = { W: '#f4f4f0', Y: '#f7d23a', R: '#d6453d', O: '#f08a2a', B: '#3d6fd6', G: '#3fa45a' }, top = 'RWBYGOWRB', front = 'GOY'
@@ -805,10 +801,65 @@ function rubiks(x, y) {
   for (let i = 0; i < 3; i++) o += R(x + 1 + i * 7, y + 22, 6, 1.5, cols[front[i]]) + R(x + 1 + i * 7, y + 22, 6, 0.5, 'rgba(0,0,0,.25)')
   return o
 }
+// The bottom row: an ad torn out of the page, a crossword someone started, and a coupon half cut out
+const SCISSORS = ['#...#', '.#.#.', '..#..', '##.##', '##.##']
+function tornAd(cx, cy, cw, ch) {
+  let s = 41
+  const r = () => (s = (s * 16807) % 2147483647) / 2147483647
+  let a = adHead(cx, cy, cw, 'FOR SALE')
+  // The hole: a ragged patch of desk showing through. Its sides wander, paper bites into its top and
+  // bottom, fibres hang off the edges, and the paper's thickness casts a shadow under the top edge.
+  const top = cy + 8, bot = cy + ch - 2, rows = []
+  let l = cx + 4, rr = cx + cw - 5
+  for (let j = top; j < bot; j++) {
+    l = Math.min(cx + 11, Math.max(cx + 1, l + Math.round((r() - 0.5) * 3)))
+    rr = Math.min(cx + cw - 3, Math.max(cx + cw - 13, rr + Math.round((r() - 0.5) * 3)))
+    rows.push([l, rr])
+  }
+  rows.forEach(([l, rr], k) => {
+    const y = top + k
+    a += R(l, y, rr - l, 1, '#b88555') + R(l, y, 1, 1, 'rgba(0,0,0,.2)')
+    if (r() < 0.6) a += R(l - 1, y, 1, 1, C.paperL)
+    if (r() < 0.6) a += R(rr, y, 1, 1, C.paperL)
+  })
+  for (const gx of [cx + 16, cx + 31, cx + 45]) a += R(gx, top + 1, 1, bot - top - 2, '#a5743f')
+  // Bites of paper along the top and bottom edges, and the shadow under the top
+  for (let i = rows[0][0]; i < rows[0][1]; i++) {
+    const d = Math.floor(r() * 3)
+    a += R(i, top, 1, 1, 'rgba(0,0,0,.3)')
+    if (d) a += R(i, top, 1, d, C.paper)
+    const e = Math.floor(r() * 3)
+    if (e) a += R(i, bot - e, 1, e, C.paper)
+  }
+  return a
+}
+function crossword(cx, cy, cw) {
+  // FIGMA across, FONT and APP down, TEST across; only some squares filled in, in blue pen
+  const grid = ['FIGMA#', 'O###P#', 'N###P#', 'TEST##'], filled = ['FIGMA.', 'O.....', 'N.....', '.E....'], c = 4.5, gx = cx + 2, gy = cy + 10
+  let a = adHead(cx, cy, cw, 'CROSSWORD') + R(gx - 0.5, gy - 0.5, 6 * c + 0.5, 4 * c + 0.5, C.ink)
+  grid.forEach((row, j) => [...row].forEach((ch, i) => {
+    if (ch === '#') return
+    a += R(gx + i * c, gy + j * c, c - 0.5, c - 0.5, C.paperL)
+    if (filled[j][i] !== '.') a += t((gx + i * c + 1.5) * P, (gy + j * c + 3.4) * P, ch, { font: 'Pixel', size: 10, fill: '#2f4fa8', anchor: 'middle' })
+  }))
+  a += t((gx + 0.4) * P, (gy + 1.1) * P, '1', { size: 9, fill: C.soft }) + t((gx + 4 * c + 0.4) * P, (gy + 1.1) * P, '2', { size: 9, fill: C.soft }) + t((gx + 0.4) * P, (gy + 3 * c + 1.1) * P, '3', { size: 9, fill: C.soft })
+  return a + ['1→ Design tool', '1↓ Typeface', '2↓ On a phone', '3→ Try it out'].map((l, k) => t((cx + 31) * P, (cy + 13 + k * 4.3) * P, l, { size: 16, fill: C.soft })).join('')
+}
+function coupon(cx, cy, cw, ch) {
+  let a = ''
+  const x0 = cx + 1, y0 = cy + 1, w = cw - 3, h = ch - 2
+  for (let i = 0; i < w; i += 2) a += R(x0 + i, y0, 1, 0.5, C.ink) + R(x0 + i, y0 + h - 0.5, 1, 0.5, C.ink)
+  for (let j = 0; j < h; j += 2) a += R(x0, y0 + j, 0.5, 1, C.ink) + R(x0 + w - 0.5, y0 + j, 0.5, 1, C.ink)
+  // Already cut along the left edge, up to where the scissors stopped
+  a += R(x0 - 0.25, y0 + h - 14, 1, 14, '#b88555') + R(x0 + 0.75, y0 + h - 14, 0.5, 14, 'rgba(0,0,0,.2)') + bitmap(SCISSORS, x0 - 2.5, y0 + h - 19, { '#': C.ink }, 1)
+  a += t((cx + 5) * P, (cy + 7) * P, 'CLIP & SAVE', { font: 'Pixel', size: 8, fill: C.red, extra: ' letter-spacing="1"' })
+  a += t((cx + 5) * P, (cy + 14) * P, '1 FREE DESIGN', { font: 'Pixelify', size: 20 }) + t((cx + 5) * P, (cy + 19.5) * P, 'REVIEW', { font: 'Pixelify', size: 20 })
+  return a + t((cx + 5) * P, (cy + ch - 4) * P, 'One per team. No expiry.', { size: 16, fill: C.soft })
+}
 function classifieds() {
-  const x = 8, y = 22, w = 209, colW = 62, gap = 5, rowH = 34, h = 44 + 2 * rowH + 2, col = (c) => x + 7 + c * (colW + gap)
+  const x = 8, y = 22, w = 209, colW = 62, gap = 5, rowH = 34, h = 44 + 3 * rowH + 2, col = (c) => x + 7 + c * (colW + gap)
   let o = tilt(7, 185, 7, clipping(156, -5, 58, 24, 'EXTREME COLD, -38°')) + tilt(-12, 202, -12, floppy(188, -26, ['#3d6fd6', '#6b95ea', '#2a4fa3'], 'BACKUP'))
-  o += tilt(9, 205, 126, receipt(186, 94)) + tilt(-10, 30, 156, note(4, 124, ['todo:', '- fewer meetings', '- more cats', '- ship it']))
+  o += tilt(9, 205, 160, receipt(186, 128)) + tilt(-10, 30, 190, note(4, 158, ['todo:', '- fewer meetings', '- more cats', '- ship it']))
   let n = box(x, y, w, h, C.paper, C.paperL, C.paperD)
   n += R(x + 6, y + 6, w - 12, 1, C.ink) + R(x + 6, y + 33, w - 12, 1, C.ink) + R(x + 6, y + 35, w - 12, 1, C.ink)
   n += t(W / 2, (y + 27) * P, 'CLASSIFIEDS', { font: 'Pixelify', size: 56, anchor: 'middle' })
@@ -819,16 +870,20 @@ function classifieds() {
   ADS.forEach((ad, i) => { const cy = top + i * rowH; n += frame(col(0) - 1, cy - 1, colW + 1, cellH, C.rule) + smallAd(col(0), cy, colW, ad, i === 0 ? C.red : C.ink) })
   n += frame(col(1) - 1, top - 1, colW + 1, rowH + cellH, C.rule) + weatherCard(col(1), top, colW, rowH + cellH - 1)
   n += darkAd(col(2) - 1, top - 1, colW + 1, cellH) + yellowAd(col(2) - 1, top + rowH - 1, colW + 1, cellH)
+  const row3 = top + 2 * rowH
+  n += frame(col(0) - 1, row3 - 1, colW + 1, cellH, C.rule) + tornAd(col(0), row3, colW, cellH - 1)
+  n += frame(col(1) - 1, row3 - 1, colW + 1, cellH, C.rule) + crossword(col(1), row3, colW)
+  n += coupon(col(2) - 1, row3 - 1, colW + 1, cellH)
   // The WANTED ad, circled in red pen
   const ex = col(0) + colW / 2 - 0.5, ey = top + rowH / 2 - 2
   for (let k = 0; k < 120; k++) { const th = (k / 120) * Math.PI * 2.15 - 0.4, rr = 1 + 0.04 * Math.sin(k / 9); n += R(ex + Math.cos(th) * (colW / 2 + 4) * rr, ey + Math.sin(th) * (rowH / 2 + 2) * rr, 1, 1, 'rgba(214,69,61,.75)') }
   n += tilt(-35, x + 4, y + 2, tape(x - 8, y - 1, 24, 6, 'rgba(236,220,170,.85)'))
   o += tilt(-1.2, x + w / 2, y + h / 2, `<g class="in">${n}</g>`)
-  o += tilt(14, 186, 46, glasses(172, 45)) + tilt(-20, 70, 60, paperclip(68, 54)) + tilt(-6, 162, 134, pencil(144, 132, 34))
+  o += tilt(-20, 70, 60, paperclip(68, 54)) + tilt(-6, 162, 168, pencil(144, 166, 34))
   o += tilt(16, 205, 120, rubiks(194, 108))
-  o += tilt(-7, 68, 12, polaroid(50, -11, 'the boss')) + tilt(5, 104, 156, gameBox(72, 130))
-  o += cd(168, 166) + tilt(-14, 46, 174, tapeDispenser(30, 166))
-  return { H: 188 * P, body: o, label: 'A newspaper open at the classifieds. ' + ADS.map(([k, d]) => `${k[0] + k.slice(1).toLowerCase()}: ${d}`).join(' ') + ' The wanted ad is circled in red pen. A tall weather box maps Ontario: ' + CITIES.map(([c, d]) => `${c} ${d}°`).join(', ') + '. Two boxed ads: Figma to code, same-day prototypes, real code, not mockups, ask for Maarib; and Now booking, product design for fintech and DeFi teams, maaribs.com. Reading glasses, a paperclip, a pencil and a scrambled Rubik\'s cube lie on the paper. A polaroid of the cat, captioned the boss, lies on its top edge; a floppy disk lies on a clipping headlined Extreme cold, and a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under the paper, next to a CD and a tape dispenser.' }
+  o += tilt(-7, 68, 12, polaroid(50, -11, 'the boss')) + tilt(5, 104, 190, gameBox(72, 164))
+  o += cd(168, 200) + tilt(-14, 46, 208, tapeDispenser(30, 200))
+  return { H: 222 * P, body: o, label: 'A newspaper open at the classifieds. ' + ADS.map(([k, d]) => `${k[0] + k.slice(1).toLowerCase()}: ${d}`).join(' ') + ' The wanted ad is circled in red pen. A tall weather box maps Ontario: ' + CITIES.map(([c, d]) => `${c} ${d}°`).join(', ') + '. Two boxed ads: Figma to code, same-day prototypes, real code, not mockups, ask for Maarib; and Now booking, product design for fintech and DeFi teams, maaribs.com. Along the bottom: a For sale ad torn out of the page, a crossword half filled in (Figma across, Font down), and a Clip & save coupon for one free design review, partly cut out. A paperclip, a pencil and a scrambled Rubik\'s cube lie on the paper. A polaroid of the cat, captioned the boss, lies on its top edge; a floppy disk lies on a clipping headlined Extreme cold, and a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under the paper, next to a CD and a tape dispenser.' }
 }
 
 // ── Contact: envelope ────────────────────────────────────────────────────────
