@@ -62,8 +62,6 @@ const css = `${FONT_CSS}
   @keyframes stamp { from { opacity: 0; transform: scale(1.8); } to { opacity: 1; transform: scale(1); } }
   .blink { animation: blink 1s steps(1) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
-  .steam { animation: steam 3s ease-in-out infinite both; }
-  @keyframes steam { 0% { opacity: 0; transform: translate(0, 4px); } 40% { opacity: 1; } 100% { opacity: 0; transform: translate(6px, -10px); } }
   .holo { animation: holo 3s linear infinite; }
   @keyframes holo { 0%, 100% { fill: #bfe3ff; } 33% { fill: #e5c7ff; } 66% { fill: #c8f5d8; } }
   .press { animation: press 2.6s steps(1) infinite; }
@@ -143,8 +141,35 @@ function tape(x, y, w, h, c) {
   return o
 }
 // Coffee mug from above: white rim, coffee with a crema heart, handle off to the side.
+// Steam and smoke: strands of pixels, each bent into its own random zigzag, that drift up, sway and
+// dissolve from the top. Each strand has its own keyframes; its own seed keeps the desk's layout put.
+let FX_CSS = '', fxN = 0
+function wisps(cx, cy, { seed, n, len, px, amp, rise, dur, spread, colour, alpha }) {
+  let s = seed
+  const r = () => (s = (s * 16807) % 2147483647) / 2147483647
+  let o = ''
+  for (let i = 0; i < n; i++) {
+    const id = `fx${fxN++}`, ox = (r() - 0.5) * spread
+    // The strand: turning points every few rows, swinging further out as it climbs
+    let x = 0, dir = r() < 0.5 ? -1 : 1, next = 0, step = 0, g = ''
+    for (let j = 0; j < len; j++) {
+      if (j >= next) { dir = -dir; next = j + 2 + Math.floor(r() * 4); step = dir * (0.25 + r() * 0.5) * amp * (0.5 + j / len) }
+      x += step
+      const f = j / len, a = alpha * (1 - f) ** 0.8
+      if (f > 0.55 && r() < (f - 0.55) * 1.6) continue   // gaps where the top breaks up
+      const w = j < len * 0.3 && r() < 0.4 ? px * 2 : px
+      g += R(cx + ox + Math.round(x / px) * px, cy - j * px, w, px, `rgba(${colour},${a.toFixed(2)})`)
+    }
+    const dx = (r() - 0.5) * 6
+    FX_CSS += `.${id}{animation:${id} ${dur}s ease-out ${(-(i / n) * dur).toFixed(2)}s infinite}@keyframes ${id}{0%{transform:translate(0,${(3 * P).toFixed(0)}px);opacity:0}20%{opacity:1}55%{transform:translate(${(dx * 0.3 * P).toFixed(1)}px,${(-rise * 0.45 * P).toFixed(1)}px);opacity:.85}100%{transform:translate(${(dx * P).toFixed(1)}px,${(-rise * P).toFixed(1)}px);opacity:0}}`
+    o += `<g class="${id}">${g}</g>`
+  }
+  return o
+}
 // Steam rising straight up from a cup, whichever way the cup is turned
-const steam = (cx, cy) => [0, 1, 2].map((i) => `<g class="steam" style="animation-delay:${i}s">${R(cx - 6 + i * 5, cy - 8 + i * 2, 1, 5, 'rgba(255,255,255,.45)')}${R(cx - 6 + i * 5, cy - 12 + i * 2, 1, 4, 'rgba(255,255,255,.35)')}</g>`).join('')
+const steam = (cx, cy) => wisps(cx, cy - 6, { seed: 7, n: 5, len: 16, px: 1, amp: 1.1, rise: 12, dur: 3.6, spread: 16, colour: '255,255,255', alpha: 0.7 })
+// Thin smoke from a lit cigarette: one narrow source, finer pixels, a taller and more wandering trail
+const smoke = (cx, cy) => wisps(cx, cy, { seed: 11, n: 4, len: 44, px: 0.5, amp: 0.9, rise: 16, dur: 5, spread: 1, colour: '232,236,242', alpha: 0.85 })
 function mug(cx, cy, r = 18) {
   let o = box(cx + r - 5, cy - 5, 13, 10, C.white, '#ffffff', '#d8d4cc') + R(cx + r - 2, cy - 3, 5, 6, '#d8d4cc')
   o += disc(cx + 1.5, cy + 2, r, 'rgba(0,0,0,.35)') + disc(cx, cy, r, C.line) + disc(cx, cy, r - 1, C.white) + disc(cx, cy, r - 3, '#d8d4cc') + disc(cx, cy, r - 4, '#4a2a14') + disc(cx - 1, cy - 1, r - 6, '#5c3519')
@@ -171,7 +196,7 @@ function keyboard(x, y) {
 function boardingPass(x, y) {
   let o = box(x, y, 74, 30, C.paperL, '#ffffff', C.paperD) + R(x + 1, y + 1, 72, 6, C.blue)
   o += t((x + 4) * P, (y + 5.6) * P, 'BOARDING PASS', { font: 'Pixel', size: 7, fill: '#fff', extra: ' letter-spacing="1"' })
-  o += t((x + 4) * P, (y + 16) * P, 'YYZ', { font: 'Pixel', size: 12 }) + R(x + 14, y + 13.25, 5, 1, C.ink) + R(x + 18, y + 12.25, 1, 3, C.ink) + R(x + 19, y + 13, 1, 1.5, C.ink) + t((x + 21.5) * P, (y + 16) * P, 'ANYWHERE', { font: 'Pixel', size: 12 })
+  o += t((x + 4) * P, (y + 16) * P, 'YYZ', { font: 'Pixel', size: 12 }) + R(x + 14, y + 13.5, 4.5, 0.5, C.ink) + R(x + 17.5, y + 12.5, 0.5, 2.5, C.ink) + R(x + 18, y + 13, 0.5, 1.5, C.ink) + R(x + 18.5, y + 13.5, 0.5, 0.5, C.ink) + t((x + 21.5) * P, (y + 16) * P, 'ANYWHERE', { font: 'Pixel', size: 12 })
   o += t((x + 4) * P, (y + 24) * P, 'GATE UX · ON TIME', { size: 17, fill: C.soft })
   for (let i = 0; i < 10; i++) o += R(x + 52, y + 8 + i * 2, 1, 1, C.rule)
   o += t((x + 55) * P, (y + 13) * P, 'SEAT', { font: 'Pixel', size: 6, fill: C.soft }) + t((x + 55) * P, (y + 22) * P, '12A', { font: 'Pixelify', size: 26, fill: C.redD })
@@ -691,7 +716,7 @@ function teams() {
   o += tilt(-20, 186, 122, cigarettes(176, 106))
   o += tilt(-6, 40, 126, highlighter(10, 122, 56, '#f2ee4a', '#fbf78a', '#c9c42a'))
   o += tilt(4, 96, 131, highlighter(66, 127, 56, '#ff6fa8', '#ff9cc4', '#d14a82'))
-  o += ashtray(116, 158) + tilt(-8, 104, 156, cigarette(92, 154))
+  o += ashtray(116, 158) + tilt(-8, 104, 156, cigarette(92, 154)) + smoke(119, 152.5)
   o += tilt(-10, 146, 140, pixelSticker(CAT, { '#': C.ink }, 140, 128, 1))
   o += paperBall(16, 146) + paperBall(28, 150)
   o += tilt(10, 200, 16, pixelSticker(DOG, { B: '#6b3f1f', b: '#c58a4a', w: '#fbf3e6', k: C.ink, p: '#f08a9a' }, 185, 3, 1.5))
@@ -722,9 +747,10 @@ function stack() {
     o += `<g class="in" style="animation-delay:${(0.1 + k * 0.05).toFixed(2)}s">${tilt(deg, sx + 12, sy + 12, logoSticker(sx, sy, name, opt))}</g>`
   })
   o += tilt(-4, 60, 142, marker(30, 140, 50, C.red, C.redD)) + tilt(3, 130, 144, marker(100, 142, 50, C.blue, C.blueD))
-  o += tilt(10, 172, 142, eraserBox(162, 138)) + tilt(-12, 202, 148, floppy(188, 134, ['#3d6fd6', '#6b95ea', '#2a4fa3'], 'BACKUP'))
+  o += tilt(10, 172, 142, eraserBox(162, 138))
+  o += tilt(12, 205, 9, floppy(190, -6, ['#3d6fd6', '#6b95ea', '#2a4fa3'], 'BACKUP'))
   o += sticky(4, 8, 'STACK', -5)
-  return { H: 160 * P, body: o, label: 'Stack, as pixel-art logo stickers on a green cutting mat: Figma, Framer, Claude, Cursor, GitHub, React, Next.js, JavaScript, Tailwind CSS, ChatGPT, Miro, Maze, Notion and VS Code look new; Sketch, Photoshop, Illustrator, XD, Jira, Confluence and UserTesting are older, faded and peeling. Below it: two markers, an eraser and a floppy disk.' }
+  return { H: 160 * P, body: o, label: 'Stack, as pixel-art logo stickers on a green cutting mat: Figma, Framer, Claude, Cursor, GitHub, React, Next.js, JavaScript, Tailwind CSS, ChatGPT, Miro, Maze, Notion and VS Code look new; Sketch, Photoshop, Illustrator, XD, Jira, Confluence and UserTesting are older, faded and peeling. A floppy disk lies on a newspaper clipping above it, and below it are two markers and an eraser.' }
 }
 const eraserBox = (x, y) => box(x, y, 18, 9, '#f08a9a', '#f7b3be', '#c9606f') + R(x + 1, y + 1, 7, 7, C.blue) + R(x + 1, y + 1, 7, 1, C.blueL)
 
@@ -818,9 +844,21 @@ function contact() {
   o += sticky(98, 4, 'SAY HI', -4)
   return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a gamepad, a Magic 8 Ball, a tape player wired to a pair of black over-ear headphones and a tactical watch with its straps open.' }
 }
+// The terminal runs on an iPad lying in landscape: a silver edge, a black bezel and the front camera.
+// Its screen sits exactly where the terminal window is drawn (hero coords 160,40 580×410).
+function ipad(top) {
+  const x = 35, y = top + 5, w = 155, h = 113, r = 7
+  const inset = (j, hh, rr) => { const k = j < rr ? j : j >= hh - rr ? hh - 1 - j : -1; return k < 0 ? 0 : rr - Math.round(Math.sqrt(rr * rr - (rr - k - 0.5) ** 2)) }
+  const round = (ox, oy, ww, hh, rr, c) => { let o = ''; for (let j = 0; j < hh; j++) { const a = inset(j, hh, rr); o += R(ox + a, oy + j, ww - 2 * a, 1, c) } return o }
+  let o = round(x + 2, y + 3, w, h, r, 'rgba(0,0,0,.35)') + round(x, y, w, h, r, C.line) + round(x + 1, y + 1, w - 2, h - 2, r - 1, '#c3c7cf')
+  o += R(x + 6, y + 1, w - 12, 0.5, '#e4e7ec') + round(x + 2, y + 2, w - 4, h - 4, r - 2, '#0b0b0e')
+  o += R(x + w / 2 - 1, y + 3, 2, 1, '#1d2230') + R(x + w / 2 - 0.5, y + 3, 0.5, 0.5, '#3a4a6a')
+  // Buttons on the edge: power on the top, volume on the right
+  return o + R(x + 14, y - 0.5, 10, 0.5, C.line) + R(x + w, y + 12, 0.5, 8, C.line) + R(x + w, y + 22, 0.5, 8, C.line)
+}
 // Around the terminal at the end
 function terminalProps(top) {
-  let o = tilt(-10, 22, top + 28, viceSticker(22, top + 28)) + tilt(-78, 18, top + 82, camera(-7, top + 73)) + strap([[10, top + 108], [6, top + 114], [-2, top + 112], [-10, top + 118]]) + strap([[21, top + 55], [17, top + 48], [6, top + 50], [-10, top + 44]]) + paperBall(36, top + 10)
+  let o = tilt(-10, 18, top + 26, viceSticker(18, top + 26)) + tilt(-78, 18, top + 82, camera(-7, top + 73)) + strap([[10, top + 108], [6, top + 114], [-2, top + 112], [-10, top + 118]]) + strap([[21, top + 55], [17, top + 48], [6, top + 50], [-10, top + 44]]) + paperBall(36, top + 10)
   o += plant(206, top + 30) + tilt(8, 205, top + 74, gtaSticker(190, top + 60))
   o += tilt(-12, 203, top + 104, pixelSticker(ARROW, { X: C.ink, y: '#f7e04a' }, 194, top + 90, 1.5))
   return o
@@ -828,7 +866,7 @@ function terminalProps(top) {
 
 // ── Compose ──────────────────────────────────────────────────────────────────
 const heroInner = heroSvg().replace(/\.win \{ animation:[^}]*\}/, '').replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '')
-  .replace(/<g class="field"[\s\S]*?<\/g>/, '')
+  .replace(/<g class="field"[\s\S]*?<\/g>/, '').replace(' filter="url(#sh)"', '')
   // Keep the terminal's text styles to the terminal.
   .replace(/(^|[{}\s])text \{/g, '$1.term text {').replace('.cat .term text {', '.term .cat text {')
 const HERO_H = 490
@@ -838,14 +876,15 @@ const placed = pieces.map((p) => { const g = `<g transform="translate(0 ${y})">$
 const heroY = y
 const termProps = terminalProps(heroY / P)
 const H = y + HERO_H
-const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker, a retro camera with its strap, a plant, a cursor sticker and a GTA VI sticker, a terminal window types whoami, Product designer who builds, then ./startproject; a loading bar fills and a black cat pops up and blinks.'
+const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker, a retro camera with its strap, a plant, a cursor sticker and a GTA VI sticker, an iPad lying on the table runs a terminal that types whoami, Product designer who builds, then ./startproject; a loading bar fills and a black cat pops up and blinks.'
 const page = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(label)}">
-<defs><style>${css}</style><clipPath id="desk"><rect width="${W}" height="${H}" rx="16"/></clipPath>${DEFS}</defs>
+<defs><style>${css}${FX_CSS}</style><clipPath id="desk"><rect width="${W}" height="${H}" rx="16"/></clipPath>${DEFS}</defs>
 <g clip-path="url(#desk)">
 <g shape-rendering="crispEdges">${wood(H / P)}</g>
 <g shape-rendering="crispEdges">${placed.join('\n')}</g>
 <g shape-rendering="crispEdges">${termProps}</g>
-<svg x="0" y="${heroY}" width="${W}" height="500" viewBox="0 0 900 500" class="term">${heroInner}</svg>
+<g transform="rotate(-2 ${W / 2} ${heroY + 245})"><g shape-rendering="crispEdges">${ipad(heroY / P)}</g>
+<svg x="0" y="${heroY}" width="${W}" height="500" viewBox="0 0 900 500" class="term">${heroInner}</svg></g>
 </g>
 </svg>
 `
