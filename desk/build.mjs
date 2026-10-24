@@ -756,45 +756,79 @@ const eraserBox = (x, y) => box(x, y, 18, 9, '#f08a9a', '#f7b3be', '#c9606f') + 
 // ── Classifieds: a newspaper page of small ads ───────────────────────────────
 const ADS = [
   ['WANTED', 'Hard problems in fintech and DeFi. Will design, prototype and ship.'],
-  ['FOR HIRE', 'Product designer, 12+ years. Figma by day, code by night.'],
   ['FOUND', 'Black cat. Answers to “the boss”. Will not be returned.'],
-  ['LOST', 'One Figma file, final_FINAL_v7. Reward: coffee.'],
-  ['FREE', 'Honest design feedback, fast. Inquire within.'],
 ]
 const wrap = (s, n) => s.split(' ').reduce((ls, w) => { const l = ls.at(-1); if ((l + ' ' + w).trim().length > n) ls.push(w); else ls[ls.length - 1] = (l + ' ' + w).trim(); return ls }, [''])
-const SNOW = ['..#..', '#.#.#', '.###.', '#.#.#', '..#..']
+// Southern and northern Ontario, with the Great Lakes cut out of its south edge
+const ONTARIO = ['..######........................', '..##########....................', '..##############................', '..##################............', '..#####################.........', '..########################......', '..#######################.#.....', '..######################..##....', '..######################..###...', '..#######################.####..', '..############################..', '...###########################..', '....#######...################..', '.....####.......##############..', '......##.........#############..', '..................###########...', '...................#########....', '..................########......', '................######..........', '..............######............', '.............####...............', '............##..................']
+const CITIES = [['Thunder Bay', -47, 9, 12], ['Sudbury', -44, 19, 14], ['Ottawa', -41, 28, 14], ['Toronto', -38, 19, 18]]
+const adHead = (cx, cy, cw, s, fill = C.ink) => t((cx + 2) * P, (cy + 6) * P, s, { font: 'Pixel', size: 9, fill, extra: ' letter-spacing="1"' }) + R(cx + 2, cy + 8, cw - 5, 0.5, C.rule)
+function smallAd(cx, cy, cw, [kind, text], fill) {
+  return adHead(cx, cy, cw, kind, fill) + wrap(text, 29).map((l, k) => t((cx + 2) * P, (cy + 13.5 + k * 4.6) * P, l, { size: 18, fill: C.soft })).join('')
+}
+// The weather as a tall card: the map on top, the cities below it
+function weatherCard(cx, cy, cw, ch) {
+  const s = 1.3, mx = cx + (cw - 32 * s) / 2 - 1, my = cy + 10
+  let a = adHead(cx, cy, cw, 'WEATHER · ONTARIO') + bitmap(ONTARIO, mx, my, { '#': '#9db8dc' }, s)
+  CITIES.forEach(([n, d, px, py], k) => {
+    const hot = n === 'Toronto', ly = cy + ch - 21 + k * 4.8
+    a += R(mx + px * s, my + py * s, 1.5, 1.5, hot ? C.red : C.blueD)
+    a += t((cx + 2) * P, ly * P, n, { size: 18, fill: hot ? C.ink : C.soft }) + t((cx + cw - 4) * P, ly * P, d + '°', { size: 18, fill: hot ? C.red : C.blueD, anchor: 'end' })
+  })
+  return a
+}
+// Two boxed display ads: a dark one with a cursor, and a yellow one
+function darkAd(cx, cy, cw, ch) {
+  let a = R(cx + 1, cy + 1, cw - 3, ch - 2, C.ink) + frame(cx + 2, cy + 2, cw - 5, ch - 4, '#f7e04a')
+  a += t((cx + 5) * P, (cy + 10) * P, 'FIGMA → CODE', { font: 'Pixelify', size: 22, fill: C.paperL })
+  a += t((cx + 5) * P, (cy + 16) * P, 'Same-day prototypes.', { size: 18, fill: '#c9c3b4' })
+  a += t((cx + 5) * P, (cy + 20.6) * P, 'Real code, not mockups.', { size: 18, fill: '#c9c3b4' })
+  a += t((cx + 5) * P, (cy + ch - 4) * P, 'ASK FOR MAARIB', { font: 'Pixel', size: 7, fill: '#f7e04a', extra: ' letter-spacing="1"' })
+  return a + bitmap(ARROW, cx + cw - 13, cy + ch - 17, { X: C.paperL, y: '#f7e04a' }, 0.75)
+}
+function yellowAd(cx, cy, cw, ch) {
+  let a = R(cx + 1, cy + 1, cw - 3, ch - 2, '#f7e04a') + frame(cx + 2, cy + 2, cw - 5, ch - 4, C.ink)
+  a += t((cx + 5) * P, (cy + 9) * P, 'NOW BOOKING', { font: 'Pixel', size: 9, extra: ' letter-spacing="1"' })
+  a += t((cx + 5) * P, (cy + 15) * P, 'Product design for', { size: 18, fill: C.ink }) + t((cx + 5) * P, (cy + 19.6) * P, 'fintech and DeFi teams.', { size: 18, fill: C.ink })
+  return a + t((cx + 5) * P, (cy + ch - 4) * P, 'maaribs.com', { font: 'Pixelify', size: 20, fill: C.redD })
+}
+// Things left lying on the paper
+function glasses(x, y) {
+  const lens = (lx) => frame(lx, y, 10, 7, C.line) + R(lx + 1, y + 1, 8, 5, 'rgba(170,205,240,.35)') + R(lx + 2, y + 1.5, 3, 1, 'rgba(255,255,255,.6)')
+  return R(x + 1, y + 1.5, 23, 7, 'rgba(0,0,0,.2)') + lens(x) + lens(x + 13) + R(x + 10, y + 2, 3, 1, C.line) + R(x + 1, y - 9, 1, 9, C.line) + R(x + 21, y - 9, 1, 9, C.line)
+}
+// A scrambled Rubik's cube from above: nine stickers on the top face, and a strip of the front face
+function rubiks(x, y) {
+  const cols = { W: '#f4f4f0', Y: '#f7d23a', R: '#d6453d', O: '#f08a2a', B: '#3d6fd6', G: '#3fa45a' }, top = 'RWBYGOWRB', front = 'GOY'
+  let o = R(x + 1.5, y + 2, 22, 24, 'rgba(0,0,0,.35)') + R(x, y, 22, 24, '#141418')
+  for (let i = 0; i < 9; i++) { const sx = x + 1 + (i % 3) * 7, sy = y + 1 + Math.floor(i / 3) * 7; o += R(sx, sy, 6, 6, cols[top[i]]) + R(sx + 1, sy + 1, 2, 1, 'rgba(255,255,255,.45)') }
+  for (let i = 0; i < 3; i++) o += R(x + 1 + i * 7, y + 22, 6, 1.5, cols[front[i]]) + R(x + 1 + i * 7, y + 22, 6, 0.5, 'rgba(0,0,0,.25)')
+  return o
+}
 function classifieds() {
-  const x = 8, y = 22, w = 209, colW = 62, gap = 4, artH = 31, h = 44 + 2 * artH + 2
+  const x = 8, y = 22, w = 209, colW = 62, gap = 5, rowH = 34, h = 44 + 2 * rowH + 2, col = (c) => x + 7 + c * (colW + gap)
   let o = tilt(7, 185, 7, clipping(156, -5, 58, 24, 'EXTREME COLD, -38°')) + tilt(-12, 202, -12, floppy(188, -26, ['#3d6fd6', '#6b95ea', '#2a4fa3'], 'BACKUP'))
-  o += tilt(9, 205, 120, receipt(186, 88)) + tilt(-10, 30, 150, note(4, 118, ['todo:', '- fewer meetings', '- more cats', '- ship it']))
+  o += tilt(9, 205, 126, receipt(186, 94)) + tilt(-10, 30, 156, note(4, 124, ['todo:', '- fewer meetings', '- more cats', '- ship it']))
   let n = box(x, y, w, h, C.paper, C.paperL, C.paperD)
   n += R(x + 6, y + 6, w - 12, 1, C.ink) + R(x + 6, y + 33, w - 12, 1, C.ink) + R(x + 6, y + 35, w - 12, 1, C.ink)
   n += t(W / 2, (y + 27) * P, 'CLASSIFIEDS', { font: 'Pixelify', size: 56, anchor: 'middle' })
   n += t((x + 8) * P, (y + 11) * P, 'VOL. XII', { font: 'Pixel', size: 8, fill: C.soft, extra: ' letter-spacing="1"' })
   n += t((x + w - 8) * P, (y + 11) * P, 'TORONTO, CANADA', { font: 'Pixel', size: 8, fill: C.soft, anchor: 'end', extra: ' letter-spacing="1"' })
-  // Six boxes: five small ads and the weather
-  for (let i = 0; i < 6; i++) {
-    const cx = x + 7 + (i % 3) * (colW + gap + 1), cy = y + 40 + Math.floor(i / 3) * artH
-    let a = frame(cx - 1, cy - 1, colW + 1, artH - 3, C.rule)
-    if (i < 5) {
-      const [kind, text] = ADS[i]
-      a += t((cx + 2) * P, (cy + 6) * P, kind, { font: 'Pixel', size: 9, fill: i === 0 ? C.red : C.ink, extra: ' letter-spacing="1"' }) + R(cx + 2, cy + 8, colW - 5, 0.5, C.rule)
-      wrap(text, 29).forEach((l, k) => { a += t((cx + 2) * P, (cy + 13.5 + k * 4.6) * P, l, { size: 18, fill: C.soft }) })
-    } else {
-      a += t((cx + 2) * P, (cy + 6) * P, 'WEATHER', { font: 'Pixel', size: 9, extra: ' letter-spacing="1"' }) + R(cx + 2, cy + 8, colW - 5, 0.5, C.rule)
-      a += bitmap(SNOW, cx + 12, cy + 12, { '#': C.blue }, 2) + t((cx + 25) * P, (cy + 21) * P, '-38°', { font: 'Pixelify', size: 44, fill: C.blueD })
-    }
-    n += a
-  }
+  // Left: two small ads. Middle: the weather, two rows tall. Right: two display ads.
+  const top = y + 40, cellH = rowH - 3
+  ADS.forEach((ad, i) => { const cy = top + i * rowH; n += frame(col(0) - 1, cy - 1, colW + 1, cellH, C.rule) + smallAd(col(0), cy, colW, ad, i === 0 ? C.red : C.ink) })
+  n += frame(col(1) - 1, top - 1, colW + 1, rowH + cellH, C.rule) + weatherCard(col(1), top, colW, rowH + cellH - 1)
+  n += darkAd(col(2) - 1, top - 1, colW + 1, cellH) + yellowAd(col(2) - 1, top + rowH - 1, colW + 1, cellH)
   // The WANTED ad, circled in red pen
-  const ex = x + 7 + colW / 2 - 0.5, ey = y + 40 + artH / 2 - 2
-  for (let k = 0; k < 120; k++) { const th = (k / 120) * Math.PI * 2.15 - 0.4, rr = 1 + 0.04 * Math.sin(k / 9); n += R(ex + Math.cos(th) * (colW / 2 + 4) * rr, ey + Math.sin(th) * (artH / 2 + 2) * rr, 1, 1, 'rgba(214,69,61,.75)') }
-  n += ring(x + w - 6, y + h - 3, 11)
+  const ex = col(0) + colW / 2 - 0.5, ey = top + rowH / 2 - 2
+  for (let k = 0; k < 120; k++) { const th = (k / 120) * Math.PI * 2.15 - 0.4, rr = 1 + 0.04 * Math.sin(k / 9); n += R(ex + Math.cos(th) * (colW / 2 + 4) * rr, ey + Math.sin(th) * (rowH / 2 + 2) * rr, 1, 1, 'rgba(214,69,61,.75)') }
   n += tilt(-35, x + 4, y + 2, tape(x - 8, y - 1, 24, 6, 'rgba(236,220,170,.85)'))
   o += tilt(-1.2, x + w / 2, y + h / 2, `<g class="in">${n}</g>`)
-  o += tilt(-7, 68, 12, polaroid(50, -11, 'the boss')) + tilt(5, 104, 150, gameBox(72, 124))
-  o += cd(168, 160) + tilt(-14, 46, 168, tapeDispenser(30, 160))
-  return { H: 182 * P, body: o, label: 'A newspaper open at the classifieds. ' + ADS.map(([k, d]) => `${k[0] + k.slice(1).toLowerCase()}: ${d}`).join(' ') + ' The wanted ad is circled in red pen, and the weather box says -38°. A polaroid of the cat, captioned the boss, lies on its top edge; a floppy disk lies on a clipping headlined Extreme cold, and a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under the paper, next to a CD and a tape dispenser.' }
+  o += tilt(14, 186, 46, glasses(172, 45)) + tilt(-20, 70, 60, paperclip(68, 54)) + tilt(-6, 162, 134, pencil(144, 132, 34))
+  o += tilt(16, 205, 120, rubiks(194, 108))
+  o += tilt(-7, 68, 12, polaroid(50, -11, 'the boss')) + tilt(5, 104, 156, gameBox(72, 130))
+  o += cd(168, 166) + tilt(-14, 46, 174, tapeDispenser(30, 166))
+  return { H: 188 * P, body: o, label: 'A newspaper open at the classifieds. ' + ADS.map(([k, d]) => `${k[0] + k.slice(1).toLowerCase()}: ${d}`).join(' ') + ' The wanted ad is circled in red pen. A tall weather box maps Ontario: ' + CITIES.map(([c, d]) => `${c} ${d}°`).join(', ') + '. Two boxed ads: Figma to code, same-day prototypes, real code, not mockups, ask for Maarib; and Now booking, product design for fintech and DeFi teams, maaribs.com. Reading glasses, a paperclip, a pencil and a scrambled Rubik\'s cube lie on the paper. A polaroid of the cat, captioned the boss, lies on its top edge; a floppy disk lies on a clipping headlined Extreme cold, and a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under the paper, next to a CD and a tape dispenser.' }
 }
 
 // ── Contact: envelope ────────────────────────────────────────────────────────
