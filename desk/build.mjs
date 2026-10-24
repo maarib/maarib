@@ -753,7 +753,7 @@ function stack() {
 }
 const eraserBox = (x, y) => box(x, y, 18, 9, '#f08a9a', '#f7b3be', '#c9606f') + R(x + 1, y + 1, 7, 7, C.blue) + R(x + 1, y + 1, 7, 1, C.blueL)
 
-// ── Classifieds: a newspaper page of small ads ───────────────────────────────
+// ── The Big 6ix Times: the back page of a newspaper, with small ads, the weather, a coupon and a crossword ───────────────────────────────
 const ADS = [
   ['WANTED', 'Hard problems in fintech and DeFi. Will design, prototype and ship.'],
   ['FOUND', 'Black cat. Answers to “the boss”. Will not be returned.'],
@@ -778,11 +778,11 @@ function weatherCard(cx, cy, cw, ch) {
   return a
 }
 // A scrambled Rubik's cube from above: nine stickers on the top face, and a strip of the front face
-function rubiks(x, y) {
-  const cols = { W: '#f4f4f0', Y: '#f7d23a', R: '#d6453d', O: '#f08a2a', B: '#3d6fd6', G: '#3fa45a' }, top = 'RWBYGOWRB', front = 'GOY'
-  let o = R(x + 1.5, y + 2, 22, 24, 'rgba(0,0,0,.35)') + R(x, y, 22, 24, '#141418')
-  for (let i = 0; i < 9; i++) { const sx = x + 1 + (i % 3) * 7, sy = y + 1 + Math.floor(i / 3) * 7; o += R(sx, sy, 6, 6, cols[top[i]]) + R(sx + 1, sy + 1, 2, 1, 'rgba(255,255,255,.45)') }
-  for (let i = 0; i < 3; i++) o += R(x + 1 + i * 7, y + 22, 6, 1.5, cols[front[i]]) + R(x + 1 + i * 7, y + 22, 6, 0.5, 'rgba(0,0,0,.25)')
+function rubiks(x, y, u = 9) {
+  const cols = { W: '#f4f4f0', Y: '#f7d23a', R: '#d6453d', O: '#f08a2a', B: '#3d6fd6', G: '#3fa45a' }, top = 'RWBYGOWRB', front = 'GOY', w = 3 * u + 1
+  let o = R(x + 1.5, y + 2, w, w + 2, 'rgba(0,0,0,.35)') + R(x, y, w, w + 2, '#141418')
+  for (let i = 0; i < 9; i++) { const sx = x + 1 + (i % 3) * u, sy = y + 1 + Math.floor(i / 3) * u; o += R(sx, sy, u - 1, u - 1, cols[top[i]]) + R(sx + 1, sy + 1, 2, 1, 'rgba(255,255,255,.45)') }
+  for (let i = 0; i < 3; i++) o += R(x + 1 + i * u, y + w, u - 1, 1.5, cols[front[i]]) + R(x + 1 + i * u, y + w, u - 1, 0.5, 'rgba(0,0,0,.25)')
   return o
 }
 // A crossword someone started, and a coupon half cut out
@@ -816,24 +816,24 @@ function classifieds() {
   o += tilt(9, 205, 126, receipt(186, 94)) + tilt(-10, 30, 156, note(4, 124, ['todo:', '- fewer meetings', '- more cats', '- ship it']))
   let n = box(x, y, w, h, C.paper, C.paperL, C.paperD)
   n += R(x + 6, y + 6, w - 12, 1, C.ink) + R(x + 6, y + 33, w - 12, 1, C.ink) + R(x + 6, y + 35, w - 12, 1, C.ink)
-  n += t(W / 2, (y + 27) * P, 'CLASSIFIEDS', { font: 'Pixelify', size: 56, anchor: 'middle' })
+  n += t(W / 2, (y + 27) * P, 'The Big 6ix Times', { font: 'Pixelify', size: 56, anchor: 'middle' })
   n += t((x + 8) * P, (y + 11) * P, 'VOL. XII', { font: 'Pixel', size: 8, fill: C.soft, extra: ' letter-spacing="1"' })
   n += t((x + w - 8) * P, (y + 11) * P, 'TORONTO, CANADA', { font: 'Pixel', size: 8, fill: C.soft, anchor: 'end', extra: ' letter-spacing="1"' })
-  // Left: two small ads. Middle: the weather, two rows tall. Right: the crossword and a coupon.
+  // Left: two small ads. Middle: the weather, two rows tall. Right: a coupon and the crossword.
   const top = y + 40, cellH = rowH - 3
   ADS.forEach((ad, i) => { const cy = top + i * rowH; n += frame(col(0) - 1, cy - 1, colW + 1, cellH, C.rule) + smallAd(col(0), cy, colW, ad, i === 0 ? C.red : C.ink) })
   n += frame(col(1) - 1, top - 1, colW + 1, rowH + cellH, C.rule) + weatherCard(col(1), top, colW, rowH + cellH - 1)
-  n += frame(col(2) - 1, top - 1, colW + 1, cellH, C.rule) + crossword(col(2), top, colW) + coupon(col(2) - 1, top + rowH - 1, colW + 1, cellH)
+  n += coupon(col(2) - 1, top - 1, colW + 1, cellH) + frame(col(2) - 1, top + rowH - 1, colW + 1, cellH, C.rule) + crossword(col(2), top + rowH, colW)
   // The WANTED ad, circled in red pen
   const ex = col(0) + colW / 2 - 0.5, ey = top + rowH / 2 - 2
   for (let k = 0; k < 120; k++) { const th = (k / 120) * Math.PI * 2.15 - 0.4, rr = 1 + 0.04 * Math.sin(k / 9); n += R(ex + Math.cos(th) * (colW / 2 + 4) * rr, ey + Math.sin(th) * (rowH / 2 + 2) * rr, 1, 1, 'rgba(214,69,61,.75)') }
   n += tilt(-35, x + 4, y + 2, tape(x - 8, y - 1, 24, 6, 'rgba(236,220,170,.85)'))
   o += tilt(-1.2, x + w / 2, y + h / 2, `<g class="in">${n}</g>`)
   o += tilt(-20, 70, 60, paperclip(68, 54)) + tilt(-6, 162, 134, pencil(144, 132, 34))
-  o += tilt(16, 211, 128, rubiks(200, 116))
+  o += tilt(14, 196, 141, rubiks(182, 126))
   o += tilt(-7, 68, 12, polaroid(50, -11, 'the boss')) + tilt(5, 104, 156, gameBox(72, 130))
   o += cd(168, 166) + tilt(-14, 46, 174, tapeDispenser(30, 166))
-  return { H: 188 * P, body: o, label: 'A newspaper open at the classifieds. ' + ADS.map(([k, d]) => `${k[0] + k.slice(1).toLowerCase()}: ${d}`).join(' ') + ' The wanted ad is circled in red pen. A tall weather box maps Ontario: ' + CITIES.map(([c, d]) => `${c} ${d}°`).join(', ') + '. Beside it, a crossword half filled in (Figma across, Font down) and a Clip & save coupon for one free design review, partly cut out. A paperclip, a pencil and a scrambled Rubik\'s cube lie on the paper. A polaroid of the cat, captioned the boss, lies on its top edge; a floppy disk lies on a clipping headlined Extreme cold, and a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under the paper, next to a CD and a tape dispenser.' }
+  return { H: 188 * P, body: o, label: 'A newspaper, The Big 6ix Times, open at its back page. ' + ADS.map(([k, d]) => `${k[0] + k.slice(1).toLowerCase()}: ${d}`).join(' ') + ' The wanted ad is circled in red pen. A tall weather box maps Ontario: ' + CITIES.map(([c, d]) => `${c} ${d}°`).join(', ') + '. Beside it, a crossword half filled in (Figma across, Font down) and a Clip & save coupon for one free design review, partly cut out. A paperclip, a pencil and a scrambled Rubik\'s cube lie on the paper. A polaroid of the cat, captioned the boss, lies on its top edge; a floppy disk lies on a clipping headlined Extreme cold, and a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under the paper, next to a CD and a tape dispenser.' }
 }
 
 // ── Contact: envelope ────────────────────────────────────────────────────────
