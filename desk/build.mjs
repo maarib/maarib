@@ -861,6 +861,13 @@ function ipad(top) {
   let o = round(x + 2, y + 3, w, h, r, 'rgba(0,0,0,.35)') + round(x, y, w, h, r, C.line) + round(x + 1, y + 1, w - 2, h - 2, r - 1, '#c3c7cf')
   o += R(x + 6, y + 1, w - 12, 0.5, '#e4e7ec') + round(x + 2, y + 2, w - 4, h - 4, r - 2, '#0b0b0e')
   o += R(x + w / 2 - 1, y + 3, 2, 1, '#1d2230') + R(x + w / 2 - 0.5, y + 3, 0.5, 0.5, '#3a4a6a')
+  // The home screen behind the terminal: a dusk wallpaper and the status bar
+  const sx = x + 5, sy = y + 5, sw = w - 10, sh = h - 10, bands = ['#1d2547', '#25305a', '#2f3c6c', '#3d4a7c', '#55598a', '#735f92', '#946795', '#b77490', '#d88a8a']
+  for (let j = 0; j < sh; j++) { const a = inset(j, sh, 3); o += R(sx + a, sy + j, sw - 2 * a, 1, bands[Math.min(bands.length - 1, Math.floor((j / sh) * bands.length))]) }
+  o += t((sx + 4) * P, (sy + 4.6) * P, '9:41', { font: 'Pixel', size: 7, fill: '#ffffff' }) + t((sx + 15) * P, (sy + 4.6) * P, 'Thu Oct 22', { font: 'Pixel', size: 6, fill: 'rgba(255,255,255,.8)' })
+  o += frame(sx + sw - 11, sy + 2, 7, 3.5, 'rgba(255,255,255,.85)') + R(sx + sw - 10, sy + 3, 4.5, 1.5, '#ffffff') + R(sx + sw - 4, sy + 3, 0.75, 1.5, 'rgba(255,255,255,.85)')
+  o += R(sx + sw - 20, sy + 4, 1, 1, '#fff') + R(sx + sw - 18.5, sy + 3.25, 1, 1.75, '#fff') + R(sx + sw - 17, sy + 2.5, 1, 2.5, '#fff') + R(sx + sw - 15.5, sy + 2, 1, 3, '#fff')
+  o += R(sx + sw / 2 - 12, sy + sh - 2, 24, 0.75, 'rgba(255,255,255,.7)')
   // Buttons on the edge: power on the top, volume on the right
   return o + R(x + 14, y - 0.5, 10, 0.5, C.line) + R(x + w, y + 12, 0.5, 8, C.line) + R(x + w, y + 22, 0.5, 8, C.line)
 }
@@ -876,7 +883,7 @@ const cameraOnTop = (top) => strap([[10, top + 108], [6, top + 114], [-2, top + 
 
 // ── Compose ──────────────────────────────────────────────────────────────────
 const heroInner = heroSvg().replace(/\.win \{ animation:[^}]*\}/, '').replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '')
-  .replace(/<g class="field"[\s\S]*?<\/g>/, '').replace(' filter="url(#sh)"', '')
+  .replace(/<g class="field"[\s\S]*?<\/g>/, '')
   // Keep the terminal's text styles to the terminal.
   .replace(/(^|[{}\s])text \{/g, '$1.term text {').replace('.cat .term text {', '.term .cat text {')
 const HERO_H = 490
@@ -886,7 +893,7 @@ const placed = pieces.map((p) => { const g = `<g transform="translate(0 ${y})">$
 const heroY = y
 const termProps = terminalProps(heroY / P)
 const H = y + HERO_H
-const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker, a retro camera with its strap, a plant, a cursor sticker and a GTA VI sticker, an iPad lying on the table runs a terminal that types whoami, Product designer who builds, then ./startproject; a loading bar fills and a black cat pops up and blinks.'
+const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker, a retro camera with its strap, a plant, a cursor sticker and a GTA VI sticker, an iPad lying on the table shows a terminal window floating over a dusk wallpaper; it types whoami, Product designer who builds, then ./startproject; a loading bar fills and a black cat pops up and blinks.'
 const page = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(label)}">
 <defs><style>${css}${FX_CSS}</style><clipPath id="desk"><rect width="${W}" height="${H}" rx="16"/></clipPath>${DEFS}</defs>
 <g clip-path="url(#desk)">
@@ -894,7 +901,7 @@ const page = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" wi
 <g shape-rendering="crispEdges">${placed.join('\n')}</g>
 <g shape-rendering="crispEdges">${termProps}</g>
 <g transform="rotate(-2 ${W / 2} ${heroY + 245})"><g shape-rendering="crispEdges">${ipad(heroY / P)}</g>
-<svg x="0" y="${heroY}" width="${W}" height="500" viewBox="0 0 900 500" class="term">${heroInner}</svg></g>
+<g transform="translate(450 ${heroY + 252}) scale(.78) translate(-450 ${-(heroY + 245)})"><svg x="0" y="${heroY}" width="${W}" height="500" viewBox="0 0 900 500" class="term">${heroInner}</svg></g></g>
 <g shape-rendering="crispEdges">${cameraOnTop(heroY / P)}</g>
 </g>
 </svg>
