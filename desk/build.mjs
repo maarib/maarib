@@ -144,7 +144,7 @@ function tape(x, y, w, h, c) {
 // Steam and smoke: strands of pixels, each bent into its own random zigzag, that drift up, sway and
 // dissolve from the top. Each strand has its own keyframes; its own seed keeps the desk's layout put.
 let FX_CSS = '', fxN = 0
-function wisps(cx, cy, { seed, n, len, px, amp, rise, dur, spread, colour, alpha }) {
+function wisps(cx, cy, { seed, n, len, px, amp, rise, dur, spread, colour, alpha, thick = 1 }) {
   let s = seed
   const r = () => (s = (s * 16807) % 2147483647) / 2147483647
   let o = ''
@@ -157,8 +157,8 @@ function wisps(cx, cy, { seed, n, len, px, amp, rise, dur, spread, colour, alpha
       x += step
       const f = j / len, a = alpha * (1 - f) ** 0.8
       if (f > 0.55 && r() < (f - 0.55) * 1.6) continue   // gaps where the top breaks up
-      const w = j < len * 0.3 && r() < 0.4 ? px * 2 : px
-      g += R(cx + ox + Math.round(x / px) * px, cy - j * px, w, px, `rgba(${colour},${a.toFixed(2)})`)
+      const w = px * Math.max(1, Math.round(thick * (1 - f * 0.6) + (r() < 0.3 ? 1 : 0)))
+      g += R(cx + ox + Math.round(x / px) * px - Math.floor(w / px / 2) * px, cy - j * px, w, px, `rgba(${colour},${a.toFixed(2)})`)
     }
     const dx = (r() - 0.5) * 6
     FX_CSS += `.${id}{animation:${id} ${dur}s ease-out ${(-(i / n) * dur).toFixed(2)}s infinite}@keyframes ${id}{0%{transform:translate(0,${(3 * P).toFixed(0)}px);opacity:0}20%{opacity:1}55%{transform:translate(${(dx * 0.3 * P).toFixed(1)}px,${(-rise * 0.45 * P).toFixed(1)}px);opacity:.85}100%{transform:translate(${(dx * P).toFixed(1)}px,${(-rise * P).toFixed(1)}px);opacity:0}}`
@@ -168,8 +168,8 @@ function wisps(cx, cy, { seed, n, len, px, amp, rise, dur, spread, colour, alpha
 }
 // Steam rising straight up from a cup, whichever way the cup is turned
 const steam = (cx, cy) => wisps(cx, cy - 6, { seed: 7, n: 5, len: 16, px: 1, amp: 1.1, rise: 12, dur: 3.6, spread: 16, colour: '255,255,255', alpha: 0.7 })
-// Thin smoke from a lit cigarette: one narrow source, finer pixels, a taller and more wandering trail
-const smoke = (cx, cy) => wisps(cx, cy, { seed: 11, n: 4, len: 44, px: 0.5, amp: 0.9, rise: 16, dur: 5, spread: 1, colour: '232,236,242', alpha: 0.85 })
+// Smoke from a lit cigarette: one narrow source, greyer, slower and taller than the steam
+const smoke = (cx, cy) => wisps(cx, cy, { seed: 11, n: 4, len: 24, px: 1, amp: 1.1, rise: 16, dur: 5, spread: 1, colour: '236,238,242', alpha: 0.9, thick: 2 })
 function mug(cx, cy, r = 18) {
   let o = box(cx + r - 5, cy - 5, 13, 10, C.white, '#ffffff', '#d8d4cc') + R(cx + r - 2, cy - 3, 5, 6, '#d8d4cc')
   o += disc(cx + 1.5, cy + 2, r, 'rgba(0,0,0,.35)') + disc(cx, cy, r, C.line) + disc(cx, cy, r - 1, C.white) + disc(cx, cy, r - 3, '#d8d4cc') + disc(cx, cy, r - 4, '#4a2a14') + disc(cx - 1, cy - 1, r - 6, '#5c3519')
@@ -748,45 +748,54 @@ function stack() {
   })
   o += tilt(-4, 60, 142, marker(30, 140, 50, C.red, C.redD)) + tilt(3, 130, 144, marker(100, 142, 50, C.blue, C.blueD))
   o += tilt(10, 172, 142, eraserBox(162, 138))
-  o += tilt(12, 205, 9, floppy(190, -6, ['#3d6fd6', '#6b95ea', '#2a4fa3'], 'BACKUP'))
   o += sticky(4, 8, 'STACK', -5)
-  return { H: 160 * P, body: o, label: 'Stack, as pixel-art logo stickers on a green cutting mat: Figma, Framer, Claude, Cursor, GitHub, React, Next.js, JavaScript, Tailwind CSS, ChatGPT, Miro, Maze, Notion and VS Code look new; Sketch, Photoshop, Illustrator, XD, Jira, Confluence and UserTesting are older, faded and peeling. A floppy disk lies on a newspaper clipping above it, and below it are two markers and an eraser.' }
+  return { H: 160 * P, body: o, label: 'Stack, as pixel-art logo stickers on a green cutting mat: Figma, Framer, Claude, Cursor, GitHub, React, Next.js, JavaScript, Tailwind CSS, ChatGPT, Miro, Maze, Notion and VS Code look new; Sketch, Photoshop, Illustrator, XD, Jira, Confluence and UserTesting are older, faded and peeling. Below it: two markers, an eraser and a floppy disk.' }
 }
 const eraserBox = (x, y) => box(x, y, 18, 9, '#f08a9a', '#f7b3be', '#c9606f') + R(x + 1, y + 1, 7, 7, C.blue) + R(x + 1, y + 1, 7, 1, C.blueL)
 
-// ── Side projects: a newspaper ───────────────────────────────────────────────
-const PROJECTS = [
-  ['Canopy', 'Fall colors across Canada, and what to explore in Ontario.', 'maarib.github.io/canopy'],
-  ['Leaf icons', 'Tree leaf icons, and a small SVG editor for their stems and layers.', 'maarib.github.io/leaf-icons'],
-  ['FPL Dashboard', 'Fantasy Premier League players, sortable and side by side.', 'maarib.github.io/fpl-dashboard'],
-  ['CardCompare', 'Canadian credit cards compared on fees, earn rates, insurance and perks.', 'github.com/maarib/card-compare'],
-  ['alert.engine', 'A stock and ETF watchlist with alerts, market briefs and sector exposure.', 'github.com/maarib/alert.engine'],
-  ['page-comments', 'A Claude Code skill for leaving notes on any web page.', 'github.com/maarib/page-comments'],
+// ── Classifieds: a newspaper page of small ads ───────────────────────────────
+const ADS = [
+  ['WANTED', 'Hard problems in fintech and DeFi. Will design, prototype and ship.'],
+  ['FOR HIRE', 'Product designer, 12+ years. Figma by day, code by night.'],
+  ['FOUND', 'Black cat. Answers to “the boss”. Will not be returned.'],
+  ['LOST', 'One Figma file, final_FINAL_v7. Reward: coffee.'],
+  ['FREE', 'Honest design feedback, fast. Inquire within.'],
 ]
 const wrap = (s, n) => s.split(' ').reduce((ls, w) => { const l = ls.at(-1); if ((l + ' ' + w).trim().length > n) ls.push(w); else ls[ls.length - 1] = (l + ' ' + w).trim(); return ls }, [''])
-function projects() {
+const SNOW = ['..#..', '#.#.#', '.###.', '#.#.#', '..#..']
+function classifieds() {
   const x = 8, y = 22, w = 209, colW = 62, gap = 4, artH = 31, h = 44 + 2 * artH + 2
-  let o = tilt(7, 186, 14, clipping(158, 2, 58, 24, 'EXTREME COLD, -38°')) + tilt(9, 205, 120, receipt(186, 88)) + tilt(-10, 30, 150, note(4, 118, ['todo:', '- fewer meetings', '- more cats', '- ship it']))
+  let o = tilt(7, 185, 7, clipping(156, -5, 58, 24, 'EXTREME COLD, -38°')) + tilt(-12, 202, -12, floppy(188, -26, ['#3d6fd6', '#6b95ea', '#2a4fa3'], 'BACKUP'))
+  o += tilt(9, 205, 120, receipt(186, 88)) + tilt(-10, 30, 150, note(4, 118, ['todo:', '- fewer meetings', '- more cats', '- ship it']))
   let n = box(x, y, w, h, C.paper, C.paperL, C.paperD)
   n += R(x + 6, y + 6, w - 12, 1, C.ink) + R(x + 6, y + 33, w - 12, 1, C.ink) + R(x + 6, y + 35, w - 12, 1, C.ink)
-  n += t(W / 2, (y + 27) * P, 'SIDE PROJECTS', { font: 'Pixelify', size: 56, anchor: 'middle' })
+  n += t(W / 2, (y + 27) * P, 'CLASSIFIEDS', { font: 'Pixelify', size: 56, anchor: 'middle' })
   n += t((x + 8) * P, (y + 11) * P, 'VOL. XII', { font: 'Pixel', size: 8, fill: C.soft, extra: ' letter-spacing="1"' })
   n += t((x + w - 8) * P, (y + 11) * P, 'TORONTO, CANADA', { font: 'Pixel', size: 8, fill: C.soft, anchor: 'end', extra: ' letter-spacing="1"' })
-  PROJECTS.forEach(([name, desc], i) => {
-    const cx = x + 7 + (i % 3) * (colW + gap + 1), cy = y + 42 + Math.floor(i / 3) * artH
-    let a = R(cx, cy - 2, colW, 1, C.rule)
-    if (i === 0) a += R(cx - 1, cy + 1, 27, 8, 'rgba(242,238,74,.7)')
-    a += t(cx * P, (cy + 7) * P, name, { font: 'Pixelify', size: 30 })
-    wrap(desc, 30).forEach((l, k) => { a += t(cx * P, (cy + 14 + k * 5) * P, l, { size: 19, fill: C.soft }) })
-    if (i % 3 < 2) a += R(cx + colW + 2, cy - 2, 1, artH - 3, C.rule)
+  // Six boxes: five small ads and the weather
+  for (let i = 0; i < 6; i++) {
+    const cx = x + 7 + (i % 3) * (colW + gap + 1), cy = y + 40 + Math.floor(i / 3) * artH
+    let a = frame(cx - 1, cy - 1, colW + 1, artH - 3, C.rule)
+    if (i < 5) {
+      const [kind, text] = ADS[i]
+      a += t((cx + 2) * P, (cy + 6) * P, kind, { font: 'Pixel', size: 9, fill: i === 0 ? C.red : C.ink, extra: ' letter-spacing="1"' }) + R(cx + 2, cy + 8, colW - 5, 0.5, C.rule)
+      wrap(text, 29).forEach((l, k) => { a += t((cx + 2) * P, (cy + 13.5 + k * 4.6) * P, l, { size: 18, fill: C.soft }) })
+    } else {
+      a += t((cx + 2) * P, (cy + 6) * P, 'WEATHER', { font: 'Pixel', size: 9, extra: ' letter-spacing="1"' }) + R(cx + 2, cy + 8, colW - 5, 0.5, C.rule)
+      a += bitmap(SNOW, cx + 3, cy + 11, { '#': C.blue }, 2) + t((cx + 16) * P, (cy + 19.5) * P, '-38°', { font: 'Pixelify', size: 44, fill: C.blueD })
+      a += t((cx + 2) * P, (cy + 25.5) * P, 'Toronto. Bring a toque.', { size: 18, fill: C.soft })
+    }
     n += a
-  })
+  }
+  // The WANTED ad, circled in red pen
+  const ex = x + 7 + colW / 2 - 0.5, ey = y + 40 + artH / 2 - 2
+  for (let k = 0; k < 120; k++) { const th = (k / 120) * Math.PI * 2.15 - 0.4, rr = 1 + 0.04 * Math.sin(k / 9); n += R(ex + Math.cos(th) * (colW / 2 + 4) * rr, ey + Math.sin(th) * (artH / 2 + 2) * rr, 1, 1, 'rgba(214,69,61,.75)') }
   n += ring(x + w - 6, y + h - 3, 11)
   n += tilt(-35, x + 4, y + 2, tape(x - 8, y - 1, 24, 6, 'rgba(236,220,170,.85)'))
   o += tilt(-1.2, x + w / 2, y + h / 2, `<g class="in">${n}</g>`)
   o += tilt(-7, 68, 12, polaroid(50, -11, 'the boss')) + tilt(5, 104, 150, gameBox(72, 124))
   o += cd(168, 160) + tilt(-14, 46, 168, tapeDispenser(30, 160))
-  return { H: 182 * P, body: o, label: 'Side projects, as a newspaper front page headed Side Projects. ' + PROJECTS.map(([n, d]) => `${n}: ${d}`).join(' ') + ' A polaroid of the cat, captioned the boss, lies on its top edge; a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under it, next to a CD and a tape dispenser.' }
+  return { H: 182 * P, body: o, label: 'A newspaper open at the classifieds. ' + ADS.map(([k, d]) => `${k[0] + k.slice(1).toLowerCase()}: ${d}`).join(' ') + ' The wanted ad is circled in red pen, and the weather box says -38° in Toronto, bring a toque. A polaroid of the cat, captioned the boss, lies on its top edge; a floppy disk lies on a clipping headlined Extreme cold, and a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under the paper, next to a CD and a tape dispenser.' }
 }
 
 // ── Contact: envelope ────────────────────────────────────────────────────────
@@ -870,7 +879,7 @@ const heroInner = heroSvg().replace(/\.win \{ animation:[^}]*\}/, '').replace(/^
   // Keep the terminal's text styles to the terminal.
   .replace(/(^|[{}\s])text \{/g, '$1.term text {').replace('.cat .term text {', '.term .cat text {')
 const HERO_H = 490
-const pieces = [about(), teams(), stack(), projects(), contact()]
+const pieces = [about(), teams(), stack(), classifieds(), contact()]
 let y = 0
 const placed = pieces.map((p) => { const g = `<g transform="translate(0 ${y})">${p.body}</g>`; y += p.H; return g })
 const heroY = y
