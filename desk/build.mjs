@@ -946,7 +946,7 @@ function terminalProps(top) {
   o += tilt(-12, 203, top + 104, pixelSticker(ARROW, { X: C.ink, y: '#f7e04a' }, 194, top + 90, 1.5))
   return o
 }
-// The camera lies over the iPad's edge, its lens resting on the bezel
+// The camera lies beside the iPad, its lens just short of the edge
 const cameraOnTop = (top) => strap([[10, top + 108], [6, top + 114], [-2, top + 112], [-10, top + 118]]) + strap([[21, top + 55], [17, top + 48], [6, top + 50], [-10, top + 44]]) + tilt(-78, 18, top + 82, camera(-7, top + 73))
 
 // ── Compose ──────────────────────────────────────────────────────────────────
@@ -970,7 +970,7 @@ const page = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" wi
 <g shape-rendering="crispEdges">${termProps}</g>
 <g transform="rotate(-2 ${W / 2} ${heroY + 245}) translate(450 ${heroY + 20}) scale(.9) translate(-450 ${-(heroY + 20)})"><g shape-rendering="crispEdges">${ipad(heroY / P)}</g>
 <g transform="translate(450 ${heroY + 252}) scale(.78) translate(-450 ${-(heroY + 245)})"><svg x="0" y="${heroY}" width="${W}" height="500" viewBox="0 0 900 500" class="term">${heroInner}</svg></g></g>
-<g shape-rendering="crispEdges" transform="translate(28 -12)">${cameraOnTop(heroY / P)}</g>
+<g shape-rendering="crispEdges" transform="translate(0 16)">${cameraOnTop(heroY / P)}</g>
 </g>
 </svg>
 `
