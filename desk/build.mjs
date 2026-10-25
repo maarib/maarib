@@ -396,18 +396,15 @@ function gameBox(x, y) {
   return o + t((x + w - 4) * P, (y + 42) * P, 'AGES 8+', { font: 'Pixel', size: 5, fill: '#dfe7ff', anchor: 'end' }) + R(x + 1, y + 1, 2, 1, '#6b95ea')
 }
 
-function gamepad(x, y) {
-  // A pad from above: rounded ends, shoulder buttons, D-pad, four face keys, select and start
-  const body = (dx, dy, c, g) => disc(x + 13 + dx, y + 13 + dy, 13 + g, c) + disc(x + 45 + dx, y + 13 + dy, 13 + g, c) + R(x + 13 + dx, y - g + dy, 32, 26 + 2 * g, c)
-  let o = cable([[x + 29, y], [x + 29, y - 14], [x + 52, y - 8], [x + 92, y - 40]], '#3a3d45')
-  o += keycap(x + 5, y - 1, 15, 6, 'mod') + keycap(x + 38, y - 1, 15, 6, 'mod')
-  o += body(1, 1.5, 'rgba(0,0,0,.35)', 1) + body(0, 0, C.line, 1) + body(0, 0, CASE[0], 0) + R(x + 13, y + 1, 32, 1, CASE[1]) + R(x + 13, y + 24, 32, 1, CASE[2])
-  o += disc(x + 13, y + 13, 9, '#bcc1c9') + disc(x + 45, y + 13, 10, '#bcc1c9')
-  o += keycap(x + 6, y + 11, 15, 5, 'mod') + keycap(x + 11, y + 6, 5, 15, 'mod') + R(x + 12, y + 12, 3, 3, '#4a4e5a')
-  o += keycap(x + 42, y + 4, 6, 6, 'blue', 'X', 5) + keycap(x + 49, y + 10, 6, 6, 'esc', 'A', 5) + keycap(x + 42, y + 16, 6, 6, 'yellow', 'B', 5) + keycap(x + 35, y + 10, 6, 6, 'green', 'Y', 5)
-  o += keycap(x + 22, y + 15, 6, 3, 'mod') + keycap(x + 30, y + 15, 6, 3, 'mod')
-  o += t((x + 29) * P, (y + 9) * P, 'PLAYER 1', { font: 'Pixel', size: 5, fill: '#7d8596', anchor: 'middle' })
-  return o + `<g class="blink">${R(x + 28, y + 21, 2, 1, C.green)}</g>`
+// A DualShock 4 from above, traced from a photo into a 64×41 grid (data/ds4.json): the light bar over
+// the touchpad, Share and Options, the D-pad and shape buttons in their dips, two sticks, the PS button
+// and the lighter rubber on the grip ends. The cable leaves from the top.
+const DS4 = JSON.parse(readFileSync(`${HERE}data/ds4.json`, 'utf8'))
+const DS4_PAL = { o: '#0d0f17', b: '#232838', h: '#2f3649', d: '#1a1e2b', g: '#394058', p: '#171b27', q: '#202535', L: '#4aa8ff', k: '#3a4156', K: '#4d5671', r: '#141722', s: '#0c0e15', t: '#272d3e', T: '#343b51', n: '#0d0f17', w: '#e8eaf0', G: '#3fd0a6', R: '#ff6b75', B: '#7fb6ff', M: '#f08ad0' }
+function ds4(x, y, s = 0.9) {
+  const shadow = Object.fromEntries(Object.keys(DS4_PAL).map((k) => [k, 'rgba(0,0,0,.35)'])), mid = x + 32 * s
+  const o = cable([[mid, y + 1], [mid, y - 12], [mid + 23, y - 6], [mid + 63, y - 38]], '#3a3d45')
+  return o + colourRuns(DS4, shadow, x + 1, y + 1.5, s) + colourRuns(DS4, DS4_PAL, x, y, s)
 }
 function mouse(cx, cy) {
   let o = ell(cx + 1, cy + 1.5, 12, 17, 'rgba(0,0,0,.35)') + ell(cx, cy, 12, 17, C.line) + ell(cx, cy, 11, 16, CASE[0]) + ell(cx - 1, cy - 1, 9, 14, CASE[1]) + ell(cx, cy + 1, 10, 14, CASE[0])
@@ -891,7 +888,7 @@ function contact() {
   let o = tilt(-6, 180, 80, clipping(146, 70, 52, 30, 'LETTERS TO THE EDITOR'))
   o += wire([[19, 104], [14, 84], [-18, 96], [-12, 132]]) + wire([[-12, 132], [-8, 180], [64, 182], [93, 161]])
   o += tilt(-8, 26, 46, phone(8, 18))
-  o += magicBall(194, 50)
+  o += magicBall(197, 62, 16)
   let e = `<g class="in">` + box(x, y, w, h, C.orange, C.orangeL, C.orangeD)
   for (let i = 0; i < 30; i++) e += R(x + 1 + i * 2, y + 1 + i, 2, 1, C.orangeD) + R(x + w - 3 - i * 2, y + 1 + i, 2, 1, C.orangeD)
   e += box(x + 18, y + 33, 84, 25, C.paperL, '#ffffff', C.paperD, { shadow: false })
@@ -906,10 +903,10 @@ function contact() {
   o += tilt(4, x + w / 2, y + h / 2, e)
   o += tilt(-5, 40, 120, walkman(12, 104))
   o += tilt(-4, 124, 122, headphones(124, 120))
-  o += tilt(-30, 206, 116, garmin(206, 116))
-  o += tilt(8, 190, 18, `<g class="in" style="animation-delay:.3s">${gamepad(161, 6)}</g>`)
+  o += tilt(-30, 206, 128, garmin(206, 128))
+  o += tilt(8, 190, 18, `<g class="in" style="animation-delay:.3s">${ds4(165, 1)}</g>`)
   o += sticky(98, 4, 'SAY HI', -4)
-  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a gamepad, a Magic 8 Ball, a tape player wired to a pair of black over-ear headphones and a black Garmin Instinct Tactical watch with its straps open, the buckle at the top.' }
+  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a black PS4 DualShock 4 controller, a Magic 8 Ball, a tape player wired to a pair of black over-ear headphones and a black Garmin Instinct Tactical watch with its straps open, the buckle at the top.' }
 }
 // The terminal runs on an iPad lying in landscape: a silver edge, a black bezel and the front camera.
 // Its screen sits exactly where the terminal window is drawn (hero coords 160,40 580×410).
