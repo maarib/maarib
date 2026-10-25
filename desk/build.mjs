@@ -443,24 +443,37 @@ function headphones(cx, cy) {
   return o + `<g class="blink" style="animation-duration:2.4s">${R(rcx + rx - 4, cy + ry - 7, 2, 1, C.green)}</g>`
 }
 // A small tactical watch, face up: olive straps on lugs, a ridged bezel with five pushers, a reflective face.
+// A Garmin Instinct Tactical from above: black straps with vent slots, the buckle and keeper on the top
+// strap, the tail of the bottom strap, a rugged case with corner bolts, side buttons and a round screen.
 function garmin(cx, cy) {
-  const olive = '#4b513f', oliveD = '#383d2f', oliveL = '#5d6450', r = 13
-  let o = R(cx - 6, cy - 33, 12, 22, C.line) + R(cx - 4, cy - 35, 8, 2, C.line) + R(cx - 5, cy - 33, 10, 22, olive) + R(cx - 3, cy - 34, 6, 1, olive) + R(cx - 5, cy - 33, 1, 22, oliveL) + R(cx + 4, cy - 33, 1, 22, oliveD)
-  for (let i = 0; i < 4; i++) o += R(cx - 1, cy - 30 + i * 4, 2, 2, oliveD)
-  o += R(cx - 6, cy + 11, 12, 20, C.line) + R(cx - 5, cy + 11, 10, 20, olive) + R(cx - 5, cy + 11, 1, 20, oliveL) + R(cx + 4, cy + 11, 1, 20, oliveD)
-  o += R(cx - 6, cy + 20, 12, 3, oliveD) + R(cx - 6, cy + 20, 12, 1, oliveL)
-  o += frame(cx - 7, cy + 30, 14, 6, C.line) + frame(cx - 6, cy + 31, 12, 4, C.metal) + R(cx - 0.5, cy + 31, 1, 3, C.metalL)
-  o += R(cx - 7, cy - 14, 14, 4, C.line) + R(cx - 6, cy - 13, 12, 2, '#3f4346') + R(cx - 7, cy + 10, 14, 4, C.line) + R(cx - 6, cy + 11, 12, 2, '#3f4346')
-  // Pushers tucked under the case: only their ends poke out past the bezel
-  for (const [deg, red] of [[150, 0], [180, 0], [210, 0], [325, 1], [35, 0]]) {
-    const a = deg * Math.PI / 180, px = cx + Math.cos(a) * (r + 0.2), py = cy + Math.sin(a) * (r + 0.2)
-    o += R(px - 2, py - 1.5, 4, 3, C.line) + R(px - 1.2, py - 0.8, 2.4, 1.6, red ? C.red : C.metalD)
+  const st = '#2a2b2f', stD = '#1b1c1f', stL = '#3b3d42', r = 12
+  // Straps, with a raised rail down the middle and a column of slots
+  const strap = (y0, len, tip) => {
+    let o = R(cx - 6, y0, 12, len, C.line) + R(cx - 5, y0, 10, len, st) + R(cx - 5, y0, 1, len, stL) + R(cx + 4, y0, 1, len, stD)
+    for (let y = y0 + 2; y < y0 + len - 2; y += 3) o += R(cx - 2.5, y, 5, 1.5, stD) + R(cx - 2.5, y + 1.5, 5, 0.5, stL)
+    if (tip) o += R(cx - 5, y0 + len, 10, 1, C.line) + R(cx - 4, y0 + len + 1, 8, 1, C.line) + R(cx - 4, y0 + len, 8, 1, st)
+    return o
   }
-  o += disc(cx + 1, cy + 1.5, r, 'rgba(0,0,0,.35)') + disc(cx, cy, r, C.line) + disc(cx, cy, r - 1, '#3f4346')
-  for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6; o += R(cx + Math.round(Math.cos(a) * (r - 2)) - 0.5, cy + Math.round(Math.sin(a) * (r - 2)) - 0.5, 1, 1, k % 3 ? '#5a5f66' : '#d6dbe3') }
-  o += disc(cx, cy, r - 3, C.line) + disc(cx, cy, r - 4, '#c9d2b8') + R(cx - 6, cy - 6, 3, 1, 'rgba(255,255,255,.5)')
-  o += t(cx * P, (cy + 1.6) * P, '09:41', { font: 'Pixel', size: 8, fill: '#1e2418', anchor: 'middle' })
-  return o + t(cx * P, (cy + 6) * P, '8,412', { size: 12, fill: '#4a5340', anchor: 'middle' }) + R(cx - 4, cy - 6, 8, 1, C.red)
+  let o = strap(cy - 40, 26, false) + strap(cy + 14, 28, true)
+  // Top strap: the buckle frame at its end, the tang across it, and a keeper loop just below
+  o += frame(cx - 7, cy - 46, 14, 7, C.line) + frame(cx - 6, cy - 45, 12, 5, '#55595f') + R(cx - 5, cy - 44, 10, 3, stD) + R(cx - 0.5, cy - 46, 1, 6, '#7d828a')
+  o += R(cx - 7, cy - 38, 14, 3, C.line) + R(cx - 6, cy - 37.5, 12, 2, '#222326') + R(cx - 6, cy - 37.5, 12, 0.5, stL)
+  // Lugs and the rugged case: a chamfered block with a bolt in each corner
+  o += R(cx - 8, cy - 16, 16, 4, C.line) + R(cx - 7, cy - 15, 14, 2, '#26272b') + R(cx - 8, cy + 12, 16, 4, C.line) + R(cx - 7, cy + 13, 14, 2, '#26272b')
+  for (const [deg, red] of [[160, 0], [200, 0], [340, 1], [20, 0], [180, 0]]) {
+    const a = deg * Math.PI / 180, px = cx + Math.cos(a) * (r + 2.5), py = cy + Math.sin(a) * (r + 2.5)
+    o += R(px - 1.5, py - 1.5, 3, 3, C.line) + R(px - 0.8, py - 0.8, 1.6, 1.6, red ? C.red : '#55595f')
+  }
+  for (let j = -14; j < 14; j++) { const a = Math.max(0, Math.abs(j + 0.5) - 9.5); o += R(cx - 14 + a, cy + j, 28 - 2 * a, 1, C.line) }
+  for (let j = -13; j < 13; j++) { const a = Math.max(0, Math.abs(j + 0.5) - 8.5); o += R(cx - 13 + a, cy + j, 26 - 2 * a, 1, '#26272b') }
+  for (const [bx, by] of [[-10, -10], [9, -10], [-10, 9], [9, 9]]) o += R(cx + bx, cy + by, 2, 2, '#6a6e75') + R(cx + bx, cy + by, 1, 1, '#9aa0a8')
+  // Bezel, screen, and the small sub-dial at the top right
+  o += disc(cx + 1, cy + 1.5, r, 'rgba(0,0,0,.3)') + disc(cx, cy, r, '#1a1b1e') + disc(cx, cy, r - 2, '#3a403d')
+  o += R(cx - 5, cy - 6, 3, 1, 'rgba(255,255,255,.25)')
+  o += disc(cx + 4.5, cy - 4.5, 3.5, '#d9e0d6') + disc(cx + 4.5, cy - 4.5, 2.8, '#3a403d') + t((cx + 4.5) * P, (cy - 3.6) * P, 'SAT', { size: 9, fill: '#d9e0d6', anchor: 'middle' })
+  o += t((cx - 3) * P, (cy - 3.6) * P, '68', { size: 11, fill: '#d9e0d6', anchor: 'middle' }) + R(cx - 7, cy - 0.5, 14, 0.5, '#5d6560')
+  o += t(cx * P, (cy + 4.4) * P, '9:41', { font: 'Pixel', size: 9, fill: '#e8eee4', anchor: 'middle' })
+  return o + t(cx * P, (cy + 8.2) * P, 'TACTICAL', { size: 8, fill: '#9aa39a', anchor: 'middle' })
 }
 function plant(cx, cy) {
   let o = disc(cx + 1.5, cy + 2, 16, 'rgba(0,0,0,.35)') + disc(cx, cy, 16, C.line) + disc(cx, cy, 15, '#d98450') + disc(cx, cy, 13, '#b5612f') + disc(cx, cy, 12, '#4a2f1c')
@@ -891,7 +904,7 @@ function contact() {
   o += tilt(-30, 206, 116, garmin(206, 116))
   o += tilt(8, 190, 18, `<g class="in" style="animation-delay:.3s">${gamepad(161, 6)}</g>`)
   o += sticky(98, 4, 'SAY HI', -4)
-  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a gamepad, a Magic 8 Ball, a tape player wired to a pair of black over-ear headphones and a tactical watch with its straps open.' }
+  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a gamepad, a Magic 8 Ball, a tape player wired to a pair of black over-ear headphones and a black Garmin Instinct Tactical watch with its straps open, the buckle at the top.' }
 }
 // The terminal runs on an iPad lying in landscape: a silver edge, a black bezel and the front camera.
 // Its screen sits exactly where the terminal window is drawn (hero coords 160,40 580×410).
