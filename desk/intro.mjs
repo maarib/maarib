@@ -9,7 +9,7 @@ const b64 = (p) => readFileSync(p).toString('base64')
 const face = (family, file, style = 'normal') => `@font-face{font-family:'${family}';font-style:${style};src:url(data:font/woff2;base64,${b64(file)}) format('woff2')}`
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-export const WORDS = ['product', 'founding', 'fun-doing', 'web', 'digital', 'lead', 'full-stack', 'principal', 'cat-approved']
+export const WORDS = ['product', 'founding', 'graphic', 'web', 'digital', 'lead', 'full-stack', 'principal', 'cat-approved', 'front-end']
 const W = 900, H = 142, X0 = 2, FS = 42, CW = FS * 0.6, PAD = 14, GAP = 0, CH = 58, CY = 72
 const HOLD = 2.6, FLIP = 0.09, STEPS = 6
 const THEMES = {
