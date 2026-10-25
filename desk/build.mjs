@@ -467,7 +467,7 @@ function garmin(cx, cy) {
   // Lugs, then the side buttons poking out from under the case
   o += R(cx - 8, cy - 16, 16, 4, C.line) + R(cx - 7, cy - 15, 14, 2, '#26272b') + R(cx - 8, cy + 12, 16, 4, C.line) + R(cx - 7, cy + 13, 14, 2, '#26272b')
   for (const [deg, red] of [[155, 0], [180, 0], [205, 0], [335, 1], [25, 0]]) {
-    const a = deg * Math.PI / 180, px = cx + Math.cos(a) * (r + 0.5), py = cy + Math.sin(a) * (r + 0.5)
+    const a = deg * Math.PI / 180, px = cx + Math.cos(a) * (r - 0.5), py = cy + Math.sin(a) * (r - 0.5)
     o += R(px - 2, py - 1.5, 4, 3, C.line) + R(px - 1.2, py - 0.8, 2.4, 1.6, red ? C.red : '#55595f')
   }
   // Round case with a raised bumper ring, four bolts on the diagonals, a bezel and the screen
@@ -475,8 +475,9 @@ function garmin(cx, cy) {
   o += R(cx - 7, cy - 11, 5, 1, '#3d3f44') + R(cx - 10, cy - 7, 1, 4, '#3d3f44')
   for (const k of [1, 3, 5, 7]) { const a = k * Math.PI / 4, bx = cx + Math.cos(a) * (r - 2) - 1, by = cy + Math.sin(a) * (r - 2) - 1; o += R(bx, by, 2, 2, C.line) + R(bx + 0.5, by + 0.5, 1, 1, '#8a9098') }
   o += disc(cx, cy, r - 4, '#141517') + disc(cx, cy, r - 5, '#3a403d') + R(cx - 5, cy - 6, 3, 1, 'rgba(255,255,255,.22)')
-  const ty = (cy + 2.2) * P, time = { font: 'Pixel', size: 11, fill: '#e8eee4' }
-  o += t((cx - 0.9) * P, ty, '9', { ...time, anchor: 'end' }) + `<g class="blink">${t(cx * P, ty, ':', { ...time, anchor: 'middle' })}</g>` + t((cx + 0.9) * P, ty, '41', time)
+  // The pixel font is monospaced (one em per character), so "9:41" can be centred exactly, colon and all
+  const em = 11 / P, tx = cx - 2 * em + em / 16, ty = (cy + 1.3) * P, time = { font: 'Pixel', size: 11, fill: '#e8eee4' }
+  o += t(tx * P, ty, '9', time) + `<g class="blink">${t((tx + em) * P, ty, ':', time)}</g>` + t((tx + 2 * em) * P, ty, '41', time)
   return `<g transform="translate(${cx * P} ${cy * P}) scale(.88) translate(${-cx * P} ${-cy * P})">${o}</g>`
 }
 function plant(cx, cy) {
