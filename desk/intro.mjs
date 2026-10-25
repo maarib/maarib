@@ -3,7 +3,8 @@
 // Transparent, so there's a light and a dark version for GitHub's two themes.
 // Run: npm run build  (writes ../assets/intro-light.svg and intro-dark.svg)
 import { readFileSync, writeFileSync } from 'node:fs'
-const HERE = new URL('.', import.meta.url).pathname
+import { fileURLToPath } from 'node:url'
+const HERE = fileURLToPath(new URL('.', import.meta.url))
 const FONTS = `${HERE}node_modules/@fontsource`
 const b64 = (p) => readFileSync(p).toString('base64')
 const face = (family, file, style = 'normal') => `@font-face{font-family:'${family}';font-style:${style};src:url(data:font/woff2;base64,${b64(file)}) format('woff2')}`

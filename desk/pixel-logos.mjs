@@ -1,8 +1,9 @@
 // Rasterize each tool logo to an N×N pixel grid (Chromium canvas), for pixel-art stickers.
 import { readFileSync, writeFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 // Run: npm run logos  (needs a Chromium; set CHROMIUM_PATH if it isn't found)
 import { chromium } from 'playwright-core'
-const HERE = new URL('.', import.meta.url).pathname
+const HERE = fileURLToPath(new URL('.', import.meta.url))
 const N = 18
 const names = ['figma', 'framer', 'sketch', 'cursor', 'vs-code', 'github', 'react', 'nextjs', 'claude', 'chatgpt', 'miro', 'maze', 'usertesting', 'jira', 'confluence', 'notion', 'photoshop', 'illustrator', 'xd', 'javascript', 'tailwind', 'linkedin', 'dribbble', 'storybook']
 const svgs = Object.fromEntries(names.map((n) => [n, readFileSync(`${HERE}data/logos/${n}.svg`, 'utf8')]))

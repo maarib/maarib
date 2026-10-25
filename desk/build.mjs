@@ -3,8 +3,9 @@
 // surrounded by clutter, with the launch terminal at the end. Pixel art at 4 screen px per art px.
 // Run: npm install && npm run build  (writes ../assets/desk.svg)
 import { readFileSync, writeFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { heroSvg } from './hero.mjs'
-const HERE = new URL('.', import.meta.url).pathname
+const HERE = fileURLToPath(new URL('.', import.meta.url))
 const FONTS = `${HERE}node_modules/@fontsource`
 const b64 = (p) => readFileSync(p).toString('base64')
 const face = (family, file) => `@font-face{font-family:'${family}';src:url(data:font/woff2;base64,${b64(file)}) format('woff2')}`

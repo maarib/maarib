@@ -2,8 +2,9 @@
 // for the passport's top corner. The flag over the last "a" is drawn by hand in build.mjs.
 // Run: npm run wordmark  (needs a Chromium; set CHROMIUM_PATH if it isn't found)
 import { readFileSync, writeFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright-core'
-const HERE = new URL('.', import.meta.url).pathname
+const HERE = fileURLToPath(new URL('.', import.meta.url))
 const font = readFileSync(`${HERE}node_modules/@fontsource/libre-baskerville/files/libre-baskerville-latin-700-normal.woff2`).toString('base64')
 const SIZE = +(process.env.SIZE || 14)
 // Alpha above which a pixel counts as ink; low enough that the thin hairlines stay joined

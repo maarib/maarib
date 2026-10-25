@@ -2,8 +2,9 @@
 // Each clipping is its own image so the README can link it (links inside an image don't work).
 // Run: npm run build  (writes ../assets/projects/*.svg)
 import { mkdirSync, writeFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { P, C, R, box, t, wrap, seeded, svg } from './pixel.mjs'
-const HERE = new URL('.', import.meta.url).pathname
+const HERE = fileURLToPath(new URL('.', import.meta.url))
 const OUT = `${HERE}../assets/projects`
 mkdirSync(OUT, { recursive: true })
 

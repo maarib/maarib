@@ -1,7 +1,8 @@
 // Shared drawing helpers for the smaller images (side project clippings, Say hi keys).
 // Same pixel grid as the desk: 4 screen px per art px.
 import { readFileSync } from 'node:fs'
-const HERE = new URL('.', import.meta.url).pathname
+import { fileURLToPath } from 'node:url'
+const HERE = fileURLToPath(new URL('.', import.meta.url))
 const FONTS = `${HERE}node_modules/@fontsource`
 const b64 = (p) => readFileSync(p).toString('base64')
 const face = (family, file) => `@font-face{font-family:'${family}';src:url(data:font/woff2;base64,${b64(file)}) format('woff2')}`

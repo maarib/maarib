@@ -1,7 +1,8 @@
 // The launch terminal at the end of the desk: types whoami and npm install maarib, lists the packages,
 // then a cat drawn in characters pops up from the bottom and blinks. build.mjs nests it in the desk.
 import { readFileSync } from 'node:fs'
-const HERE = new URL('.', import.meta.url).pathname
+import { fileURLToPath } from 'node:url'
+const HERE = fileURLToPath(new URL('.', import.meta.url))
 const FONTS = `${HERE}node_modules/@fontsource`
 const b64 = (p) => readFileSync(p).toString('base64')
 const face = (family, file, style = 'normal', weight = 400) => `@font-face{font-family:'${family}';font-style:${style};font-weight:${weight};src:url(data:font/woff2;base64,${b64(file)}) format('woff2')}`

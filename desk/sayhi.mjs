@@ -2,8 +2,9 @@
 // desk keyboard's style. Each key is its own image so the README can link it.
 // Run: npm run build  (writes ../assets/sayhi/*.svg)
 import { mkdirSync, writeFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { P, C, R, box, disc, frame, t, logo, svg } from './pixel.mjs'
-const HERE = new URL('.', import.meta.url).pathname
+const HERE = fileURLToPath(new URL('.', import.meta.url))
 const OUT = `${HERE}../assets/sayhi`
 mkdirSync(OUT, { recursive: true })
 
