@@ -25,7 +25,9 @@ You'll need Node 22 or later.
 | `pixel.mjs` | Drawing helpers shared by the three above |
 | `pixel-logos.mjs` | Shrinks the logos in `data/logos/` down to 18×18 pixel grids |
 | `pixel-wordmark.mjs` | Turns "Canada" into the pixel wordmark on the passport |
-| `data/` | The cat (as pixels and as text), my passport portrait (62×74 at half-pixel size: ink lines in `me-pixels`, coloured in `me-colour`, closed eyes for the blink in `me-blink`), the logos and their pixel versions, and the Canada wordmark |
+| `tools/shot.mjs` | Takes screenshots of a built image the way GitHub shows it, cropped and zoomed, to check a change. It can also take a few frames in a row to catch an animation partway through |
+| `tools/ds4-trace.py` | Traces the PS4 controller from a top-down photo into `data/ds4.json`. Needs Python with Pillow |
+| `data/` | The cat (as pixels and as text), my passport portrait (62×74 at half-pixel size: ink lines in `me-pixels`, coloured in `me-colour`, closed eyes for the blink in `me-blink`), the logos and their pixel versions, the Canada wordmark, and the PS4 controller |
 
 ## Adding a sticker
 
@@ -35,4 +37,4 @@ When I pick up a new tool, here's how it gets a sticker:
 2. Run `npm run logos`
 3. Add it to `TOOLS` in `build.mjs` and run `npm run build`
 
-`npm run logos` needs Chromium. If Playwright can't find it, set `CHROMIUM_PATH`.
+`npm run logos` and `tools/shot.mjs` need Chromium. If Playwright can't find it, set `CHROMIUM_PATH`.
