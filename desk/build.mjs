@@ -443,14 +443,20 @@ function headphones(cx, cy) {
   return o + `<g class="blink" style="animation-duration:2.4s">${R(rcx + rx - 4, cy + ry - 7, 2, 1, C.green)}</g>`
 }
 // A small tactical watch, face up: olive straps on lugs, a ridged bezel with five pushers, a reflective face.
-// A Garmin Instinct Tactical from above: black straps with vent slots, the buckle and keeper on the top
-// strap, the tail of the bottom strap, a rugged case with corner bolts, side buttons and a round screen.
+// A Garmin Instinct Tactical from above: black straps with open vent slots (the desk shows through),
+// the buckle and keeper on the top strap, a round rugged case with four bolts and side buttons, and a
+// screen showing only the time, its colon blinking. Drawn a touch smaller than the art grid.
 function garmin(cx, cy) {
-  const st = '#2a2b2f', stD = '#1b1c1f', stL = '#3b3d42', r = 12
-  // Straps, with a raised rail down the middle and a column of slots
+  const st = '#2a2b2f', stD = '#1b1c1f', stL = '#3b3d42', r = 13
+  // A strap is drawn row by row so the slots stay open; each slot gets a thin shadow at its top
   const strap = (y0, len, tip) => {
-    let o = R(cx - 6, y0, 12, len, C.line) + R(cx - 5, y0, 10, len, st) + R(cx - 5, y0, 1, len, stL) + R(cx + 4, y0, 1, len, stD)
-    for (let y = y0 + 2; y < y0 + len - 2; y += 3) o += R(cx - 2.5, y, 5, 1.5, stD) + R(cx - 2.5, y + 1.5, 5, 0.5, stL)
+    let o = R(cx - 6, y0, 1, len, C.line) + R(cx + 5, y0, 1, len, C.line)
+    for (let y = y0; y < y0 + len; y += 0.5) {
+      const k = (y - y0 - 2) % 3, slot = y >= y0 + 2 && y < y0 + len - 2 && k >= 0 && k < 1.5
+      if (slot) o += R(cx - 5, y, 2.5, 0.5, st) + R(cx + 2.5, y, 2.5, 0.5, st) + (k === 0 ? R(cx - 2.5, y, 5, 0.5, 'rgba(0,0,0,.35)') : '')
+      else o += R(cx - 5, y, 10, 0.5, st)
+    }
+    o += R(cx - 5, y0, 0.5, len, stL) + R(cx + 4.5, y0, 0.5, len, stD)
     if (tip) o += R(cx - 5, y0 + len, 10, 1, C.line) + R(cx - 4, y0 + len + 1, 8, 1, C.line) + R(cx - 4, y0 + len, 8, 1, st)
     return o
   }
@@ -458,22 +464,20 @@ function garmin(cx, cy) {
   // Top strap: the buckle frame at its end, the tang across it, and a keeper loop just below
   o += frame(cx - 7, cy - 46, 14, 7, C.line) + frame(cx - 6, cy - 45, 12, 5, '#55595f') + R(cx - 5, cy - 44, 10, 3, stD) + R(cx - 0.5, cy - 46, 1, 6, '#7d828a')
   o += R(cx - 7, cy - 38, 14, 3, C.line) + R(cx - 6, cy - 37.5, 12, 2, '#222326') + R(cx - 6, cy - 37.5, 12, 0.5, stL)
-  // Lugs and the rugged case: a chamfered block with a bolt in each corner
+  // Lugs, then the side buttons poking out from under the case
   o += R(cx - 8, cy - 16, 16, 4, C.line) + R(cx - 7, cy - 15, 14, 2, '#26272b') + R(cx - 8, cy + 12, 16, 4, C.line) + R(cx - 7, cy + 13, 14, 2, '#26272b')
-  for (const [deg, red] of [[160, 0], [200, 0], [340, 1], [20, 0], [180, 0]]) {
-    const a = deg * Math.PI / 180, px = cx + Math.cos(a) * (r + 2.5), py = cy + Math.sin(a) * (r + 2.5)
-    o += R(px - 1.5, py - 1.5, 3, 3, C.line) + R(px - 0.8, py - 0.8, 1.6, 1.6, red ? C.red : '#55595f')
+  for (const [deg, red] of [[155, 0], [180, 0], [205, 0], [335, 1], [25, 0]]) {
+    const a = deg * Math.PI / 180, px = cx + Math.cos(a) * (r + 0.5), py = cy + Math.sin(a) * (r + 0.5)
+    o += R(px - 2, py - 1.5, 4, 3, C.line) + R(px - 1.2, py - 0.8, 2.4, 1.6, red ? C.red : '#55595f')
   }
-  for (let j = -14; j < 14; j++) { const a = Math.max(0, Math.abs(j + 0.5) - 9.5); o += R(cx - 14 + a, cy + j, 28 - 2 * a, 1, C.line) }
-  for (let j = -13; j < 13; j++) { const a = Math.max(0, Math.abs(j + 0.5) - 8.5); o += R(cx - 13 + a, cy + j, 26 - 2 * a, 1, '#26272b') }
-  for (const [bx, by] of [[-10, -10], [9, -10], [-10, 9], [9, 9]]) o += R(cx + bx, cy + by, 2, 2, '#6a6e75') + R(cx + bx, cy + by, 1, 1, '#9aa0a8')
-  // Bezel, screen, and the small sub-dial at the top right
-  o += disc(cx + 1, cy + 1.5, r, 'rgba(0,0,0,.3)') + disc(cx, cy, r, '#1a1b1e') + disc(cx, cy, r - 2, '#3a403d')
-  o += R(cx - 5, cy - 6, 3, 1, 'rgba(255,255,255,.25)')
-  o += disc(cx + 4.5, cy - 4.5, 3.5, '#d9e0d6') + disc(cx + 4.5, cy - 4.5, 2.8, '#3a403d') + t((cx + 4.5) * P, (cy - 3.6) * P, 'SAT', { size: 9, fill: '#d9e0d6', anchor: 'middle' })
-  o += t((cx - 3) * P, (cy - 3.6) * P, '68', { size: 11, fill: '#d9e0d6', anchor: 'middle' }) + R(cx - 7, cy - 0.5, 14, 0.5, '#5d6560')
-  o += t(cx * P, (cy + 4.4) * P, '9:41', { font: 'Pixel', size: 9, fill: '#e8eee4', anchor: 'middle' })
-  return o + t(cx * P, (cy + 8.2) * P, 'TACTICAL', { size: 8, fill: '#9aa39a', anchor: 'middle' })
+  // Round case with a raised bumper ring, four bolts on the diagonals, a bezel and the screen
+  o += disc(cx + 1, cy + 1.5, r, 'rgba(0,0,0,.35)') + disc(cx, cy, r, C.line) + disc(cx, cy, r - 1, '#2c2d31') + disc(cx, cy, r - 3, '#202124')
+  o += R(cx - 7, cy - 11, 5, 1, '#3d3f44') + R(cx - 10, cy - 7, 1, 4, '#3d3f44')
+  for (const k of [1, 3, 5, 7]) { const a = k * Math.PI / 4, bx = cx + Math.cos(a) * (r - 2) - 1, by = cy + Math.sin(a) * (r - 2) - 1; o += R(bx, by, 2, 2, C.line) + R(bx + 0.5, by + 0.5, 1, 1, '#8a9098') }
+  o += disc(cx, cy, r - 4, '#141517') + disc(cx, cy, r - 5, '#3a403d') + R(cx - 5, cy - 6, 3, 1, 'rgba(255,255,255,.22)')
+  const ty = (cy + 2.2) * P, time = { font: 'Pixel', size: 11, fill: '#e8eee4' }
+  o += t((cx - 0.9) * P, ty, '9', { ...time, anchor: 'end' }) + `<g class="blink">${t(cx * P, ty, ':', { ...time, anchor: 'middle' })}</g>` + t((cx + 0.9) * P, ty, '41', time)
+  return `<g transform="translate(${cx * P} ${cy * P}) scale(.88) translate(${-cx * P} ${-cy * P})">${o}</g>`
 }
 function plant(cx, cy) {
   let o = disc(cx + 1.5, cy + 2, 16, 'rgba(0,0,0,.35)') + disc(cx, cy, 16, C.line) + disc(cx, cy, 15, '#d98450') + disc(cx, cy, 13, '#b5612f') + disc(cx, cy, 12, '#4a2f1c')
