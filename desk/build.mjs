@@ -404,7 +404,18 @@ const DS4_PAL = { o: '#0d0f17', b: '#232838', h: '#2f3649', d: '#1a1e2b', g: '#3
 function ds4(x, y, s = 0.9) {
   const shadow = Object.fromEntries(Object.keys(DS4_PAL).map((k) => [k, 'rgba(0,0,0,.35)'])), mid = x + 32 * s
   const o = cable([[mid, y + 1], [mid, y - 12], [mid + 23, y - 6], [mid + 63, y - 38]], '#3a3d45')
-  return o + colourRuns(DS4, shadow, x + 1, y + 1.5, s) + colourRuns(DS4, DS4_PAL, x, y, s)
+  return o + colourRuns(DS4, shadow, x + 1, y + 1.5, s) + colourRuns(DS4, DS4_PAL, x, y, s) + lightSweep(x, y, s)
+}
+// A PS5-style sweep along the light bar: a bright patch steps across it a pixel at a time, with a faint
+// glow on the desk just above it, then the bar rests for a few seconds. Still for reduced motion.
+function lightSweep(x, y, s) {
+  const j = DS4.findIndex((r) => r.includes('L')), a = DS4[j].indexOf('L'), b = DS4[j].lastIndexOf('L'), n = b - a + 1, seg = 4
+  const bx = x + a * s, by = y + j * s, dist = (n - seg) * s * P
+  FX_CSS += `.ds4sweep{animation:ds4sweep 5s infinite}@keyframes ds4sweep{0%{transform:translateX(0);opacity:1;animation-timing-function:steps(${n - seg})}34%{transform:translateX(${dist.toFixed(1)}px);opacity:1}35%,100%{transform:translateX(${dist.toFixed(1)}px);opacity:0}}`
+  FX_CSS += '@media (prefers-reduced-motion: reduce){.ds4sweep{animation:none;opacity:0}}'
+  const glow = R(bx - s, by - 2 * s, (seg + 2) * s, 2 * s, 'rgba(110,190,255,.18)') + R(bx, by - s, seg * s, s, 'rgba(140,205,255,.28)')
+  const patch = R(bx, by, seg * s, s, '#9fd4ff') + R(bx + s, by, 2 * s, s, '#e6f5ff')
+  return `<g class="ds4sweep">${glow}${patch}</g>`
 }
 function mouse(cx, cy) {
   let o = ell(cx + 1, cy + 1.5, 12, 17, 'rgba(0,0,0,.35)') + ell(cx, cy, 12, 17, C.line) + ell(cx, cy, 11, 16, CASE[0]) + ell(cx - 1, cy - 1, 9, 14, CASE[1]) + ell(cx, cy + 1, 10, 14, CASE[0])
