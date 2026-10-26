@@ -37,5 +37,6 @@ npm run build    # writes everything in ../assets
 ## Data
 
 - `desk/data/me-colour.json` and `me-blink.json` hold the passport portrait (62×74 half-pixels) and its closed-eye frame. I edit the portrait in the Portrait Editor artifact (https://claude.ai/artifact/S53GkY5Vw9vRPegTXgVhne) and copy my saved state into these files.
+- `me-left.json`, `me-right.json`, `me-smile.json` and `me-teeth.json` are the other passport faces: only the pixels that differ from the resting portrait, with `p` for photo background. `FACES` in `build.mjs` sets when each one shows in the 16s loop. If the portrait changes, these need redrawing to match.
 - `desk/data/ds4.json` is the PS4 controller, traced by `tools/ds4-trace.py`.
 - `desk/data/pixel-logos.json` comes from `npm run logos`. To add a sticker: put the SVG in `data/logos/`, add its name in `pixel-logos.mjs`, run `npm run logos`, then add it to `TOOLS` in `build.mjs`.
