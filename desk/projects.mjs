@@ -18,7 +18,7 @@ export const PROJECTS = [
 ]
 
 // ── A clipping: torn newsprint with a headline, standfirst and a button ──
-const TW = 300, TH = 212, AW = TW / P, AH = TH / P
+const TW = 300, TH = 188, AW = TW / P, AH = TH / P
 function clipping(p, i) {
   const rnd = seeded(31 + i * 17), x = 3, y = 3, w = AW - 6, h = AH - 6
   let o = R(x + 1, y + 1.5, w, h, 'rgba(0,0,0,.28)') + R(x, y, w, h, C.news)
