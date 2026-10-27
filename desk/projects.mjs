@@ -9,24 +9,23 @@ const OUT = `${HERE}../assets/projects`
 mkdirSync(OUT, { recursive: true })
 
 export const PROJECTS = [
-  { slug: 'canopy', name: 'Canopy', kicker: 'TRAVEL', desc: 'Fall colors across Canada, and what to explore in Ontario.', url: 'https://maarib.github.io/canopy/', cta: 'VISIT SITE' },
-  { slug: 'leaf-icons', name: 'Leaf icons', kicker: 'DESIGN TOOLS', desc: 'Tree leaf icons, and a small SVG editor for their stems and layers.', url: 'https://maarib.github.io/leaf-icons/', cta: 'VISIT SITE' },
-  { slug: 'fpl-dashboard', name: 'FPL Dashboard', kicker: 'SPORTS', desc: 'Fantasy Premier League players, sortable and side by side.', url: 'https://maarib.github.io/fpl-dashboard/', cta: 'VISIT SITE' },
-  { slug: 'card-compare', name: 'CardCompare', kicker: 'PERSONAL FINANCE', desc: 'Canadian credit cards compared on fees, earn rates, insurance and perks.', url: 'https://github.com/maarib/card-compare', cta: 'VIEW CODE' },
-  { slug: 'alert-engine', name: 'alert.engine', kicker: 'MARKETS', desc: 'A stock and ETF watchlist with alerts, market briefs and sector exposure.', url: 'https://github.com/maarib/alert.engine', cta: 'VIEW CODE' },
-  { slug: 'page-comments', name: 'page-comments', kicker: 'DEV TOOLS', desc: 'A Claude Code skill for leaving notes on any web page.', url: 'https://github.com/maarib/page-comments', cta: 'VIEW CODE' },
+  { slug: 'canopy', name: 'Canopy', desc: 'Fall colors across Canada, and what to explore in Ontario.', url: 'https://maarib.github.io/canopy/', cta: 'VISIT SITE' },
+  { slug: 'leaf-icons', name: 'Leaf icons', desc: 'Tree leaf icons, with an SVG editor for stems and layers.', url: 'https://maarib.github.io/leaf-icons/', cta: 'VISIT SITE' },
+  { slug: 'fpl-dashboard', name: 'FPL Dashboard', desc: 'Fantasy Premier League players, sortable and side by side.', url: 'https://maarib.github.io/fpl-dashboard/', cta: 'VISIT SITE' },
+  { slug: 'card-compare', name: 'CardCompare', desc: 'Canadian credit cards compared on fees, rewards and perks.', url: 'https://github.com/maarib/card-compare', cta: 'VIEW CODE' },
+  { slug: 'alert-engine', name: 'alert.engine', desc: 'A stock and ETF watchlist with alerts and market briefs.', url: 'https://github.com/maarib/alert.engine', cta: 'VIEW CODE' },
+  { slug: 'page-comments', name: 'page-comments', desc: 'A Claude Code skill for leaving notes on any web page.', url: 'https://github.com/maarib/page-comments', cta: 'VIEW CODE' },
 ]
 
-// ── A clipping: torn newsprint with a kicker, headline, standfirst and a button ──
+// ── A clipping: torn newsprint with a headline, standfirst and a button ──
 const TW = 300, TH = 212, AW = TW / P, AH = TH / P
 function clipping(p, i) {
   const rnd = seeded(31 + i * 17), x = 3, y = 3, w = AW - 6, h = AH - 6
   let o = R(x + 1, y + 1.5, w, h, 'rgba(0,0,0,.28)') + R(x, y, w, h, C.news)
   for (let k = 0; k < w; k++) { if (rnd() < 0.45) o += R(x + k, y - 1, 1, 1, C.news); if (rnd() < 0.45) o += R(x + k, y + h, 1, 1, C.news) }
   for (let k = 0; k < h; k++) { if (rnd() < 0.45) o += R(x - 1, y + k, 1, 1, C.news); if (rnd() < 0.45) o += R(x + w, y + k, 1, 1, C.news) }
-  o += t((x + 4) * P, (y + 6) * P, p.kicker, { font: 'Pixel', size: 7, fill: C.red, extra: ' letter-spacing="1"' })
-  o += t((x + 4) * P, (y + 14.5) * P, p.name, { font: 'Pixelify', size: Math.min(34, Math.floor(((w - 8) * P) / (p.name.length * 0.64))) }) + R(x + 4, y + 17, w - 8, 0.5, C.ink)
-  wrap(p.desc, 32).forEach((l, k) => { o += t((x + 4) * P, (y + 24 + k * 5) * P, l, { size: 20, fill: C.soft }) })
+  o += t((x + 4) * P, (y + 9.5) * P, p.name, { font: 'Pixelify', size: Math.min(34, Math.floor(((w - 8) * P) / (p.name.length * 0.64))) }) + R(x + 4, y + 12, w - 8, 0.5, C.ink)
+  wrap(p.desc, 32).forEach((l, k) => { o += t((x + 4) * P, (y + 19 + k * 5) * P, l, { size: 20, fill: C.soft }) })
   // Button-like call to action, bottom right
   const label = p.cta + ' >', bw = Math.ceil(label.length * 1.8) + 6, bx = x + w - 4 - bw, by = y + h - 11
   o += box(bx, by, bw, 8, C.blueD, C.blue, '#1d3a7a') + t((bx + bw / 2) * P, (by + 5.4) * P, label, { font: 'Pixel', size: 7, fill: '#fff', anchor: 'middle' })

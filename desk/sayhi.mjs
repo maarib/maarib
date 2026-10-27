@@ -50,7 +50,10 @@ function key(c, i) {
 
 function header() {
   const HW = 900, HH = 92, w = 46, x = (HW / P - w) / 2, y = 4
-  let o = `<g transform="rotate(-3 ${HW / 2} ${HH / 2})">${box(x, y, w, 16, '#f7e08a', '#fdf0b8', '#d9bf55')}${R(x + 1, y + 1, w - 2, 3, '#f0d36a')}${t(HW / 2, (y + 11.4) * P, 'SAY HI', { font: 'Pixel', size: 16, anchor: 'middle', extra: ' letter-spacing="2"' })}</g>`
+  // A rule either side of the note, with a gap before it. Mid grey, so it shows in light and dark mode
+  const ry = y + 8, gap = 5, RULE = '#8b8fa3'
+  let o = R(3, ry, x - gap - 3, 0.5, RULE) + R(x + w + gap, ry, HW / P - 3 - (x + w + gap), 0.5, RULE)
+  o += `<g transform="rotate(-3 ${HW / 2} ${HH / 2})">${box(x, y, w, 16, '#f7e08a', '#fdf0b8', '#d9bf55')}${R(x + 1, y + 1, w - 2, 3, '#f0d36a')}${t(HW / 2, (y + 11.4) * P, 'SAY HI', { font: 'Pixel', size: 16, anchor: 'middle', extra: ' letter-spacing="2"' })}</g>`
   return svg(HW, HH, 'Say hi', o)
 }
 
