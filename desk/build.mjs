@@ -589,9 +589,10 @@ function gtaSticker(x, y) {
 // An iPhone lying face up. Its screen wakes, a "You got mail!" notification drops in, then it sleeps.
 function phone(x, y) {
   const w = 32, h = 56
-  let o = R(x + 1.5, y + 2, w, h, 'rgba(0,0,0,.35)')
-  // Rounded body: each row inset by the corner's curve
+  // Rounded body: each row inset by the corner's curve, and the shadow rounded the same way
   const inset = (j, hh, r) => { const k = j < r ? j : j >= hh - r ? hh - 1 - j : -1; return k < 0 ? 0 : r - Math.round(Math.sqrt(r * r - (r - k - 0.5) ** 2)) }
+  let o = ''
+  for (let j = 0; j < h; j++) { const a = inset(j, h, 5); o += R(x + 1.5 + a, y + 2 + j, w - 2 * a, 1, 'rgba(0,0,0,.35)') }
   for (let j = 0; j < h; j++) { const a = inset(j, h, 5); o += R(x + a, y + j, w - 2 * a, 1, C.line) }
   for (let j = 0; j < h - 2; j++) { const a = inset(j, h - 2, 4); o += R(x + 1 + a, y + 1 + j, w - 2 - 2 * a, 1, '#3a3d45') }
   for (let j = 0; j < h - 4; j++) { const a = inset(j, h - 4, 3); o += R(x + 2 + a, y + 2 + j, w - 4 - 2 * a, 1, '#0b0b0e') }
