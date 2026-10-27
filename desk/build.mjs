@@ -901,15 +901,11 @@ function mapleStamp(x, y) {
   return o + t((x + w / 2) * P, (y + 24) * P, 'CANADA', { font: 'Pixel', size: 5, fill: C.redD, anchor: 'middle' })
 }
 
-const CONTACT_H = 158
-// The rest of the headphone cable, from the left edge across the iPad's corner to the headphones. Drawn
-// after the iPad, in contact's own coordinates.
-const headWire = () => wire([[-12, 132], [-8, 180], [64, 182], [93, 161]])
 function contact() {
   const x = 54, y = 18, w = 120, h = 66
-  // The tape player's cable runs under everything off the left edge; headWire brings it back over the iPad
+  // Cables first, so they run under everything: the tape player's off the left edge and back to the headphones
   let o = tilt(-6, 180, 80, clipping(146, 70, 52, 30, 'LETTERS TO THE EDITOR'))
-  o += wire([[19, 104], [14, 84], [-18, 96], [-12, 132]])
+  o += wire([[19, 104], [14, 84], [-18, 96], [-12, 132]]) + wire([[-12, 132], [-8, 180], [64, 182], [93, 161]])
   o += tilt(-8, 26, 46, phone(8, 18))
   o += magicBall(197, 62, 16)
   let e = `<g class="in">` + box(x, y, w, h, C.orange, C.orangeL, C.orangeD)
@@ -929,7 +925,7 @@ function contact() {
   o += tilt(-30, 206, 128, garmin(206, 128))
   o += tilt(8, 190, 18, `<g class="in" style="animation-delay:.3s">${ds4(165, 1)}</g>`)
   o += sticky(98, 4, 'SAY HI', -4)
-  return { H: CONTACT_H * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a black PS4 DualShock 4 controller, a Magic 8 Ball, a tape player wired to a pair of black over-ear headphones and a black Garmin Instinct Tactical watch with its straps open, the buckle at the top.' }
+  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a black PS4 DualShock 4 controller, a Magic 8 Ball, a tape player wired to a pair of black over-ear headphones and a black Garmin Instinct Tactical watch with its straps open, the buckle at the top.' }
 }
 // The terminal runs on an iPad lying in landscape: a silver edge, a black bezel and the front camera.
 // Its screen sits exactly where the terminal window is drawn (hero coords 160,40 580×410).
@@ -952,7 +948,7 @@ function ipad(top) {
 }
 // Around the terminal at the end
 function terminalProps(top) {
-  let o = tilt(-10, 18, top + 36, viceSticker(18, top + 36)) + paperBall(34, top - 1)
+  let o = tilt(-10, 18, top + 32, viceSticker(18, top + 32)) + paperBall(34, top - 1)
   o += plant(206, top + 30) + tilt(8, 205, top + 74, gtaSticker(190, top + 60))
   o += tilt(-12, 203, top + 104, pixelSticker(ARROW, { X: C.ink, y: '#f7e04a' }, 194, top + 90, 1.5))
   return o
@@ -981,7 +977,6 @@ const page = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" wi
 <g shape-rendering="crispEdges">${termProps}</g>
 <g transform="rotate(-2 ${W / 2} ${heroY + 245}) translate(450 ${heroY + 20}) scale(.9) translate(-450 ${-(heroY + 20)})"><g shape-rendering="crispEdges">${ipad(heroY / P)}</g>
 <g transform="translate(450 ${heroY + 252}) scale(.78) translate(-450 ${-(heroY + 245)})"><svg x="0" y="${heroY}" width="${W}" height="500" viewBox="0 0 900 500" class="term">${heroInner}</svg></g></g>
-<g shape-rendering="crispEdges" transform="translate(0 ${heroY - CONTACT_H * P})">${headWire()}</g>
 <g shape-rendering="crispEdges" transform="translate(0 16)">${cameraOnTop(heroY / P)}</g>
 </g>
 </svg>
