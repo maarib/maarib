@@ -769,7 +769,7 @@ function mat(x, y, w, h) {
 const TOOLS = [
   ['figma'], ['sketch', { old: true, lift: true }], ['claude'], ['photoshop', { old: true, lift: true }], ['github', { round: true }], ['cursor'], ['framer'],
   ['jira', { old: true }], ['react', { round: true }], ['storybook'], ['tailwind'], ['chatgpt', { round: true }], ['xd', { old: true, lift: true }], ['nextjs', { round: true }],
-  ['javascript'], ['confluence', { old: true, lift: true }], ['notion'], ['miro'], ['usertesting', { old: true }], ['vs-code'], ['maze'],
+  ['slack'], ['confluence', { old: true, lift: true }], ['notion'], ['miro'], ['usertesting', { old: true }], ['vs-code'], ['maze'],
 ]
 function stack() {
   const mx = 6, my = 16, mw = 213, mh = 118
@@ -786,7 +786,7 @@ function stack() {
   o += tilt(-4, 60, 142, marker(30, 140, 50, C.red, C.redD)) + tilt(3, 130, 144, marker(100, 142, 50, C.blue, C.blueD))
   o += tilt(10, 172, 142, eraserBox(162, 138))
   o += sticky(4, 8, 'STACK', -5)
-  return { H: 160 * P, body: o, label: 'Stack, as pixel-art logo stickers on a green cutting mat: Figma, Framer, Claude, Cursor, GitHub, React, Next.js, JavaScript, Tailwind CSS, ChatGPT, Miro, Maze, Notion, Storybook and VS Code look new; Sketch, Photoshop, XD, Jira, Confluence and UserTesting are older, faded and peeling. Below it: two markers, an eraser and a floppy disk.' }
+  return { H: 160 * P, body: o, label: 'Stack, as pixel-art logo stickers on a green cutting mat: Figma, Framer, Claude, Cursor, GitHub, React, Next.js, Slack, Tailwind CSS, ChatGPT, Miro, Maze, Notion, Storybook and VS Code look new; Sketch, Photoshop, XD, Jira, Confluence and UserTesting are older, faded and peeling. Below it: two markers, an eraser and a floppy disk.' }
 }
 const eraserBox = (x, y) => box(x, y, 18, 9, '#f08a9a', '#f7b3be', '#c9606f') + R(x + 1, y + 1, 7, 7, C.blue) + R(x + 1, y + 1, 7, 1, C.blueL)
 

@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright-core'
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const N = 18
-const names = ['figma', 'framer', 'sketch', 'cursor', 'vs-code', 'github', 'react', 'nextjs', 'claude', 'chatgpt', 'miro', 'maze', 'usertesting', 'jira', 'confluence', 'notion', 'photoshop', 'illustrator', 'xd', 'javascript', 'tailwind', 'linkedin', 'dribbble', 'storybook']
+const names = ['figma', 'framer', 'sketch', 'cursor', 'vs-code', 'github', 'react', 'nextjs', 'claude', 'chatgpt', 'miro', 'maze', 'usertesting', 'jira', 'confluence', 'notion', 'photoshop', 'illustrator', 'xd', 'slack', 'tailwind', 'linkedin', 'dribbble', 'storybook']
 const svgs = Object.fromEntries(names.map((n) => [n, readFileSync(`${HERE}data/logos/${n}.svg`, 'utf8')]))
 const b = await chromium.launch({ ...(process.env.CHROMIUM_PATH && { executablePath: process.env.CHROMIUM_PATH }), args: ['--headless=new'] })
 const p = await b.newPage()
