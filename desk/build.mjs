@@ -407,13 +407,12 @@ function gameBox(x, y) {
 
 // A DualShock 4 from above, traced from a photo into a 64×41 grid (data/ds4.json): the light bar over
 // the touchpad, Share and Options, the D-pad and shape buttons in their dips, two sticks, the PS button
-// and the lighter rubber on the grip ends. The cable leaves from the top.
+// and the lighter rubber on the grip ends.
 const DS4 = JSON.parse(readFileSync(`${HERE}data/ds4.json`, 'utf8'))
 const DS4_PAL = { o: '#0d0f17', b: '#232838', h: '#2f3649', d: '#1a1e2b', g: '#394058', p: '#171b27', q: '#202535', L: '#4aa8ff', k: '#3a4156', K: '#4d5671', r: '#141722', s: '#0c0e15', t: '#272d3e', T: '#343b51', n: '#0d0f17', w: '#e8eaf0', G: '#3fd0a6', R: '#ff6b75', B: '#7fb6ff', M: '#f08ad0' }
 function ds4(x, y, s = 0.9) {
-  const shadow = Object.fromEntries(Object.keys(DS4_PAL).map((k) => [k, 'rgba(0,0,0,.35)'])), mid = x + 32 * s
-  const o = cable([[mid, y + 1], [mid, y - 12], [mid + 23, y - 6], [mid + 63, y - 38]], '#3a3d45')
-  return o + colourRuns(DS4, shadow, x + 1, y + 1.5, s) + colourRuns(DS4, DS4_PAL, x, y, s) + lightSweep(x, y, s)
+  const shadow = Object.fromEntries(Object.keys(DS4_PAL).map((k) => [k, 'rgba(0,0,0,.35)']))
+  return colourRuns(DS4, shadow, x + 1, y + 1.5, s) + colourRuns(DS4, DS4_PAL, x, y, s) + lightSweep(x, y, s)
 }
 // A PS5-style sweep along the light bar: a bright patch steps across it a pixel at a time, with a faint
 // glow on the desk just above it, then the bar rests for a few seconds. Still for reduced motion.
@@ -676,7 +675,7 @@ function passport(x, y) {
   b += R(rx - 2, y + 1, 2, ph - 2, C.paperD) + R(rx, y + 1, 2, ph - 2, C.paperD) + R(rx - 1, y + 1, 1, ph - 2, C.rule)
   // Visa page: a well-travelled page of overlapping stamps, running off its edges
   LEAF.forEach((r, j) => [...r].forEach((v, i) => { if (v === '#') b += R(x + 24 + i * 4, y + 30 + j * 4, 4, 4, 'rgba(214,69,61,.06)') }))
-  b += t((x + 6) * P, (y + 8) * P, 'VISAS', { font: 'Pixel', size: 8, fill: C.soft, extra: ' letter-spacing="2"' }) + t((rx - 6) * P, (y + 8) * P, '07', { font: 'Pixel', size: 8, fill: C.soft, anchor: 'end' })
+  b += t((x + 6) * P, (y + 8) * P, 'VISAS', { font: 'Pixel', size: 8, fill: C.soft, extra: ' letter-spacing="2"' })
   b += `<clipPath id="visa"><rect x="${(x + 1) * P}" y="${(y + 1) * P}" width="${(pw - 3) * P}" height="${(ph - 2) * P}"/></clipPath><g clip-path="url(#visa)">`
   RESTAMPS.forEach(([ax, ay, deg, k]) => { const [, , , color, s] = STAMPS[k]; b += realStamp((x + ax) * P, (y + ay) * P, deg, color, s, 0.5) })
   STAMPS.forEach(([ax, ay, deg, color, s]) => { b += realStamp((x + ax) * P, (y + ay) * P, deg, color, s) })
@@ -902,11 +901,15 @@ function mapleStamp(x, y) {
   return o + t((x + w / 2) * P, (y + 24) * P, 'CANADA', { font: 'Pixel', size: 5, fill: C.redD, anchor: 'middle' })
 }
 
+const CONTACT_H = 158
+// The rest of the headphone cable, from the left edge across the iPad's corner to the headphones. Drawn
+// after the iPad, in contact's own coordinates.
+const headWire = () => wire([[-12, 132], [-8, 180], [64, 182], [93, 161]])
 function contact() {
   const x = 54, y = 18, w = 120, h = 66
-  // Cables first, so they run under everything: the tape player's off the left edge and back to the headphones
+  // The tape player's cable runs under everything off the left edge; headWire brings it back over the iPad
   let o = tilt(-6, 180, 80, clipping(146, 70, 52, 30, 'LETTERS TO THE EDITOR'))
-  o += wire([[19, 104], [14, 84], [-18, 96], [-12, 132]]) + wire([[-12, 132], [-8, 180], [64, 182], [93, 161]])
+  o += wire([[19, 104], [14, 84], [-18, 96], [-12, 132]])
   o += tilt(-8, 26, 46, phone(8, 18))
   o += magicBall(197, 62, 16)
   let e = `<g class="in">` + box(x, y, w, h, C.orange, C.orangeL, C.orangeD)
@@ -926,7 +929,7 @@ function contact() {
   o += tilt(-30, 206, 128, garmin(206, 128))
   o += tilt(8, 190, 18, `<g class="in" style="animation-delay:.3s">${ds4(165, 1)}</g>`)
   o += sticky(98, 4, 'SAY HI', -4)
-  return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a black PS4 DualShock 4 controller, a Magic 8 Ball, a tape player wired to a pair of black over-ear headphones and a black Garmin Instinct Tactical watch with its straps open, the buckle at the top.' }
+  return { H: CONTACT_H * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a black PS4 DualShock 4 controller, a Magic 8 Ball, a tape player wired to a pair of black over-ear headphones and a black Garmin Instinct Tactical watch with its straps open, the buckle at the top.' }
 }
 // The terminal runs on an iPad lying in landscape: a silver edge, a black bezel and the front camera.
 // Its screen sits exactly where the terminal window is drawn (hero coords 160,40 580×410).
@@ -949,7 +952,7 @@ function ipad(top) {
 }
 // Around the terminal at the end
 function terminalProps(top) {
-  let o = tilt(-10, 18, top + 26, viceSticker(18, top + 26)) + paperBall(34, top - 1)
+  let o = tilt(-10, 18, top + 36, viceSticker(18, top + 36)) + paperBall(34, top - 1)
   o += plant(206, top + 30) + tilt(8, 205, top + 74, gtaSticker(190, top + 60))
   o += tilt(-12, 203, top + 104, pixelSticker(ARROW, { X: C.ink, y: '#f7e04a' }, 194, top + 90, 1.5))
   return o
@@ -978,6 +981,7 @@ const page = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" wi
 <g shape-rendering="crispEdges">${termProps}</g>
 <g transform="rotate(-2 ${W / 2} ${heroY + 245}) translate(450 ${heroY + 20}) scale(.9) translate(-450 ${-(heroY + 20)})"><g shape-rendering="crispEdges">${ipad(heroY / P)}</g>
 <g transform="translate(450 ${heroY + 252}) scale(.78) translate(-450 ${-(heroY + 245)})"><svg x="0" y="${heroY}" width="${W}" height="500" viewBox="0 0 900 500" class="term">${heroInner}</svg></g></g>
+<g shape-rendering="crispEdges" transform="translate(0 ${heroY - CONTACT_H * P})">${headWire()}</g>
 <g shape-rendering="crispEdges" transform="translate(0 16)">${cameraOnTop(heroY / P)}</g>
 </g>
 </svg>
