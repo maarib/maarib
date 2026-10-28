@@ -1,6 +1,5 @@
 // The launch terminal at the end of the desk: types whoami and npm install maarib, lists the packages,
-// then a cat drawn in characters pops up from the bottom and blinks. 5s later zsh times out, the cat
-// ducks back down, and the whole session starts over. build.mjs nests it in the desk.
+// then waits. 5s later zsh times out and the whole session starts over. build.mjs nests it in the desk.
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 const HERE = fileURLToPath(new URL('.', import.meta.url))
@@ -8,7 +7,6 @@ const FONTS = `${HERE}node_modules/@fontsource`
 const b64 = (p) => readFileSync(p).toString('base64')
 const face = (family, file, style = 'normal', weight = 400) => `@font-face{font-family:'${family}';font-style:${style};font-weight:${weight};src:url(data:font/woff2;base64,${b64(file)}) format('woff2')}`
 const F = {
-  mono: face('Mono', `${FONTS}/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2`),
   vt: face('VT', `${FONTS}/vt323/files/vt323-latin-400-normal.woff2`),
 }
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -16,7 +14,6 @@ const DARK = { ink: '#f0f6fc', muted: '#9198a1', faint: '#484f58', rule: '#3d444
 const MOTION = `@media (prefers-reduced-motion: reduce){*{animation:none!important}}`
 
 // ── Hero: floating terminal ─────────────────────────────────────────────────
-const cat = readFileSync(`${HERE}data/cat-ascii.txt`, 'utf8').replace(/\n+$/, '').split('\n')
 function hero(t) {
   const W = 900, H = 500
   // Flow field: short strokes on a grid, each turning with a phase from a smooth wave, so the
@@ -35,51 +32,36 @@ function hero(t) {
   const L3 = 'npm install maarib'
   const PKGS = ['+ figma@latest', '+ claude-code@latest', '+ react@19  next@15  tailwind@4', '+ coffee@∞'], SUM = 'added 312 packages, 1 cat'
   const t2 = 0.5 + L1.length * 0.07 + 0.5, t3 = t2 + L2.length * 0.07 + 0.6, t4 = t3 + L3.length * 0.07 + 0.4, tBarEnd = t4 + PKGS.length * 0.35 + 0.6
-  // The whole session loops: 5s after the cat is up, zsh times out, the cat ducks, and it starts over
-  const TIMEOUT = 'timed out waiting for input: auto-logout', tPop = tBarEnd + 0.3, tOut = tPop + 1.1 + 5, D = tOut + 2
-  const pct = (s) => ((s / D) * 100).toFixed(2) + '%'
+  // The whole session loops: 5s after the install finishes, zsh times out, and it starts over
+  const TIMEOUT = 'timed out waiting for input: auto-logout', tOut = tBarEnd + 5, D = tOut + 2
   // One discrete animation on the loop: [[seconds, value], ...], starting at 0
   const steps = (attr, pairs) => `<animate attributeName="${attr}" values="${pairs.map((p) => p[1]).join(';')}" keyTimes="${pairs.map((p) => (p[0] / D).toFixed(4)).join(';')}" dur="${D.toFixed(2)}s" repeatCount="indefinite" calcMode="discrete"/>`
   const shown = (from, to = D) => steps('opacity', to < D ? [[0, 0], [from, 1], [to, 0]] : [[0, 0], [from, 1]])
-  const typed = (text, x, y, begin, id, prompt) => {
+  // A typed line; with a prompt, the prompt shows at `at` (once the line above it is done)
+  const typed = (text, x, y, begin, id, prompt, at = 0) => {
     const pw = prompt ? 17 * cw : 0
-    const pairs = [[0, pw], ...Array.from({ length: text.length }, (_, i) => [begin + (i + 1) * 0.07, pw + (i + 1) * cw])]
-    return `<clipPath id="${id}"><rect x="${x}" y="${y - 16}" width="${pw}" height="22">${steps('width', pairs)}</rect></clipPath>`
+    const pairs = [...(at ? [[0, 0], [at, pw]] : [[0, pw]]), ...Array.from({ length: text.length }, (_, i) => [begin + (i + 1) * 0.07, pw + (i + 1) * cw])]
+    return `<clipPath id="${id}"><rect x="${x}" y="${y - 16}" width="${at ? 0 : pw}" height="22">${steps('width', pairs)}</rect></clipPath>`
   }
   const blink = [[0, 0]]
   for (let s = tBarEnd; s < tOut; s += 0.55) blink.push([s, blink.length % 2])
   blink.push([tOut, 0])
-  // Cat at 11px; find the eye holes (spaces enclosed by the body, upper face rows) for blinking.
-  const ccw = 6.6, clh = 9.6
-  const catW = Math.max(...cat.map((l) => l.length)) * ccw
-  const cx = wx + ww - catW - 10, cy = wy + wh - cat.length * clh - 2
-  const eyes = []
-  cat.forEach((line, r) => {
-    if (r < 10 || r > 15) return
-    const m = [...line.matchAll(/ +/g)].filter((g) => g.index > 2 && g.index + g[0].length < line.trimEnd().length - 2)
-    for (const g of m) eyes.push(`<rect x="${cx + g.index * ccw}" y="${cy + r * clh - 8}" width="${g[0].length * ccw}" height="${clh}" fill="${t.ink}" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.92;0.93;0.97;1" dur="4s" begin="${(tBarEnd + 1.6).toFixed(2)}s" repeatCount="indefinite"/></rect>`)
-  })
-  const catRows = cat.map((l, r) => `<text x="${cx}" y="${cy + r * clh}">${esc(l).replace(/ /g, ' ')}</text>`).join('')
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="A terminal window floating over moving lines. It types: maarib@design:~$ whoami. Product designer who builds. Then npm install maarib adds figma, claude-code, react, next, tailwind and coffee: added 312 packages, 1 cat. A black cat pops up in the corner of the window and blinks. Five seconds later the session times out (timed out waiting for input: auto-logout) and starts over.">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="A terminal window floating over moving lines. It types: maarib@design:~$ whoami. Product designer who builds. Then npm install maarib adds figma, claude-code, react, next, tailwind and coffee: added 312 packages, 1 cat. Five seconds after it finishes, the session times out (timed out waiting for input: auto-logout) and starts over.">
 <defs>
-  <style>${F.mono}${F.vt}
+  <style>${F.vt}
     .field line { stroke: ${t.field}; stroke-width: 1.4; stroke-linecap: round; transform-box: fill-box; transform-origin: center; animation: turn 9s linear infinite; }
     @keyframes turn { to { transform: rotate(360deg); } }
     .win { animation: float 7s ease-in-out infinite; }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
-    .cat { animation: peek ${D.toFixed(2)}s linear infinite; }
-    @keyframes peek { 0%, ${pct(tPop)} { transform: translateY(215px); animation-timing-function: cubic-bezier(.3,1.5,.5,1); } ${pct(tPop + 1.1)}, ${pct(tOut)} { transform: translateY(0); animation-timing-function: ease-in; } ${pct(tOut + 0.4)}, 100% { transform: translateY(215px); } }
     text { font-family: VT, ui-monospace, Menlo, monospace; white-space: pre; }
-    .cat text { font-family: Mono, ui-monospace, Menlo, monospace; }
     ${MOTION}
   </style>
   <radialGradient id="fade" cx="50%" cy="48%" r="62%"><stop offset="0.35" stop-color="#fff" stop-opacity="0"/><stop offset="0.55" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
   <mask id="m"><rect width="${W}" height="${H}" fill="url(#fade)"/></mask>
   <filter id="sh" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="${t.shadow}"/></filter>
-  <clipPath id="body"><rect x="${wx}" y="${wy + 34}" width="${ww}" height="${wh - 34}" rx="2"/></clipPath>
   ${typed(L1, tx, ty1, 0.5, 't1', true)}
   ${typed(L2, tx + 2 * cw, ty2, t2, 't2', false)}
-  ${typed(L3, tx, ty3, t3, 't3', true)}
+  ${typed(L3, tx, ty3, t3, 't3', true, t2 + L2.length * 0.07)}
 </defs>
 <g class="field" mask="url(#m)" opacity="0.32">${field.join('')}</g>
 <g class="win">
@@ -97,7 +79,6 @@ function hero(t) {
     <text x="${tx}" y="${ty4 + PKGS.length * 20 + 34}" fill="${t.muted}" opacity="0">${TIMEOUT}${shown(tOut)}</text>
     <rect x="${tx + (3 + SUM.length) * cw}" y="${ty4 + PKGS.length * 20 + 6 - 13}" width="8" height="16" fill="${t.ink}" opacity="0">${steps('opacity', blink)}</rect>
   </g>
-  <g clip-path="url(#body)"><g class="cat" font-size="11" fill="${t.ink}">${catRows}${eyes.join('')}</g></g>
 </g>
 </svg>
 `

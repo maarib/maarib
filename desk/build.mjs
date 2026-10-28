@@ -961,7 +961,7 @@ const cameraOnTop = (top) => strap([[10, top + 108], [6, top + 114], [-2, top + 
 const heroInner = heroSvg().replace(/\.win \{ animation:[^}]*\}/, '').replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '')
   .replace(/<g class="field"[\s\S]*?<\/g>/, '')
   // Keep the terminal's text styles to the terminal.
-  .replace(/(^|[{}\s])text \{/g, '$1.term text {').replace('.cat .term text {', '.term .cat text {')
+  .replace(/(^|[{}\s])text \{/g, '$1.term text {')
 const HERO_H = 490
 const pieces = [about(), teams(), stack(), classifieds(), contact()]
 let y = 0
@@ -969,7 +969,7 @@ const placed = pieces.map((p) => { const g = `<g transform="translate(0 ${y})">$
 const heroY = y
 const termProps = terminalProps(heroY / P)
 const H = y + HERO_H
-const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker, a retro camera with its strap, a plant, a cursor sticker and a GTA VI sticker, an iPad lying on the table shows a terminal window floating over a dusk wallpaper; it types whoami, Product designer who builds, then npm install maarib, which adds Figma, Claude Code, React, Next, Tailwind and coffee: added 312 packages, 1 cat. A black cat pops up and blinks; five seconds later the session times out and it all starts over.'
+const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker, a retro camera with its strap, a plant, a cursor sticker and a GTA VI sticker, an iPad lying on the table shows a terminal window floating over a dusk wallpaper; it types whoami, Product designer who builds, then npm install maarib, which adds Figma, Claude Code, React, Next, Tailwind and coffee: added 312 packages, 1 cat. Five seconds later the session times out and it all starts over.'
 const page = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(label)}">
 <defs><style>${css}${FX_CSS}</style><clipPath id="desk"><rect width="${W}" height="${H}" rx="16"/></clipPath>${DEFS}</defs>
 <g clip-path="url(#desk)">

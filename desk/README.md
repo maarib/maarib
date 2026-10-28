@@ -18,7 +18,7 @@ You'll need Node 22 or later.
 | File | What it does |
 |---|---|
 | `build.mjs` | Draws the whole desk. Each section (`about`, `teams`, `stack`, `projects`, `contact`) is its own function, and the words live in `TEAMS`, `TOOLS`, `PROJECTS` and `STAMPS` |
-| `hero.mjs` | The terminal at the end. It types `whoami` and `npm install maarib`, then a cat shows up |
+| `hero.mjs` | The terminal at the end. It types `whoami` and `npm install maarib`, times out after 5 seconds and starts over |
 | `intro.mjs` | The intro on top, in a light and a dark version: "Hi, I'm Maarib" and the designer line whose first word keeps flipping (`WORDS`) |
 | `projects.mjs` | The side projects newspaper under the desk, one clickable clipping per project (`PROJECTS`) |
 | `sayhi.mjs` | The Say hi keys, one clickable key per link (`CONTACTS`) |
@@ -27,7 +27,7 @@ You'll need Node 22 or later.
 | `pixel-wordmark.mjs` | Turns "Canada" into the pixel wordmark on the passport |
 | `tools/shot.mjs` | Takes screenshots of a built image the way GitHub shows it, cropped and zoomed, to check a change. It can also take a few frames in a row to catch an animation partway through |
 | `tools/ds4-trace.py` | Traces the PS4 controller from a top-down photo into `data/ds4.json`. Needs Python with Pillow |
-| `data/` | The cat (as pixels and as text), my passport portrait (62×74 at half-pixel size: ink lines in `me-pixels`, coloured in `me-colour`, closed eyes for the blink in `me-blink`), the logos and their pixel versions, the Canada wordmark, and the PS4 controller |
+| `data/` | The cat (as pixels), my passport portrait (62×74 at half-pixel size: ink lines in `me-pixels`, coloured in `me-colour`, closed eyes for the blink in `me-blink`), the logos and their pixel versions, the Canada wordmark, and the PS4 controller |
 
 ## Adding a sticker
 
