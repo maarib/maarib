@@ -588,7 +588,7 @@ function gtaSticker(x, y) {
 }
 // An iPhone lying face up. Its screen wakes, a "You got mail!" notification drops in, then it sleeps.
 function phone(x, y) {
-  const w = 32, h = 56
+  const w = 31, h = 56
   // Rounded body: each row inset by the corner's curve, and the shadow rounded the same way
   const inset = (j, hh, r) => { const k = j < r ? j : j >= hh - r ? hh - 1 - j : -1; return k < 0 ? 0 : r - Math.round(Math.sqrt(r * r - (r - k - 0.5) ** 2)) }
   let o = ''
@@ -792,7 +792,7 @@ const eraserBox = (x, y) => box(x, y, 18, 9, '#f08a9a', '#f7b3be', '#c9606f') + 
 
 // ── The Big 6ix Times: the back page of a newspaper, with small ads, the weather, a coupon and a crossword ───────────────────────────────
 const ADS = [
-  ['WANTED', 'Hard problems in fintech and DeFi. Will design, prototype and ship.'],
+  ['WANTED', 'Product designer for hard problems in fintech and DeFi. Must prototype and ship.'],
   ['FOUND', 'Black cat. Answers to “the boss”. Will not be returned.'],
 ]
 const wrap = (s, n) => s.split(' ').reduce((ls, w) => { const l = ls.at(-1); if ((l + ' ' + w).trim().length > n) ls.push(w); else ls[ls.length - 1] = (l + ' ' + w).trim(); return ls }, [''])
@@ -907,7 +907,7 @@ function contact() {
   // Cables first, so they run under everything: the tape player's off the left edge and back to the headphones
   let o = tilt(-6, 180, 80, clipping(146, 70, 52, 30, 'LETTERS TO THE EDITOR'))
   o += wire([[19, 104], [14, 84], [-18, 96], [-12, 132]]) + wire([[-12, 132], [-8, 180], [64, 182], [93, 161]])
-  o += tilt(-8, 26, 46, phone(8, 18))
+  o += tilt(-8, 26, 46, phone(9, 18))
   o += magicBall(197, 62, 16)
   let e = `<g class="in">` + box(x, y, w, h, C.orange, C.orangeL, C.orangeD)
   for (let i = 0; i < 30; i++) e += R(x + 1 + i * 2, y + 1 + i, 2, 1, C.orangeD) + R(x + w - 3 - i * 2, y + 1 + i, 2, 1, C.orangeD)
