@@ -928,6 +928,24 @@ function contact() {
   o += sticky(98, 4, 'SAY HI', -4)
   return { H: 158 * P, body: o, label: 'Contact, as an orange envelope with a maple leaf stamp and a Toronto postmark, addressed to maarib@mail.com. Around it: an iPhone that wakes up to a You got mail! notification, a black PS4 DualShock 4 controller, a Magic 8 Ball, a tape player wired to a pair of black over-ear headphones and a black Garmin Instinct Tactical watch with its straps open, the buckle at the top.' }
 }
+// The iPad wallpaper: northern lights over a dark sky with a few stars, and a pine ridge along the bottom.
+// It returns a colour for any pixel (i, j) of a w×h screen.
+const hash = (i, j) => (((i * 73856093) ^ (j * 19349663)) >>> 0) % 1000
+const pick = (cols, f) => cols[Math.max(0, Math.min(cols.length - 1, Math.floor(f * cols.length)))]
+const aurora = (w, h) => (i, j) => {
+  const ridge = h - 9 - Math.round(3 * Math.sin(i / 11) + 2 * Math.sin(i / 4.3)) - (hash(i, 7) % 5 === 0 ? 2 : 0)
+  if (j >= ridge) return '#060a14'
+  const y1 = h * 0.42 + 9 * Math.sin(i / 16) + 4 * Math.sin(i / 6), d1 = y1 - j
+  if (d1 >= 0 && d1 < 4) return '#5cf0b0'
+  if (d1 >= 4 && d1 < 10) return '#2fb98a'
+  if (d1 >= 10 && d1 < 18) return '#1d6f6a'
+  const y2 = h * 0.62 + 6 * Math.sin(i / 13 + 2), d2 = y2 - j
+  if (d2 >= 0 && d2 < 3) return '#9a7af0'
+  if (d2 >= 3 && d2 < 8) return '#4d3f8f'
+  if (hash(i, j) < 6 && j < h * 0.7) return '#e8ecff'
+  return pick(['#070b1c', '#0b1228', '#101a36', '#142244'], j / h)
+}
+
 // The terminal runs on an iPad lying in landscape: a silver edge, a black bezel and the front camera.
 // Its screen sits exactly where the terminal window is drawn (hero coords 160,40 580×410).
 function ipad(top) {
@@ -937,9 +955,12 @@ function ipad(top) {
   let o = round(x + 2, y + 3, w, h, r, 'rgba(0,0,0,.35)') + round(x, y, w, h, r, C.line) + round(x + 1, y + 1, w - 2, h - 2, r - 1, '#c3c7cf')
   o += R(x + 6, y + 1, w - 12, 0.5, '#e4e7ec') + round(x + 2, y + 2, w - 4, h - 4, r - 2, '#0b0b0e')
   o += R(x + w / 2 - 1, y + 3, 2, 1, '#1d2230') + R(x + w / 2 - 0.5, y + 3, 0.5, 0.5, '#3a4a6a')
-  // The home screen behind the terminal: a dusk wallpaper and the status bar
-  const sx = x + 5, sy = y + 5, sw = w - 10, sh = h - 10, bands = ['#1d2547', '#25305a', '#2f3c6c', '#3d4a7c', '#55598a', '#735f92', '#946795', '#b77490', '#d88a8a']
-  for (let j = 0; j < sh; j++) { const a = inset(j, sh, 3); o += R(sx + a, sy + j, sw - 2 * a, 1, bands[Math.min(bands.length - 1, Math.floor((j / sh) * bands.length))]) }
+  // The home screen behind the terminal: the wallpaper and the status bar
+  const sx = x + 5, sy = y + 5, sw = w - 10, sh = h - 10, wall = aurora(sw, sh)
+  for (let j = 0; j < sh; j++) {
+    const a = inset(j, sh, 3)
+    for (let i = a; i < sw - a; i++) { let k = i; while (k + 1 < sw - a && wall(k + 1, j) === wall(i, j)) k++; o += R(sx + i, sy + j, k - i + 1, 1, wall(i, j)); i = k }
+  }
   o += t((sx + 4) * P, (sy + 4.6) * P, '9:41', { font: 'Pixel', size: 7, fill: '#ffffff' }) + t((sx + 15) * P, (sy + 4.6) * P, 'Thu Oct 22', { font: 'Pixel', size: 6, fill: 'rgba(255,255,255,.8)' })
   o += frame(sx + sw - 11, sy + 2, 7, 3.5, 'rgba(255,255,255,.85)') + R(sx + sw - 10, sy + 3, 4.5, 1.5, '#ffffff') + R(sx + sw - 4, sy + 3, 0.75, 1.5, 'rgba(255,255,255,.85)')
   o += R(sx + sw - 20, sy + 4, 1, 1, '#fff') + R(sx + sw - 18.5, sy + 3.25, 1, 1.75, '#fff') + R(sx + sw - 17, sy + 2.5, 1, 2.5, '#fff') + R(sx + sw - 15.5, sy + 2, 1, 3, '#fff')
@@ -969,7 +990,7 @@ const placed = pieces.map((p) => { const g = `<g transform="translate(0 ${y})">$
 const heroY = y
 const termProps = terminalProps(heroY / P)
 const H = y + HERO_H
-const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker, a retro camera with its strap, a plant, a cursor sticker and a GTA VI sticker, an iPad lying on the table shows a terminal window floating over a dusk wallpaper; it types whoami, Product designer who builds, then npm install maarib, which adds Figma, Claude Code, React, Next, Tailwind and coffee: added 312 packages, 1 cat. Five seconds later the session times out and it all starts over.'
+const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker, a retro camera with its strap, a plant, a cursor sticker and a GTA VI sticker, an iPad lying on the table shows a terminal window floating over a northern lights wallpaper; it types whoami, Product designer who builds, then npm install maarib, which adds Figma, Claude Code, React, Next, Tailwind and coffee: added 312 packages, 1 cat. Five seconds later the session times out and it all starts over.'
 const page = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(label)}">
 <defs><style>${css}${FX_CSS}</style><clipPath id="desk"><rect width="${W}" height="${H}" rx="16"/></clipPath>${DEFS}</defs>
 <g clip-path="url(#desk)">
