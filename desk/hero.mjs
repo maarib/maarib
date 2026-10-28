@@ -1,5 +1,6 @@
 // The launch terminal at the end of the desk: types whoami and npm install maarib, lists the packages,
-// then a cat drawn in characters pops up from the bottom and blinks. build.mjs nests it in the desk.
+// then a cat drawn in characters pops up from the bottom and blinks. 5s later zsh times out, the cat
+// ducks back down, and the whole session starts over. build.mjs nests it in the desk.
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 const HERE = fileURLToPath(new URL('.', import.meta.url))
@@ -34,12 +35,20 @@ function hero(t) {
   const L3 = 'npm install maarib'
   const PKGS = ['+ figma@latest', '+ claude-code@latest', '+ react@19  next@15  tailwind@4', '+ coffee@∞'], SUM = 'added 312 packages, 1 cat'
   const t2 = 0.5 + L1.length * 0.07 + 0.5, t3 = t2 + L2.length * 0.07 + 0.6, t4 = t3 + L3.length * 0.07 + 0.4, tBarEnd = t4 + PKGS.length * 0.35 + 0.6
+  // The whole session loops: 5s after the cat is up, zsh times out, the cat ducks, and it starts over
+  const TIMEOUT = 'timed out waiting for input: auto-logout', tPop = tBarEnd + 0.3, tOut = tPop + 1.1 + 5, D = tOut + 2
+  const pct = (s) => ((s / D) * 100).toFixed(2) + '%'
+  // One discrete animation on the loop: [[seconds, value], ...], starting at 0
+  const steps = (attr, pairs) => `<animate attributeName="${attr}" values="${pairs.map((p) => p[1]).join(';')}" keyTimes="${pairs.map((p) => (p[0] / D).toFixed(4)).join(';')}" dur="${D.toFixed(2)}s" repeatCount="indefinite" calcMode="discrete"/>`
+  const shown = (from, to = D) => steps('opacity', to < D ? [[0, 0], [from, 1], [to, 0]] : [[0, 0], [from, 1]])
   const typed = (text, x, y, begin, id, prompt) => {
     const pw = prompt ? 17 * cw : 0
-    const n = text.length, w = n * cw
-    const vals = Array.from({ length: n + 1 }, (_, i) => (pw + i * cw).toFixed(1)).join(';')
-    return `<clipPath id="${id}"><rect x="${x}" y="${y - 16}" width="${pw}" height="22"><animate attributeName="width" values="${vals}" dur="${(n * 0.07).toFixed(2)}s" begin="${begin}s" fill="freeze" calcMode="discrete"/></rect></clipPath>`
+    const pairs = [[0, pw], ...Array.from({ length: text.length }, (_, i) => [begin + (i + 1) * 0.07, pw + (i + 1) * cw])]
+    return `<clipPath id="${id}"><rect x="${x}" y="${y - 16}" width="${pw}" height="22">${steps('width', pairs)}</rect></clipPath>`
   }
+  const blink = [[0, 0]]
+  for (let s = tBarEnd; s < tOut; s += 0.55) blink.push([s, blink.length % 2])
+  blink.push([tOut, 0])
   // Cat at 11px; find the eye holes (spaces enclosed by the body, upper face rows) for blinking.
   const ccw = 6.6, clh = 9.6
   const catW = Math.max(...cat.map((l) => l.length)) * ccw
@@ -51,15 +60,15 @@ function hero(t) {
     for (const g of m) eyes.push(`<rect x="${cx + g.index * ccw}" y="${cy + r * clh - 8}" width="${g[0].length * ccw}" height="${clh}" fill="${t.ink}" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.92;0.93;0.97;1" dur="4s" begin="${(tBarEnd + 1.6).toFixed(2)}s" repeatCount="indefinite"/></rect>`)
   })
   const catRows = cat.map((l, r) => `<text x="${cx}" y="${cy + r * clh}">${esc(l).replace(/ /g, ' ')}</text>`).join('')
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="A terminal window floating over moving lines. It types: maarib@design:~$ whoami. Product designer who builds. Then npm install maarib adds figma, claude-code, react, next, tailwind and coffee: added 312 packages, 1 cat. A black cat pops up in the corner of the window and blinks.">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="A terminal window floating over moving lines. It types: maarib@design:~$ whoami. Product designer who builds. Then npm install maarib adds figma, claude-code, react, next, tailwind and coffee: added 312 packages, 1 cat. A black cat pops up in the corner of the window and blinks. Five seconds later the session times out (timed out waiting for input: auto-logout) and starts over.">
 <defs>
   <style>${F.mono}${F.vt}
     .field line { stroke: ${t.field}; stroke-width: 1.4; stroke-linecap: round; transform-box: fill-box; transform-origin: center; animation: turn 9s linear infinite; }
     @keyframes turn { to { transform: rotate(360deg); } }
     .win { animation: float 7s ease-in-out infinite; }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
-    .cat { animation: peek 1.1s cubic-bezier(.3,1.5,.5,1) var(--pop) both; }
-    @keyframes peek { from { transform: translateY(215px); } to { transform: translateY(0); } }
+    .cat { animation: peek ${D.toFixed(2)}s linear infinite; }
+    @keyframes peek { 0%, ${pct(tPop)} { transform: translateY(215px); animation-timing-function: cubic-bezier(.3,1.5,.5,1); } ${pct(tPop + 1.1)}, ${pct(tOut)} { transform: translateY(0); animation-timing-function: ease-in; } ${pct(tOut + 0.4)}, 100% { transform: translateY(215px); } }
     text { font-family: VT, ui-monospace, Menlo, monospace; white-space: pre; }
     .cat text { font-family: Mono, ui-monospace, Menlo, monospace; }
     ${MOTION}
@@ -83,11 +92,12 @@ function hero(t) {
     <text x="${tx}" y="${ty1}" clip-path="url(#t1)"><tspan fill="${t.ink}">maarib@design:~$</tspan><tspan fill="${t.ink}"> ${L1}</tspan></text>
     <text x="${tx + 2 * cw}" y="${ty2}" clip-path="url(#t2)" fill="${t.muted}">${L2}</text>
     <text x="${tx}" y="${ty3}" clip-path="url(#t3)"><tspan fill="${t.ink}">maarib@design:~$</tspan><tspan fill="${t.ink}"> ${L3}</tspan></text>
-    ${PKGS.map((l, i) => `<text x="${tx + 2 * cw}" y="${ty4 + i * 20}" fill="${t.muted}" opacity="0">${esc(l)}<animate attributeName="opacity" values="0;1" dur="0.01s" begin="${(t4 + i * 0.35).toFixed(2)}s" fill="freeze"/></text>`).join('')}
-    <text x="${tx + 2 * cw}" y="${ty4 + PKGS.length * 20 + 6}" fill="${t.ink}" opacity="0">${SUM}<animate attributeName="opacity" values="0;1" dur="0.01s" begin="${tBarEnd.toFixed(2)}s" fill="freeze"/></text>
-    <rect x="${tx + (3 + SUM.length) * cw}" y="${ty4 + PKGS.length * 20 + 6 - 13}" width="8" height="16" fill="${t.ink}" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;0.5;1" dur="1.1s" begin="${tBarEnd.toFixed(2)}s" repeatCount="indefinite" calcMode="discrete"/></rect>
+    ${PKGS.map((l, i) => `<text x="${tx + 2 * cw}" y="${ty4 + i * 20}" fill="${t.muted}" opacity="0">${esc(l)}${shown(t4 + i * 0.35)}</text>`).join('')}
+    <text x="${tx + 2 * cw}" y="${ty4 + PKGS.length * 20 + 6}" fill="${t.ink}" opacity="0">${SUM}${shown(tBarEnd)}</text>
+    <text x="${tx}" y="${ty4 + PKGS.length * 20 + 34}" fill="${t.muted}" opacity="0">${TIMEOUT}${shown(tOut)}</text>
+    <rect x="${tx + (3 + SUM.length) * cw}" y="${ty4 + PKGS.length * 20 + 6 - 13}" width="8" height="16" fill="${t.ink}" opacity="0">${steps('opacity', blink)}</rect>
   </g>
-  <g clip-path="url(#body)"><g class="cat" font-size="11" fill="${t.ink}" style="--pop:${(tBarEnd + 0.3).toFixed(2)}s">${catRows}${eyes.join('')}</g></g>
+  <g clip-path="url(#body)"><g class="cat" font-size="11" fill="${t.ink}">${catRows}${eyes.join('')}</g></g>
 </g>
 </svg>
 `
