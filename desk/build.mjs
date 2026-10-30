@@ -782,10 +782,10 @@ function teams() {
   o += tilt(4, 96, 131, highlighter(66, 127, 56, '#ff6fa8', '#ff9cc4', '#d14a82'))
   o += ashtray(116, 158) + tilt(-8, 104, 156, cigarette(92, 154)) + smoke(119, 152.5)
   o += tilt(-10, 146, 140, pixelSticker(CAT, { '#': C.ink }, 140, 128, 1))
-  o += marble(16, 146, 'galaxy', ['#1a0838', '#7b2ff7', '#f107a3', '#ffd6ff'], 1) + marble(28, 150, 'catseye', ['#2a0618', '#d6304e', '#f9a825', '#fff3c4'], 3)
+  o += marble(16, 146, 'galaxy', ['#1a0838', '#7b2ff7', '#f107a3', '#ffd6ff'], 1) + marble(28, 150, 'galaxy', ['#062a22', '#14b8a6', '#7cf03b', '#e6fff4'], 2)
   o += tilt(10, 200, 16, pixelSticker(DOG, { B: '#6b3f1f', b: '#c58a4a', w: '#fbf3e6', k: C.ink, p: '#f08a9a' }, 185, 3, 1.5))
   o += sticky(146, 6, 'RANGE', 5)
-  return { H: 160 * P, body: o, label: 'Range, as three manila folders. Fintech: ' + TEAMS[0][1].join(', ') + '. Web3: ' + TEAMS[1][1].join(', ') + '. Commerce: ' + TEAMS[2][1].join(', ') + '. On and around them, with a dog sticker by the label: a stapler, a pack of cigarettes, two highlighters, a cigarette resting in a glass ashtray, a cat sticker and two glass marbles, a purple galaxy and an ember cat’s eye.' }
+  return { H: 160 * P, body: o, label: 'Range, as three manila folders. Fintech: ' + TEAMS[0][1].join(', ') + '. Web3: ' + TEAMS[1][1].join(', ') + '. Commerce: ' + TEAMS[2][1].join(', ') + '. On and around them, with a dog sticker by the label: a stapler, a pack of cigarettes, two highlighters, a cigarette resting in a glass ashtray, a cat sticker and two glass marbles, a purple galaxy and a green one.' }
 }
 // ── Stack: pixel logo stickers on a cutting mat ──────────────────────────────
 function mat(x, y, w, h) {
@@ -1000,7 +1000,7 @@ function ipad(top) {
 }
 // Around the terminal at the end
 function terminalProps(top) {
-  let o = tilt(-10, 18, top + 32, viceSticker(18, top + 32)) + marble(34, top - 1, 'galaxy', ['#062a22', '#14b8a6', '#7cf03b', '#e6fff4'], 2)
+  let o = tilt(-10, 18, top + 32, viceSticker(18, top + 32)) + marble(34, top - 1, 'catseye', ['#2a0618', '#d6304e', '#f9a825', '#fff3c4'], 3)
   o += plant(206, top + 30) + tilt(8, 205, top + 74, gtaSticker(190, top + 60))
   o += tilt(-12, 203, top + 104, pixelSticker(ARROW, { X: C.ink, y: '#f7e04a' }, 194, top + 90, 1.5))
   return o
@@ -1020,7 +1020,7 @@ const placed = pieces.map((p) => { const g = `<g transform="translate(0 ${y})">$
 const heroY = y
 const termProps = terminalProps(heroY / P)
 const H = y + HERO_H
-const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker and a green galaxy marble, a retro camera with its strap, a plant, a cursor sticker and a GTA VI sticker, an iPad lying on the table shows a terminal window floating over a northern lights wallpaper; it types whoami, Product designer who builds, then npm install maarib, which adds Figma, Claude Code, React, Next, Tailwind and coffee: added 312 packages, 1 cat. Five seconds later the session times out and it all starts over.'
+const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker and an ember cat’s eye marble, a retro camera with its strap, a plant, a cursor sticker and a GTA VI sticker, an iPad lying on the table shows a terminal window floating over a northern lights wallpaper; it types whoami, Product designer who builds, then npm install maarib, which adds Figma, Claude Code, React, Next, Tailwind and coffee: added 312 packages, 1 cat. Five seconds later the session times out and it all starts over.'
 const page = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(label)}">
 <defs><style>${css}${FX_CSS}</style><clipPath id="desk"><rect width="${W}" height="${H}" rx="16"/></clipPath>${DEFS}</defs>
 <g clip-path="url(#desk)">
