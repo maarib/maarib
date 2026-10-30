@@ -357,9 +357,34 @@ function penCup(cx, cy) {
   o += disc(cx - 4, cy - 3, 2, C.blue) + disc(cx + 3, cy - 4, 2, '#f2c230') + disc(cx - 2, cy + 4, 2, C.red) + disc(cx + 4, cy + 3, 2, C.ink) + disc(cx, cy, 2, '#f08a9a')
   return o + R(cx - 9, cy - 1, 6, 2, C.metal) + R(cx - 13, cy - 2, 4, 4, C.red)
 }
-function paperBall(cx, cy) {
-  let o = disc(cx + 1, cy + 1.5, 6, 'rgba(0,0,0,.3)') + disc(cx, cy, 6, '#b9b3a6') + disc(cx, cy, 5, '#f4f1ea')
-  return o + R(cx - 3, cy - 2, 3, 1, '#cfc9bc') + R(cx + 1, cy + 1, 3, 1, '#cfc9bc') + R(cx - 1, cy + 3, 2, 1, '#cfc9bc') + R(cx + 2, cy - 3, 1, 2, '#cfc9bc')
+// Glass marbles from above, in whole pixels: a galaxy (a dark body with a nebula and pinprick stars)
+// or a cat's eye (tinted glass with a twisted vane). Shaded toward the bottom right, with a dark rim and a highlight.
+const rgbOf = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16))
+const lerp3 = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t)
+const ramp = (pal, t) => { t = Math.max(0, Math.min(0.999, t)) * (pal.length - 1); const i = Math.floor(t); return lerp3(rgbOf(pal[i]), rgbOf(pal[i + 1]), t - i) }
+const MARBLE = {
+  galaxy: (u, v, rho, pal, s, i, j) => {
+    const h = Math.sin(i * 254.2 + j * 623.4 + s * 149.4) * 43758.5
+    if (h - Math.floor(h) > 0.93) return [255, 255, 255]
+    return ramp(pal, Math.max(0, 0.35 + 0.25 * Math.sin(4 * u + 3 * v + s) + 0.25 * Math.sin(5 * v - 2 * u * u + s * 2)) * (1 - rho * 0.4))
+  },
+  catseye: (u, v, rho, pal, s) => {
+    const d = Math.abs(v - 0.55 * Math.sin(2.4 * u + s))
+    if (d < 0.08) return rgbOf(pal[3])
+    if (d < 0.26) return ramp(pal.slice(1, 3), (d - 0.08) / 0.18)
+    return lerp3(rgbOf(pal[0]), [255, 255, 255], 0.12 + 0.2 * (1 - rho))
+  },
+}
+function marble(cx, cy, kind, pal, s, r = 6) {
+  let o = ''
+  for (let j = -r; j < r + 2; j++) for (let i = -r; i < r + 2; i++) if (Math.hypot(i - 0.5, j - 1) < r) o += R(cx + i, cy + j, 1, 1, 'rgba(0,0,0,.3)')
+  for (let j = -r; j < r; j++) for (let i = -r; i < r; i++) {
+    const u = (i + 0.5) / r, v = (j + 0.5) / r, rho = Math.hypot(u, v)
+    if (rho > 1) continue
+    const k = (1 - 0.4 * Math.max(0, (u + v) / 1.4 + 0.3) * rho) * (rho > 1 - 1.2 / r ? 0.55 : 1)
+    o += R(cx + i, cy + j, 1, 1, toHex(MARBLE[kind](u, v, rho, pal, s, i, j).map((x) => x * k)))
+  }
+  return o + R(cx - r * 0.5, cy - r * 0.55, 1.5, 1, 'rgba(255,255,255,.9)') + R(cx - r * 0.5 - 0.5, cy - r * 0.55 + 1, 1, 0.5, 'rgba(255,255,255,.6)') + R(cx + r * 0.35, cy + r * 0.45, 1, 0.5, 'rgba(255,255,255,.3)')
 }
 // A retro rangefinder lying flat, seen from above: silver top plate with a mode dial, a shutter
 // button and a hot shoe on the viewfinder hump, strap lugs, and the lens barrel pointing down.
@@ -757,10 +782,10 @@ function teams() {
   o += tilt(4, 96, 131, highlighter(66, 127, 56, '#ff6fa8', '#ff9cc4', '#d14a82'))
   o += ashtray(116, 158) + tilt(-8, 104, 156, cigarette(92, 154)) + smoke(119, 152.5)
   o += tilt(-10, 146, 140, pixelSticker(CAT, { '#': C.ink }, 140, 128, 1))
-  o += paperBall(16, 146) + paperBall(28, 150)
+  o += marble(16, 146, 'galaxy', ['#1a0838', '#7b2ff7', '#f107a3', '#ffd6ff'], 1) + marble(28, 150, 'catseye', ['#2a0618', '#d6304e', '#f9a825', '#fff3c4'], 3)
   o += tilt(10, 200, 16, pixelSticker(DOG, { B: '#6b3f1f', b: '#c58a4a', w: '#fbf3e6', k: C.ink, p: '#f08a9a' }, 185, 3, 1.5))
   o += sticky(146, 6, 'RANGE', 5)
-  return { H: 160 * P, body: o, label: 'Range, as three manila folders. Fintech: ' + TEAMS[0][1].join(', ') + '. Web3: ' + TEAMS[1][1].join(', ') + '. Commerce: ' + TEAMS[2][1].join(', ') + '. On and around them, with a dog sticker by the label: a stapler, a pack of cigarettes, two highlighters, a cigarette resting in a glass ashtray, a cat sticker and balls of scrap paper.' }
+  return { H: 160 * P, body: o, label: 'Range, as three manila folders. Fintech: ' + TEAMS[0][1].join(', ') + '. Web3: ' + TEAMS[1][1].join(', ') + '. Commerce: ' + TEAMS[2][1].join(', ') + '. On and around them, with a dog sticker by the label: a stapler, a pack of cigarettes, two highlighters, a cigarette resting in a glass ashtray, a cat sticker and two glass marbles, a purple galaxy and an ember cat’s eye.' }
 }
 // ── Stack: pixel logo stickers on a cutting mat ──────────────────────────────
 function mat(x, y, w, h) {
@@ -975,7 +1000,7 @@ function ipad(top) {
 }
 // Around the terminal at the end
 function terminalProps(top) {
-  let o = tilt(-10, 18, top + 32, viceSticker(18, top + 32)) + paperBall(34, top - 1)
+  let o = tilt(-10, 18, top + 32, viceSticker(18, top + 32)) + marble(34, top - 1, 'galaxy', ['#062a22', '#14b8a6', '#7cf03b', '#e6fff4'], 2)
   o += plant(206, top + 30) + tilt(8, 205, top + 74, gtaSticker(190, top + 60))
   o += tilt(-12, 203, top + 104, pixelSticker(ARROW, { X: C.ink, y: '#f7e04a' }, 194, top + 90, 1.5))
   return o
@@ -995,7 +1020,7 @@ const placed = pieces.map((p) => { const g = `<g transform="translate(0 ${y})">$
 const heroY = y
 const termProps = terminalProps(heroY / P)
 const H = y + HERO_H
-const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker, a retro camera with its strap, a plant, a cursor sticker and a GTA VI sticker, an iPad lying on the table shows a terminal window floating over a northern lights wallpaper; it types whoami, Product designer who builds, then npm install maarib, which adds Figma, Claude Code, React, Next, Tailwind and coffee: added 312 packages, 1 cat. Five seconds later the session times out and it all starts over.'
+const label = "Maarib's desk, a busy wooden table seen from above. " + pieces.map((p) => p.label).join(' ') + ' At the end, beside a sunset palm sticker and a green galaxy marble, a retro camera with its strap, a plant, a cursor sticker and a GTA VI sticker, an iPad lying on the table shows a terminal window floating over a northern lights wallpaper; it types whoami, Product designer who builds, then npm install maarib, which adds Figma, Claude Code, React, Next, Tailwind and coffee: added 312 packages, 1 cat. Five seconds later the session times out and it all starts over.'
 const page = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(label)}">
 <defs><style>${css}${FX_CSS}</style><clipPath id="desk"><rect width="${W}" height="${H}" rx="16"/></clipPath>${DEFS}</defs>
 <g clip-path="url(#desk)">
