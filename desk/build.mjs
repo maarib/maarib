@@ -648,8 +648,10 @@ function realStamp(cx, cy, deg, color, s, op = 0.85) {
   }
   return `<g transform="rotate(${deg} ${cx} ${cy})"><g filter="url(#ink)" opacity="${op}" style="mix-blend-mode:multiply" shape-rendering="auto">${o}</g></g>`
 }
-// Older, fainter repeats of some stamps (by index into STAMPS), under the rest, so the page is full
-const RESTAMPS = [[9, 7, 16, 0], [38, 6, -18, 2], [83, 66, -24, 3], [10, 98, -8, 6], [27, 67, 32, 5], [86, 12, 21, 1], [56, 37, -30, 7], [61, 99, 15, 9], [4, 38, -27, 4], [86, 84, 9, 10], [40, 84, -35, 11]]
+// Older, fainter repeats of some stamps (by index into STAMPS), under the rest, so the page is full. Each has its own earlier date, so no date shows twice
+const RESTAMPS = [[9, 7, 16, 0, '22 JUL 16'], [38, 6, -18, 2, '05 SEP 17'], [83, 66, -24, 3, '04.05.19'], [10, 98, -8, 6, '12 NOV 19'], [27, 67, 32, 5, '08 ABR 18'], [86, 12, 21, 1, '30 JUN 17'], [56, 37, -30, 7], [61, 99, 15, 9, '19 JAN 20'], [4, 38, -27, 4, '26 MAR 18'], [86, 84, 9, 10, '14 MAY 16'], [40, 84, -35, 11]]
+const DATE = /\d\d([ .])[A-Z0-9]{2,3}\1\d\d/
+const redate = (s, d) => !d ? s : s.date ? { ...s, date: d } : { ...s, lines: s.lines.map(([l, z]) => [l.replace(DATE, d), z]) }
 // "Canada" in Baskerville, drawn at half-pixel scale, with the flag over its last "a"
 const WORDMARK = JSON.parse(readFileSync(`${HERE}data/canada-wordmark.json`, 'utf8'))
 const FLAG = ['RRWWWWWRR', 'RRWWRWWRR', 'RRWRRRWRR', 'RRWWRWWRR']
@@ -678,7 +680,7 @@ function passport(x, y) {
   LEAF.forEach((r, j) => [...r].forEach((v, i) => { if (v === '#') b += R(x + 24 + i * 4, y + 30 + j * 4, 4, 4, 'rgba(214,69,61,.06)') }))
   b += t((x + 6) * P, (y + 8) * P, 'VISAS', { font: 'Pixel', size: 8, fill: C.soft, extra: ' letter-spacing="2"' })
   b += `<clipPath id="visa"><rect x="${(x + 1) * P}" y="${(y + 1) * P}" width="${(pw - 3) * P}" height="${(ph - 2) * P}"/></clipPath><g clip-path="url(#visa)">`
-  RESTAMPS.forEach(([ax, ay, deg, k]) => { const [, , , color, s] = STAMPS[k]; b += realStamp((x + ax) * P, (y + ay) * P, deg, color, s, 0.5) })
+  RESTAMPS.forEach(([ax, ay, deg, k, d]) => { const [, , , color, s] = STAMPS[k]; b += realStamp((x + ax) * P, (y + ay) * P, deg, color, redate(s, d), 0.5) })
   STAMPS.forEach(([ax, ay, deg, color, s]) => { b += realStamp((x + ax) * P, (y + ay) * P, deg, color, s) })
   b += `</g>`
   // Data page, laid out like a Canadian passport's: guilloche, a faint maple leaf, photo on the left,
