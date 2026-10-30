@@ -123,23 +123,9 @@ function wood(Ha) {
 
 // ── Clutter ──────────────────────────────────────────────────────────────────
 const paperclip = (x, y) => frame(x, y, 5, 15, C.metalD) + frame(x + 1, y + 2, 3, 10, C.metalL)
-// A coffee ring in pixels: a broken band, darker where the coffee pooled at the bottom left,
-// plus a fainter smear from a second set-down. Its own seed, so the global rnd() doesn't shift.
-function ring(x, y, r, seed = 7) {
-  let s = seed
-  const rn = () => (s = (s * 16807) % 2147483647) / 2147483647
-  let o = ''
-  for (let j = -r - 4; j <= r + 4; j++) for (let i = -r - 4; i <= r + 4; i++) {
-    const d = Math.hypot(i + 0.5, j + 0.5), a = Math.atan2(j + 0.5, i + 0.5), heavy = (1 + Math.cos(a - 2.4)) / 2
-    const k = rn()
-    if (Math.abs(d - r) < 0.75) { if (k > 0.12 + 0.25 * (1 - heavy)) o += R(x + i, y + j, 1, 1, `rgba(90,52,22,${(0.2 + 0.18 * heavy + (k > 0.85 ? 0.08 : 0)).toFixed(2)})`) }
-    else if (Math.abs(d - r) < 1.6 && k > 0.8 - 0.3 * heavy) o += R(x + i, y + j, 1, 1, 'rgba(90,52,22,.14)')
-    // The second ring, shifted down-left, only its lower arc
-    const d2 = Math.hypot(i + 2.5, j - 2.5)
-    if (Math.abs(d2 - (r + 1)) < 0.6 && j > 0 && a > 0.5 && k < 0.55) o += R(x + i, y + j, 1, 1, 'rgba(90,52,22,.13)')
-  }
-  return o
-}
+// A coffee ring, chunky like the mug's shadow: a stepped band two pixels thick, and a fainter
+// lower arc from where the mug was set down a second time
+const ring = (x, y, r) => annulus(x, y, r - 2, r, 'rgba(90,52,22,.26)') + annulus(x - 2, y + 2, r, r + 1, 'rgba(90,52,22,.14)', 1)
 function pencil(x, y, L, body = '#f2c230', light = '#f8d860', dark = '#c99a1c') {
   let o = box(x, y, L, 5, body, light, dark)
   o += R(x + 1, y + 1, 4, 3, '#f08a9a') + R(x + 5, y + 1, 2, 3, C.metal)
@@ -245,10 +231,10 @@ function ashtray(cx, cy, r = 17) {
   o += R(cx + 1, cy + 4, 6, 2, C.white) + R(cx + 7, cy + 4, 4, 2, '#e3a75a') + R(cx, cy + 4, 1, 2, '#6a6a6a') + R(cx + 8, cy + 4, 1, 1, '#c98a3a')
   return o + R(cx - 11, cy - 10, 4, 1, 'rgba(255,255,255,.7)') + R(cx - 12, cy - 9, 1, 3, 'rgba(255,255,255,.7)')
 }
-// A pixel ring between radii r0 and r1, with a real hole.
-function annulus(cx, cy, r0, r1, c) {
+// A pixel ring between radii r0 and r1, with a real hole. `from` skips the rows above it.
+function annulus(cx, cy, r0, r1, c, from = -Infinity) {
   let o = ''
-  for (let j = -Math.ceil(r1); j < r1; j++) {
+  for (let j = Math.max(-Math.ceil(r1), from); j < r1; j++) {
     const yy = j + 0.5, a = Math.round(Math.sqrt(Math.max(0, r1 * r1 - yy * yy))), b = Math.abs(yy) < r0 ? Math.round(Math.sqrt(r0 * r0 - yy * yy)) : 0
     if (a <= 0) continue
     if (b > 0) { if (a > b) o += R(cx - a, cy + j, a - b, 1, c) + R(cx + b, cy + j, a - b, 1, c) }
@@ -882,13 +868,14 @@ function classifieds() {
   // The WANTED ad, circled in red pen
   const ex = col(0) + colW / 2 - 0.5, ey = top + rowH / 2 - 2
   for (let k = 0; k < 120; k++) { const th = (k / 120) * Math.PI * 2.15 - 0.4, rr = 1 + 0.04 * Math.sin(k / 9); n += R(ex + Math.cos(th) * (colW / 2 + 4) * rr, ey + Math.sin(th) * (rowH / 2 + 2) * rr, 1, 1, 'rgba(214,69,61,.75)') }
+  n += ring(x + 166, y + 26, 9)
   n += tilt(-35, x + 4, y + 2, tape(x - 8, y - 1, 24, 6, 'rgba(236,220,170,.85)'))
   o += tilt(-1.2, x + w / 2, y + h / 2, `<g class="in">${n}</g>`)
   o += tilt(-20, 70, 60, paperclip(68, 54)) + tilt(-6, 162, 134, pencil(144, 132, 34))
   o += tilt(12, 206, 69, rubiks(193, 56, 8))
   o += tilt(-7, 68, 12, polaroid(50, -11, 'the boss')) + tilt(5, 104, 156, gameBox(72, 130))
   o += cd(160, 166) + tilt(-14, 46, 174, tapeDispenser(30, 166))
-  return { H: 188 * P, body: o, label: 'A newspaper, The Big 6ix Times, open at its back page. ' + ADS.map(([k, d]) => `${k[0] + k.slice(1).toLowerCase()}: ${d}`).join(' ') + ' The wanted ad is circled in red pen. A tall weather box maps Ontario: ' + CITIES.map(([c, d]) => `${c} ${d}°`).join(', ') + '. Beside it, a crossword half filled in (Figma across, Font down) and a Clip & save coupon for one free design review, partly cut out. A paperclip, a pencil and a scrambled Rubik\'s cube lie on the paper. A polaroid of the cat, captioned the boss, lies on its top edge; a floppy disk lies on a clipping headlined Extreme cold, and a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under the paper, next to a CD and a tape dispenser.' }
+  return { H: 188 * P, body: o, label: 'A newspaper, The Big 6ix Times, open at its back page. ' + ADS.map(([k, d]) => `${k[0] + k.slice(1).toLowerCase()}: ${d}`).join(' ') + ' The wanted ad is circled in red pen, and a coffee mug has left a ring beside the masthead. A tall weather box maps Ontario: ' + CITIES.map(([c, d]) => `${c} ${d}°`).join(', ') + '. Beside it, a crossword half filled in (Figma across, Font down) and a Clip & save coupon for one free design review, partly cut out. A paperclip, a pencil and a scrambled Rubik\'s cube lie on the paper. A polaroid of the cat, captioned the boss, lies on its top edge; a floppy disk lies on a clipping headlined Extreme cold, and a cafe receipt, a todo note (fewer meetings, more cats, ship it) and a board game called Ship It! stick out from under the paper, next to a CD and a tape dispenser.' }
 }
 
 // ── Contact: envelope ────────────────────────────────────────────────────────
