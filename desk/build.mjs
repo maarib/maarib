@@ -123,7 +123,23 @@ function wood(Ha) {
 
 // ── Clutter ──────────────────────────────────────────────────────────────────
 const paperclip = (x, y) => frame(x, y, 5, 15, C.metalD) + frame(x + 1, y + 2, 3, 10, C.metalL)
-const ring = (x, y, r) => `<g shape-rendering="auto" fill="none" stroke="#5a3418" stroke-opacity=".3"><circle cx="${x * P}" cy="${y * P}" r="${r * P}" stroke-width="7"/><path d="M${(x - r - 2) * P} ${(y + 3) * P}a${(r + 2) * P} ${(r + 2) * P} 0 0 0 ${(r + 6) * P} ${(r - 1) * P}" stroke-width="3"/></g>`
+// A coffee ring in pixels: a broken band, darker where the coffee pooled at the bottom left,
+// plus a fainter smear from a second set-down. Its own seed, so the global rnd() doesn't shift.
+function ring(x, y, r, seed = 7) {
+  let s = seed
+  const rn = () => (s = (s * 16807) % 2147483647) / 2147483647
+  let o = ''
+  for (let j = -r - 4; j <= r + 4; j++) for (let i = -r - 4; i <= r + 4; i++) {
+    const d = Math.hypot(i + 0.5, j + 0.5), a = Math.atan2(j + 0.5, i + 0.5), heavy = (1 + Math.cos(a - 2.4)) / 2
+    const k = rn()
+    if (Math.abs(d - r) < 0.75) { if (k > 0.12 + 0.25 * (1 - heavy)) o += R(x + i, y + j, 1, 1, `rgba(90,52,22,${(0.2 + 0.18 * heavy + (k > 0.85 ? 0.08 : 0)).toFixed(2)})`) }
+    else if (Math.abs(d - r) < 1.6 && k > 0.8 - 0.3 * heavy) o += R(x + i, y + j, 1, 1, 'rgba(90,52,22,.14)')
+    // The second ring, shifted down-left, only its lower arc
+    const d2 = Math.hypot(i + 2.5, j - 2.5)
+    if (Math.abs(d2 - (r + 1)) < 0.6 && j > 0 && a > 0.5 && k < 0.55) o += R(x + i, y + j, 1, 1, 'rgba(90,52,22,.13)')
+  }
+  return o
+}
 function pencil(x, y, L, body = '#f2c230', light = '#f8d860', dark = '#c99a1c') {
   let o = box(x, y, L, 5, body, light, dark)
   o += R(x + 1, y + 1, 4, 3, '#f08a9a') + R(x + 5, y + 1, 2, 3, C.metal)
