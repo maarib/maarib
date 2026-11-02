@@ -206,8 +206,8 @@ function keyboard(x, y) {
 function boardingPass(x, y) {
   let o = box(x, y, 74, 30, C.paperL, '#ffffff', C.paperD) + R(x + 1, y + 1, 72, 6, C.blue)
   o += t((x + 4) * P, (y + 5.6) * P, 'BOARDING PASS', { font: 'Pixel', size: 7, fill: '#fff', extra: ' letter-spacing="1"' })
-  o += t((x + 4) * P, (y + 16) * P, 'YYZ', { font: 'Pixel', size: 12 }) + R(x + 14, y + 13.5, 4.5, 0.5, C.ink) + R(x + 17.5, y + 12.5, 0.5, 2.5, C.ink) + R(x + 18, y + 13, 0.5, 1.5, C.ink) + R(x + 18.5, y + 13.5, 0.5, 0.5, C.ink) + t((x + 21.5) * P, (y + 16) * P, 'ANYWHERE', { font: 'Pixel', size: 12 })
-  o += t((x + 4) * P, (y + 24) * P, 'GATE UX · ON TIME', { size: 17, fill: C.soft })
+  o += t((x + 4) * P, (y + 16) * P, 'YYZ', { font: 'Pixel', size: 12 }) + R(x + 14.5, y + 14.5, 4.5, 0.5, C.ink) + R(x + 18, y + 13.5, 0.5, 2.5, C.ink) + R(x + 18.5, y + 14, 0.5, 1.5, C.ink) + R(x + 19, y + 14.5, 0.5, 0.5, C.ink) + t((x + 21.5) * P, (y + 16) * P, 'ANYWHERE', { font: 'Pixel', size: 12 })
+  o += t((x + 4) * P, (y + 24) * P, 'GATE 6IX · ON TIME', { size: 17, fill: C.soft })
   for (let i = 0; i < 10; i++) o += R(x + 52, y + 8 + i * 2, 1, 1, C.rule)
   o += t((x + 55) * P, (y + 13) * P, 'SEAT', { font: 'Pixel', size: 6, fill: C.soft }) + t((x + 55) * P, (y + 22) * P, '12A', { font: 'Pixelify', size: 26, fill: C.redD })
   return o
