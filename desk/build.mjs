@@ -729,7 +729,7 @@ function passport(x, y) {
   b += fld(fx, y + 18, 'Type', 'P') + fld(fx + 9, y + 18, 'Code/Code', 'CAN') + fld(fx + 24, y + 18, 'No./N°', 'MS2026', 17)
   b += fld(fx, y + 27, 'Name/Nom', 'MAARIB SHAH') + fld(fx, y + 36, 'Occupation/Profession', 'PRODUCT DESIGNER', 17)
   b += fld(fx, y + 45, 'Level/Niveau', '12+ YEARS') + fld(fx + 21, y + 45, 'Base/Base', 'TORONTO')
-  b += fld(rx + 4, y + 59, 'Worlds/Mondes', 'FINTECH • DEFI') + fld(fx, y + 59, 'Issued/Délivré', '17 OCT 2011')
+  b += fld(rx + 4, y + 59, 'Worlds/Mondes', 'FINTECH • WEB3') + fld(fx, y + 59, 'Issued/Délivré', '17 OCT 2011')
   b += t((rx + 4) * P, (y + 74.5) * P, 'Signature/Signature', { size: 11, fill: C.soft })
   b += t((rx + 5) * P, (y + 83) * P, 'Maarib Shah', { font: 'Sig', size: 44, fill: '#1f3f8f', extra: ' shape-rendering="auto"' })
   b += R(rx + 1, y + 85, pw - 2, ph - 87, '#efe3c6')
@@ -749,11 +749,11 @@ function about() {
   o += tilt(-30, 198, 86, mug(198, 86)) + steam(198, 86)
   o += tilt(72, 206, 136, pencil(184, 134, 44))
   o += sticky(5, 9, 'ABOUT', -6)
-  return { H: 172 * P, body: o, label: 'About, as an open Canadian passport. The visa page is covered edge to edge in entry and exit stamps: Pakistan (Karachi, Lahore), Canada (Toronto, Vancouver), the Dominican Republic, the United States (New York, Los Angeles), the United Kingdom, France, Mexico, Turkey and Dubai. The data page, under a Canada wordmark: a colour pixel portrait of Maarib that blinks, glances left and right, and every so often breaks into a smile with a little teeth showing: dark swept-back hair faded at the sides and a full textured beard. Name: Maarib Shah. Occupation: product designer. Level: 12+ years. Base: Toronto. Worlds: Fintech, DeFi. Issued 17 Oct 2011. Signed Maarib Shah. Around it: part of a keyboard, a mug of coffee, two Metallica tickets with a house key below them, a boarding pass from YYZ to anywhere, and a pencil.' }
+  return { H: 172 * P, body: o, label: 'About, as an open Canadian passport. The visa page is covered edge to edge in entry and exit stamps: Pakistan (Karachi, Lahore), Canada (Toronto, Vancouver), the Dominican Republic, the United States (New York, Los Angeles), the United Kingdom, France, Mexico, Turkey and Dubai. The data page, under a Canada wordmark: a colour pixel portrait of Maarib that blinks, glances left and right, and every so often breaks into a smile with a little teeth showing: dark swept-back hair faded at the sides and a full textured beard. Name: Maarib Shah. Occupation: product designer. Level: 12+ years. Base: Toronto. Worlds: Fintech, Web3. Issued 17 Oct 2011. Signed Maarib Shah. Around it: part of a keyboard, a mug of coffee, two Metallica tickets with a house key below them, a boarding pass from YYZ to anywhere, and a pencil.' }
 }
 
 const TEAMS = [
-  ['FINTECH', ['Glow Finance', 'Megprime Pay', 'Concrete Finance', 'Credit Coop', 'Polymarket']],
+  ['FINTECH', ['Glow Finance', 'Megprime Pay', 'Concrete Finance', 'Credit Coop', 'Goldfinch']],
   ['WEB3', ['XMTP', 'Koop', 'The Wall Street Journal', 'DC Pictures']],
   ['COMMERCE', ['Shop Bonsai', 'Suntory', 'Zala Hair', 'Complex']],
 ]
@@ -769,7 +769,7 @@ function teams() {
     f += box(x, y + 18, fw, fh - 18, C.manila, C.manilaL, C.manilaD)
     const lh = 7 + list.length * 6
     f += box(x + 4, y + 24, fw - 8, lh, C.paperL, '#ffffff', C.paperD, { shadow: false })
-    list.forEach((n, k) => { f += t((x + 7) * P, (y + 30 + k * 6) * P + 1, n, { size: n.length > 19 ? 17 : 20 }) })
+    list.forEach((n, k) => { f += t((x + 7) * P, (y + 30 + k * 6) * P + 1, n, { size: n.length > 19 ? 17 : 20, extra: ' style="font-variant-ligatures:none"' }) })
     if (i === 0) f += paperclip(x + fw - 12, y + 14)
     if (i === 1) f += ring(x + 22, y + 82, 9)
     if (i === 2) f += binderClip(x + 40, y + 8)
@@ -793,7 +793,7 @@ function mat(x, y, w, h) {
   for (let i = 5; i < w - 1; i += 5) o += R(x + i, y + 1, i % 25 ? 0.5 : 1, h - 2, 'rgba(255,255,255,.16)')
   for (let j = 5; j < h - 1; j += 5) o += R(x + 1, y + j, w - 2, j % 25 ? 0.5 : 1, 'rgba(255,255,255,.16)')
   for (let i = 5, n = 1; i < w - 10; i += 25, n += 5) o += t((x + i + 1) * P, (y + 4.4) * P, String(n), { font: 'Pixel', size: 6, fill: 'rgba(255,255,255,.55)' })
-  return o + t((x + w - 4) * P, (y + h - 2.6) * P, 'SELF-HEALING CUTTING MAT · A2', { font: 'Pixel', size: 6, fill: 'rgba(255,255,255,.55)', anchor: 'end' })
+  return o
 }
 const TOOLS = [
   ['figma'], ['sketch', { old: true, lift: true }], ['claude'], ['photoshop', { old: true, lift: true }], ['github', { round: true }], ['cursor'], ['framer'],
