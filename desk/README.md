@@ -20,7 +20,7 @@ You'll need Node 22 or later.
 | `build.mjs` | Draws the whole desk. Each section (`about`, `teams`, `stack`, `projects`, `contact`) is its own function, and the words live in `TEAMS`, `TOOLS`, `PROJECTS` and `STAMPS` |
 | `hero.mjs` | The terminal at the end. It types `whoami` and `npm install maarib`, times out after 5 seconds and starts over |
 | `intro.mjs` | The intro on top, in a light and a dark version: "Hi, I'm Maarib" and the designer line whose first word keeps flipping (`WORDS`) |
-| `projects.mjs` | The side projects under the desk: a newspaper masthead, then one clickable old Mac folder per project (`PROJECTS`) |
+| `projects.mjs` | The side projects under the desk, as an old Mac Finder window: a header, then one clickable folder per project (`PROJECTS`) |
 | `sayhi.mjs` | The Say hi keys, one clickable key per link (`CONTACTS`) |
 | `pixel.mjs` | Drawing helpers shared by the three above |
 | `pixel-logos.mjs` | Shrinks the logos in `data/logos/` down to 18×18 pixel grids |
