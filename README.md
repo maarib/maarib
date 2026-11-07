@@ -6,6 +6,6 @@
 
 <p align="center"><a href="https://maarib.github.io/canopy/"><img src="assets/projects/canopy.svg" alt="Canopy: fall colors across Canada, and what to explore in Ontario" width="33%"></a><a href="https://github.com/maarib/alert.engine"><img src="assets/projects/alert-engine.svg" alt="alert.engine: a stock and ETF watchlist with alerts and market briefs" width="33%"></a><a href="https://github.com/maarib/page-comments"><img src="assets/projects/page-comments.svg" alt="page-comments: a Claude Code skill for leaving notes on any web page" width="33%"></a></p>
 
-<picture><img src="assets/sayhi/header.svg" alt="Say hi" width="100%"></picture>
+<picture><img src="assets/sayhi/header.svg" alt="" width="100%"></picture>
 
 <p align="center"><a href="https://www.maaribs.com"><img src="assets/sayhi/website.svg" alt="Website: maaribs.com" width="33%"></a><a href="https://www.linkedin.com/in/marib/"><img src="assets/sayhi/linkedin.svg" alt="LinkedIn: let's connect" width="33%"></a><a href="https://dribbble.com/maaribou"><img src="assets/sayhi/dribbble.svg" alt="Dribbble: old work" width="33%"></a></p>
