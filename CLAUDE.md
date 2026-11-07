@@ -10,7 +10,7 @@ npm install
 npm run build    # writes everything in ../assets
 ```
 
-- Node 22 or later. `npm run logos` (re-pixelates `data/logos/`) and `tools/shot.mjs` need Chromium. On my Mac, set `CHROMIUM_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"`.
+- Node 22 or later. `npm run logos` (re-pixelates `data/logos/`), `npm run widths` and `tools/shot.mjs` need Chromium. On my Mac, set `CHROMIUM_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"`.
 - Check every visual change with a screenshot before calling it done: `node tools/shot.mjs ../assets/desk.svg /tmp/desk --scale 2 <crop>`. Look at the screenshot itself, not just the code. Use `--frames` for animations.
 - After a build, `git status` should only show the files you meant to change. If unrelated assets change, something shifted.
 
@@ -32,7 +32,7 @@ npm run build    # writes everything in ../assets
 - **Animations** are CSS keyframes inside the SVG (`css` and `FX_CSS`). Every animation respects `prefers-reduced-motion`.
 - **Fonts** are embedded from `@fontsource` as data URIs. Families: `Pixel` (Press Start 2P, monospaced), `Pixelify`, `VT`, `Sig`.
 - **Labels:** every section has a written description, joined into the SVG's `aria-label`. When something on the desk changes, update its description and the alt text in the top-level `README.md`. `esc()` doesn't escape quotes, so use curly quotes (“ ”) in that text, or the SVG breaks.
-- **Links** inside an SVG don't work in a README. Each clickable thing (the side-project clippings and the Say hi keys) is its own image inside an `<a>`. Plain images are wrapped in `<picture>` so GitHub doesn't link them to the raw file.
+- **Links** inside an SVG don't work in a README. Each clickable thing (the side-project folders and the Say hi keys) is its own image inside an `<a>`. Plain images are wrapped in `<picture>` so GitHub doesn't link them to the raw file.
 
 ## Data
 

@@ -1,35 +1,45 @@
-// The side projects under the desk, as a newspaper: a masthead, then one clipping per project.
-// Each clipping is its own image so the README can link it (links inside an image don't work).
+// The side projects under the desk: a newspaper masthead, then one old Mac folder per project.
+// Each folder is its own image so the README can link it (links inside an image don't work).
 // Run: npm run build  (writes ../assets/projects/*.svg)
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { P, C, R, box, t, wrap, seeded, svg } from './pixel.mjs'
+import { P, C, R, t, wrap, bitmap, seeded, svg } from './pixel.mjs'
 const HERE = fileURLToPath(new URL('.', import.meta.url))
 const OUT = `${HERE}../assets/projects`
 mkdirSync(OUT, { recursive: true })
 
 export const PROJECTS = [
   { slug: 'canopy', name: 'Canopy', desc: 'Fall colors across Canada, and what to explore in Ontario.', url: 'https://maarib.github.io/canopy/', cta: 'VISIT SITE' },
-  { slug: 'leaf-icons', name: 'Leaf icons', desc: 'Tree leaf icons, with an SVG editor for stems and layers.', url: 'https://maarib.github.io/leaf-icons/', cta: 'VISIT SITE' },
-  { slug: 'fpl-dashboard', name: 'FPL Dashboard', desc: 'Fantasy Premier League players, sortable and side by side.', url: 'https://maarib.github.io/fpl-dashboard/', cta: 'VISIT SITE' },
-  { slug: 'card-compare', name: 'CardCompare', desc: 'Canadian credit cards compared on fees, rewards and perks.', url: 'https://github.com/maarib/card-compare', cta: 'VIEW CODE' },
   { slug: 'alert-engine', name: 'alert.engine', desc: 'A stock and ETF watchlist with alerts and market briefs.', url: 'https://github.com/maarib/alert.engine', cta: 'VIEW CODE' },
   { slug: 'page-comments', name: 'page-comments', desc: 'A Claude Code skill for leaving notes on any web page.', url: 'https://github.com/maarib/page-comments', cta: 'VIEW CODE' },
 ]
 
-// ── A clipping: torn newsprint with a headline, standfirst and a button ──
+// ── A folder: Mac OS 8 Platinum, lavender, with a sheet of paper peeking out ──
 const TW = 300, TH = 188, AW = TW / P, AH = TH / P
-function clipping(p, i) {
-  const rnd = seeded(31 + i * 17), x = 3, y = 3, w = AW - 6, h = AH - 6
-  let o = R(x + 1, y + 1.5, w, h, 'rgba(0,0,0,.28)') + R(x, y, w, h, C.news)
-  for (let k = 0; k < w; k++) { if (rnd() < 0.45) o += R(x + k, y - 1, 1, 1, C.news); if (rnd() < 0.45) o += R(x + k, y + h, 1, 1, C.news) }
-  for (let k = 0; k < h; k++) { if (rnd() < 0.45) o += R(x - 1, y + k, 1, 1, C.news); if (rnd() < 0.45) o += R(x + w, y + k, 1, 1, C.news) }
-  o += t((x + 4) * P, (y + 9.5) * P, p.name, { font: 'Pixelify', size: Math.min(34, Math.floor(((w - 8) * P) / (p.name.length * 0.64))) }) + R(x + 4, y + 12, w - 8, 0.5, C.ink)
-  wrap(p.desc, 32).forEach((l, k) => { o += t((x + 4) * P, (y + 19 + k * 5) * P, l, { size: 20, fill: C.soft }) })
-  // Button-like call to action, bottom right
-  const label = p.cta + ' >', bw = Math.ceil(label.length * 1.8) + 6, bx = x + w - 4 - bw, by = y + h - 11
-  o += box(bx, by, bw, 8, C.blueD, C.blue, '#1d3a7a') + t((bx + bw / 2) * P, (by + 5.4) * P, label, { font: 'Pixel', size: 7, fill: '#fff', anchor: 'middle' })
-  const deg = [-1.2, 0.8, -0.6, 0.9, -1, 0.7][i]
+const F = { out: '#262640', back: '#9a9ae0', front: '#c4c4f6', hi: '#e6e6ff', lo: '#8686c8', ink: '#1b1b38', soft: '#3c3c66', rule: '#c8c8d8' }
+// Silhouette: a tab with a stepped slope on the top left, then the body
+const shape = (x, y, w, h, tw, c) =>
+  R(x + 1, y, tw - 2, 1, c) + R(x, y + 1, tw, 4, c) + R(x + tw, y + 2, 1, 3, c) + R(x + tw + 1, y + 3, 1, 2, c) +
+  R(x + 1, y + 4, w - 2, h - 4, c) + R(x, y + 5, w, h - 6, c)
+// A 45° arrow, pointing up and right
+// Pixelify letter widths in em, from npm run widths
+const WIDTHS = JSON.parse(readFileSync(`${HERE}data/pixelify-widths.json`, 'utf8'))
+const em = (s) => [...s].reduce((n, ch) => n + (WIDTHS[ch] ?? 0.6), 0)
+const ARROW = ['..####', '....##', '...#.#', '..#..#', '.#....', '#.....']
+function folder(p, i) {
+  const x = 3, y = 3, w = AW - 7, h = AH - 7, tw = Math.round(w * 0.36)
+  let o = R(x + 1.5, y + 2, w, h, 'rgba(0,0,0,.28)')
+  o += shape(x, y, w, h, tw, F.out) + shape(x + 1, y + 1, w - 2, h - 2, tw - 2, F.back) + R(x + 1, y + 1, tw - 3, 0.5, F.hi)
+  // The sheet sits behind the front flap and peeks out over the back
+  const sx = x + tw + 3, sw = w - tw - 7
+  o += R(sx, y + 2, sw, 6, F.out) + R(sx + 0.5, y + 2.5, sw - 1, 6, '#ffffff') + [4, 5.5].map((k) => R(sx + 2.5, y + k, sw - 6, 0.5, F.rule)).join('')
+  o += R(x, y + 7, w, h - 7, F.out) + R(x + 1, y + 8, w - 2, h - 9, F.front) + R(x + 1, y + 8, w - 2, 0.5, F.hi) + R(x + 1, y + h - 1.5, w - 2, 0.5, F.lo) + R(x + w - 1.5, y + 8, 0.5, h - 9, F.lo)
+  // Name, then the arrow right after it
+  const size = Math.min(32, Math.floor(((w - 16) * P) / em(p.name)))
+  o += t((x + 4) * P, (y + 17) * P, p.name, { font: 'Pixelify', size, fill: F.ink })
+  o += bitmap(ARROW, x + 6 + (em(p.name) * size) / P, y + 11.5, { '#': F.ink }, 0.75)
+  wrap(p.desc, 30).forEach((l, k) => { o += t((x + 4) * P, (y + 25 + k * 5) * P, l, { size: 20, fill: F.soft }) })
+  const deg = [-1.2, 0.8, -0.6][i]
   return svg(TW, TH, `${p.name}: ${p.desc} ${p.cta === 'VISIT SITE' ? 'Opens the live site.' : 'Opens the code on GitHub.'}`, `<g transform="rotate(${deg} ${TW / 2} ${TH / 2})">${o}</g>`)
 }
 
@@ -46,5 +56,5 @@ function masthead() {
 }
 
 writeFileSync(`${OUT}/masthead.svg`, masthead())
-PROJECTS.forEach((p, i) => writeFileSync(`${OUT}/${p.slug}.svg`, clipping(p, i)))
+PROJECTS.forEach((p, i) => writeFileSync(`${OUT}/${p.slug}.svg`, folder(p, i)))
 console.log('projects', PROJECTS.length + 1, 'images')

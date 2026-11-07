@@ -6,7 +6,8 @@
   "scripts": {
     "build": "node build.mjs && node intro.mjs && node projects.mjs && node sayhi.mjs",
     "logos": "node pixel-logos.mjs",
-    "wordmark": "node pixel-wordmark.mjs"
+    "wordmark": "node pixel-wordmark.mjs",
+    "widths": "node tools/font-widths.mjs"
   },
   "dependencies": {
     "@fontsource/instrument-serif": "5.3.0",

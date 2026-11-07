@@ -1,4 +1,4 @@
-// Shared drawing helpers for the smaller images (side project clippings, Say hi keys).
+// Shared drawing helpers for the smaller images (side project folders, Say hi keys).
 // Same pixel grid as the desk: 4 screen px per art px.
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'

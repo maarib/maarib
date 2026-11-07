@@ -20,11 +20,12 @@ You'll need Node 22 or later.
 | `build.mjs` | Draws the whole desk. Each section (`about`, `teams`, `stack`, `projects`, `contact`) is its own function, and the words live in `TEAMS`, `TOOLS`, `PROJECTS` and `STAMPS` |
 | `hero.mjs` | The terminal at the end. It types `whoami` and `npm install maarib`, times out after 5 seconds and starts over |
 | `intro.mjs` | The intro on top, in a light and a dark version: "Hi, I'm Maarib" and the designer line whose first word keeps flipping (`WORDS`) |
-| `projects.mjs` | The side projects newspaper under the desk, one clickable clipping per project (`PROJECTS`) |
+| `projects.mjs` | The side projects under the desk: a newspaper masthead, then one clickable old Mac folder per project (`PROJECTS`) |
 | `sayhi.mjs` | The Say hi keys, one clickable key per link (`CONTACTS`) |
 | `pixel.mjs` | Drawing helpers shared by the three above |
 | `pixel-logos.mjs` | Shrinks the logos in `data/logos/` down to 18×18 pixel grids |
 | `pixel-wordmark.mjs` | Turns "Canada" into the pixel wordmark on the passport |
+| `tools/font-widths.mjs` | Measures each Pixelify letter into `data/pixelify-widths.json`, so the arrow on a side project folder lands right after its name (`npm run widths`) |
 | `tools/shot.mjs` | Takes screenshots of a built image the way GitHub shows it, cropped and zoomed, to check a change. It can also take a few frames in a row to catch an animation partway through |
 | `tools/ds4-trace.py` | Traces the PS4 controller from a top-down photo into `data/ds4.json`. Needs Python with Pillow |
 | `data/` | The cat (as pixels), my passport portrait (62×74 at half-pixel size: ink lines in `me-pixels`, coloured in `me-colour`, closed eyes for the blink in `me-blink`), the logos and their pixel versions, the Canada wordmark, and the PS4 controller |
@@ -37,4 +38,4 @@ When I pick up a new tool, here's how it gets a sticker:
 2. Run `npm run logos`
 3. Add it to `TOOLS` in `build.mjs` and run `npm run build`
 
-`npm run logos` and `tools/shot.mjs` need Chromium. If Playwright can't find it, set `CHROMIUM_PATH`.
+`npm run logos`, `npm run widths` and `tools/shot.mjs` need Chromium. If Playwright can't find it, set `CHROMIUM_PATH`.
