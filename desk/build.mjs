@@ -115,8 +115,8 @@ function wood(Ha) {
       }
     }
     for (let n = 0; n < 2; n++) { const kx = x0 + 10 + rnd() * (pw - 20), ky = 20 + rnd() * (Ha - 40); o += ell(kx, ky, 4, 8, 'rgba(90,52,22,.25)') + ell(kx, ky, 2, 4, 'rgba(90,52,22,.38)') }
-    for (let n = 0; n < 2; n++) { const jy = Math.floor((0.15 + 0.45 * n + rnd() * 0.3) * Ha); o += R(x0, jy, pw, 1, '#7a5030') + R(x0, jy + 1, pw, 1, 'rgba(255,214,160,.12)') }
-    o += R(x0, 0, 1, Ha, '#7a5030') + R(x0 + 1, 0, 1, Ha, 'rgba(255,214,160,.12)')
+    // No seams or joints, but keep their two rnd() calls so everything drawn after stays put
+    rnd(); rnd()
   })
   return o
 }
