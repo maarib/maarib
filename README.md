@@ -8,4 +8,6 @@
 
 <picture><img src="assets/sayhi/header.svg" alt="" width="100%"></picture>
 
+<!-- Contact keys, hidden for now. Remove this comment wrapper to bring them back.
 <p align="center"><a href="https://www.maaribs.com"><img src="assets/sayhi/website.svg" alt="Website: maaribs.com" width="33%"></a><a href="https://www.linkedin.com/in/marib/"><img src="assets/sayhi/linkedin.svg" alt="LinkedIn: let's connect" width="33%"></a><a href="https://dribbble.com/maaribou"><img src="assets/sayhi/dribbble.svg" alt="Dribbble: old work" width="33%"></a></p>
+-->
