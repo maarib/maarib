@@ -1,6 +1,25 @@
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/intro-dark.svg"><img src="assets/intro-light.svg" alt="Hi, I'm Maarib. Product designer at heart, where product keeps flipping to founding, graphic, web, digital, lead, full-stack, motion, cat-approved and front-end." width="100%"></picture>
 
-<picture><img src="assets/desk.svg" alt="Maarib's desk, a busy oak table seen from above: an open Canadian passport, its visa page covered in stamps and its data page showing a pixel portrait of Maarib that blinks, glances and smiles, under a pixel Canada wordmark, with Metallica tickets, a house key, a boarding pass, keyboard and coffee; three folders (Fintech, Web3, Commerce) with a stapler, cigarettes, highlighters, an ashtray, stickers and glass marbles; pixel logo stickers of the tool stack, Storybook among them, on a cutting mat; a newspaper, The Big 6ix Times, with a coffee ring by the masthead, an Ontario weather map, a crossword, a coupon, a Rubik's cube, a polaroid of the cat, a board game and a CD; an envelope addressed to maarib@mail.com beside an iPhone that wakes to a You got mail! notification, a PS4 controller, a Magic 8 Ball, a tape player, black headphones and a retro camera; and an iPad lying on the table, with stickers beside it, whose terminal runs npm install maarib, then times out and starts over." width="100%"></picture>
+<picture><img src="assets/compact/hero.svg" alt="Maarib Shah in tall dot-matrix letters beside a portrait of Maarib drawn in square dots on black, with glitch blocks of red, blue and orange; every so often a row tears sideways, and the portrait blinks, glances and smiles. Captions: product designer who builds; fintech, Web3, commerce; Toronto, Canada." width="100%"></picture>
+
+**Product designer who builds.** 12+ years designing for fintech, Web3 and commerce. Based in Toronto.
+
+| World | Teams |
+|:--|:--|
+| **Fintech** | Glow Finance · Megprime Pay · Concrete Finance · Credit Coop · Goldfinch |
+| **Web3** | XMTP · Koop · The Wall Street Journal · DC Pictures |
+| **Commerce** | Shop Bonsai · Suntory · Zala Hair · Complex |
+
+<picture><img src="assets/compact/stack.svg" alt="Stack: Figma, Framer, Claude, Cursor, GitHub, React, Tailwind CSS, Storybook, VS Code, ChatGPT, Notion, Slack, Miro, Maze and Mural." width="100%"></picture>
+
+```console
+maarib@design:~$ npm install maarib
++ figma  + claude-code  + react  + next  + tailwind  + coffee
+added 312 packages, 1 cat
+```
+
+> [!TIP]
+> **Wanted:** hard problems in fintech and DeFi. I prototype and ship.
 
 <picture><img src="assets/projects/header.svg" alt="Side projects: art, experiments &amp; tools" width="100%"></picture>
 
