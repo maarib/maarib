@@ -1,7 +1,5 @@
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/intro-dark.svg"><img src="assets/intro-light.svg" alt="Hi, I'm Maarib. Product designer at heart, where product keeps flipping to founding, graphic, web, digital, lead, full-stack, motion, cat-approved and front-end." width="100%"></picture>
 
-I think in systems first, interfaces second.
-
 Based in Toronto, I'm currently a Lead Product Designer @ RBC Wealth Management, making self-directed investing approachable for everyone.
 
 Over the past several years, I've been leading design for both traditional and on-chain financial products. I work end to end, from defining the problem to designing the experience and getting it to a production-ready(ish) state.
