@@ -47,9 +47,11 @@ const pct = (s) => +((s / T) * 100).toFixed(3)
 const chipW = (n) => n * CW + 2 * PAD
 const textY = CY + CH / 2 + FS * 0.36
 function zigzag(x, w, y, c) {
-  let d = `M${x} ${y}`
+  // Starts 1px up inside the block, so no hairline shows where the two shapes meet
+  let d = `M${x} ${y - 1}L${x} ${y}`
   const n = Math.max(1, Math.round(w / 8)), step = w / n
   for (let i = 0; i < n; i++) d += `L${(x + (i + 0.5) * step).toFixed(1)} ${y + 6}L${(x + (i + 1) * step).toFixed(1)} ${y}`
+  d += `L${x + w} ${y - 1}`
   return `<path d="${d}Z" fill="${c}"/>`
 }
 // Show a group only between t0 and t1 of each cycle
