@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Draws the profile README images in ../assets",
   "scripts": {
-    "build": "node build.mjs && node intro.mjs && node projects.mjs && node sayhi.mjs",
+    "build": "node build.mjs && node intro.mjs && node projects.mjs && node sayhi.mjs && node stack.mjs",
     "logos": "node pixel-logos.mjs",
     "wordmark": "node pixel-wordmark.mjs",
     "widths": "node tools/font-widths.mjs"
