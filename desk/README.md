@@ -22,7 +22,6 @@ You'll need Node 22 or later.
 | `intro.mjs` | The intro on top, in a light and a dark version: "Hi, I'm Maarib" and the designer line whose first word keeps flipping (`WORDS`) |
 | `projects.mjs` | The side projects under the desk, as an old Mac Finder window: a header, then one clickable folder per project (`PROJECTS`) |
 | `sayhi.mjs` | The Say hi keys, one clickable key per link (`CONTACTS`) |
-| `stack.mjs` | The small logos in my Stack paragraph. It copies each logo from `data/stack/` at 16×16, and makes a white version of the black ones (`MONO`) for dark mode |
 | `pixel.mjs` | Drawing helpers shared by the three above |
 | `pixel-logos.mjs` | Shrinks the logos in `data/logos/` down to 18×18 pixel grids |
 | `pixel-wordmark.mjs` | Turns "Canada" into the pixel wordmark on the passport |
