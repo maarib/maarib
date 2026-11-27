@@ -23,6 +23,7 @@ You'll need Node 22 or later.
 | `projects.mjs` | The side projects under the desk, as an old Mac Finder window: a header, then one clickable folder per project (`PROJECTS`) |
 | `sayhi.mjs` | The Say hi keys, one clickable key per link (`CONTACTS`) |
 | `pixel.mjs` | Drawing helpers shared by the three above |
+| `badges.mjs` | Downloads the Stack & Workflow and contact badges from shields.io into `assets/badges`, a light and a dark one each, so GitHub loads them from this repo. The list is in `data/badges.json`. Change a badge there, then run `npm run badges` |
 | `pixel-logos.mjs` | Shrinks the logos in `data/logos/` down to 18×18 pixel grids |
 | `pixel-wordmark.mjs` | Turns "Canada" into the pixel wordmark on the passport |
 | `tools/font-widths.mjs` | Measures each Pixelify letter into `data/pixelify-widths.json`, so the arrow on a side project folder lands right after its name (`npm run widths`) |
